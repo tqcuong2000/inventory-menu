@@ -1,0 +1,1 @@
+Inventory Menu is a server-side mod designed to empower datapack makers and user experience. The mod's core feature allows you to create fully custom chest menus simply by writing simple JSON files! 
