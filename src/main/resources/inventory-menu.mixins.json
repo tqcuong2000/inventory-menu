@@ -4,6 +4,7 @@
   "package": "infinityi.inventoryMenu.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "ServerPlayNetworkHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

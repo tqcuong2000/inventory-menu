@@ -8,13 +8,13 @@
   "contact": {},
   "license": "LGPL-3.0",
   "icon": "assets/inventory-menu/icon.png",
-  "environment": "server",
+  "environment": "*",
   "entrypoints": {
-    "fabric-datagen": [
-      "infinityi.inventoryMenu.client.InventoryMenuDataGenerator"
-    ],
     "main": [
       "infinityi.inventoryMenu.InventoryMenu"
+    ],
+    "client": [
+      "infinityi.inventoryMenu.InventoryMenuClient"
     ]
   },
   "mixins": [
