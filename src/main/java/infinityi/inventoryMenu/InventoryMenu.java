@@ -3,7 +3,6 @@ package infinityi.inventoryMenu;
 import infinityi.inventoryMenu.Commands.MenuCommand;
 import infinityi.inventoryMenu.Commands.TpaCommands;
 import infinityi.inventoryMenu.DataParser.DataManager;
-import infinityi.inventoryMenu.DataParser.MenuDataManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.resource.ResourceType;

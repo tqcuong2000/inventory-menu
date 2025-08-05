@@ -10,7 +10,7 @@ import net.minecraft.text.TextCodecs;
 import java.util.List;
 import java.util.Optional;
 
-public record MenuLayout(String id, Text name, MenuGroup group, Integer rows, List<infinityi.inventoryMenu.MenuLayout.layout.MenuItem> items) {
+public record MenuLayout(String id, Text name, MenuGroup group, Integer rows, List<MenuItem> items) {
     public static final Codec<MenuLayout> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("id").forGetter(MenuLayout::id),
             TextCodecs.CODEC.optionalFieldOf("name", Text.literal("")).forGetter(MenuLayout::name),
@@ -18,4 +18,5 @@ public record MenuLayout(String id, Text name, MenuGroup group, Integer rows, Li
             Codec.intRange(1, 6).optionalFieldOf("rows").xmap(i -> i.orElse(3), Optional::ofNullable).forGetter(MenuLayout::rows),
             Codec.list(MenuItem.CODEC).fieldOf("items").forGetter(MenuLayout::items)
     ).apply(instance, MenuLayout::new));
+
 }

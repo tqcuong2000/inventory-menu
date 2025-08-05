@@ -1,5 +1,6 @@
 package infinityi.inventoryMenu.MenuLayout.ItemType;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -7,6 +8,7 @@ import infinityi.inventoryMenu.ItemAction.Action;
 import infinityi.inventoryMenu.ItemAction.Actions.NoAction;
 import infinityi.inventoryMenu.MenuLayout.layout.MenuItem;
 import infinityi.inventoryMenu.MenuLayout.layout.MenuItemType;
+import infinityi.inventoryMenu.MenuLayout.layout.SlotPair;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementDisplay;
 import net.minecraft.advancement.AdvancementEntry;
@@ -21,11 +23,17 @@ import net.minecraft.util.Identifier;
 import java.util.ArrayList;
 import java.util.List;
 
-public record AdvancementItem(int slot, Identifier questId) implements MenuItem {
+public record AdvancementItem(SlotPair slotPair, Identifier questId) implements MenuItem {
     public static final MapCodec<AdvancementItem> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.INT.fieldOf("slot").forGetter(AdvancementItem::slot),
+            SlotPair.LIST_CODEC.xmap(l -> new SlotPair(l.getFirst(),l.getLast()), sp -> List.of(sp.row(),sp.column()))
+                    .forGetter(AdvancementItem::slotPair),
             Identifier.CODEC.fieldOf("quest_id").forGetter(AdvancementItem::questId)
     ).apply(instance, AdvancementItem::new));
+
+    @Override
+    public Integer slot() {
+        return slotPair.resolveSlot();
+    }
 
     @Override
     public Action action() {

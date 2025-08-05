@@ -7,7 +7,7 @@
   "items": [
     {
       "type": "item",
-      "slot": 10,
+      "slot": [1,1],
       "item": {
         "id": "minecraft:bone"
       },
@@ -29,7 +29,7 @@
     },
     {
       "type": "item",
-      "slot": 13,
+      "slot": [2,4],
       "item": {
         "id": "minecraft:book",
         "components": {
@@ -49,7 +49,7 @@
     },
     {
       "type": "item",
-      "slot": 16,
+      "slot": [3, 7],
       "item": {
         "id": "minecraft:ender_pearl",
         "components": {
@@ -72,7 +72,7 @@
     },
     {
       "type": "navigate",
-      "slot": 22,
+      "slot": [3,9],
       "navigate": "close"
     }
   ]

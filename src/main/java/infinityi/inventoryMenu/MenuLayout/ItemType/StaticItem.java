@@ -1,5 +1,6 @@
 package infinityi.inventoryMenu.MenuLayout.ItemType;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -7,15 +8,24 @@ import infinityi.inventoryMenu.ItemAction.Action;
 import infinityi.inventoryMenu.ItemAction.Actions.NoAction;
 import infinityi.inventoryMenu.MenuLayout.layout.MenuItem;
 import infinityi.inventoryMenu.MenuLayout.layout.MenuItemType;
+import infinityi.inventoryMenu.MenuLayout.layout.SlotPair;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-public record StaticItem(int slot, ItemStack item, Action action) implements MenuItem {
+import java.util.List;
+
+public record StaticItem(SlotPair slotPair, ItemStack item, Action action) implements MenuItem {
     public static final MapCodec<StaticItem> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.intRange(0, 26).fieldOf("slot").forGetter(StaticItem::slot),
+            SlotPair.LIST_CODEC.xmap(l -> new SlotPair(l.getFirst(),l.getLast()), sp -> List.of(sp.row(),sp.column()))
+                    .forGetter(StaticItem::slotPair),
             ItemStack.CODEC.fieldOf("item").forGetter(StaticItem::item),
             Action.CODEC.optionalFieldOf("action", new NoAction()).forGetter(StaticItem::action)
     ).apply(instance, StaticItem::new));
+
+    @Override
+    public Integer slot() {
+        return slotPair.resolveSlot();
+    }
 
     @Override
     public ItemStack resolveItemStack(ServerPlayerEntity player) {

@@ -1,5 +1,6 @@
 package infinityi.inventoryMenu.MenuLayout.layout;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.MapCodec;
 import infinityi.inventoryMenu.MenuLayout.ItemType.AdvancementItem;
 import infinityi.inventoryMenu.MenuLayout.ItemType.NavigateItem;

@@ -1,14 +1,15 @@
 package infinityi.inventoryMenu.MenuLayout.ItemType;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import infinityi.inventoryMenu.DataParser.MenuDataManager;
 import infinityi.inventoryMenu.InventoryMenu;
 import infinityi.inventoryMenu.ItemAction.Action;
 import infinityi.inventoryMenu.ItemAction.Actions.MenuNavigationAction;
 import infinityi.inventoryMenu.MenuLayout.layout.MenuItem;
 import infinityi.inventoryMenu.MenuLayout.layout.MenuItemType;
+import infinityi.inventoryMenu.MenuLayout.layout.SlotPair;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.item.ItemStack;
@@ -24,16 +25,21 @@ import net.minecraft.util.Identifier;
 import java.util.List;
 import java.util.Optional;
 
-public record NavigateItem(int slot, MenuNavigationAction navigate, Identifier model, Text custom_name,
+public record NavigateItem(SlotPair slotPair, MenuNavigationAction navigate, Identifier model, Text custom_name,
                            List<Text> custom_lore) implements MenuItem {
     public static final MapCodec<NavigateItem> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-            Codec.INT.fieldOf("slot").forGetter(NavigateItem::slot),
+            SlotPair.LIST_CODEC.xmap(l -> new SlotPair(l.getFirst(),l.getLast()), sp -> List.of(sp.row(),sp.column()))
+                    .forGetter(NavigateItem::slotPair),
             MenuNavigationAction.CODEC.forGetter(NavigateItem::navigate),
             Identifier.CODEC.optionalFieldOf("model").xmap(m -> m.orElse(Registries.ITEM.getId(Items.ARROW)), Optional::ofNullable).forGetter(NavigateItem::model),
             TextCodecs.CODEC.optionalFieldOf("custom_name").xmap(t -> t.orElse(Text.empty()), Optional::ofNullable).forGetter(NavigateItem::custom_name),
             Codec.list(TextCodecs.CODEC).optionalFieldOf("custom_lore").xmap(t -> t.orElse(List.of()), Optional::ofNullable).forGetter(NavigateItem::custom_lore)
     ).apply(inst, NavigateItem::new));
 
+    @Override
+    public Integer slot() {
+        return slotPair.resolveSlot();
+    }
 
     @Override
     public Action action() {

@@ -10,7 +10,7 @@ public interface MenuItem {
     Codec<MenuItem> CODEC = StringIdentifiable.createCodec(MenuItemType::values)
             .dispatch(MenuItem::getType, MenuItemType::getCodec);
 
-    int slot();
+    Integer slot();
 
     Action action();
 
