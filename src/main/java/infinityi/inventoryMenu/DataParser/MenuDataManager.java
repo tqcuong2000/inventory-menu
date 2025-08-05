@@ -21,39 +21,40 @@ import java.util.*;
 public class MenuDataManager extends SinglePreparationResourceReloader<Map<Identifier, MenuLayout>> implements IdentifiableResourceReloadListener {
 
     private static final String MENUS_DIRECTORY = "menu";
-    private static final Map<Identifier, MenuLayout> loadedMenus = new HashMap<>();
-    private static final Map<String, Map<Integer, MenuLayout>> groupedMenus = new HashMap<>();
+    // --- BỎ STATIC ---
+    private final Map<Identifier, MenuLayout> loadedMenus = new HashMap<>();
+    private final Map<String, Map<Integer, MenuLayout>> groupedMenus = new HashMap<>();
 
-    public static Optional<MenuLayout> getMenu(Identifier menuId) {
+    // --- BỎ STATIC ---
+    public Optional<MenuLayout> getMenu(Identifier menuId) {
         return Optional.ofNullable(loadedMenus.get(menuId));
     }
 
-    public static NavigableMap<Integer, MenuLayout> getMenu(String groupName) {
+    // --- BỎ STATIC ---
+    public NavigableMap<Integer, MenuLayout> getMenu(String groupName) {
         return new TreeMap<>(groupedMenus.getOrDefault(groupName, Collections.emptyMap()));
     }
 
-    public static Optional<Text> getMenuName(Identifier menuId) {
-        Optional<MenuLayout> menuLayoutOptional = Optional.ofNullable(loadedMenus.get(menuId));
-        return menuLayoutOptional.map(MenuLayout::name);
+    public Text getMenuName(Identifier menuId){
+        Optional<MenuLayout>  menu = getMenu(menuId);
+        if (menu.isEmpty()) return  Text.empty();
+        return menu.get().name();
     }
 
-    public static Set<Identifier> getLoadedMenuIds() {
+    public Set<Identifier> getLoadedMenuIds() {
         return loadedMenus.keySet();
     }
 
     @Override
     protected Map<Identifier, MenuLayout> prepare(ResourceManager manager, Profiler profiler) {
         Map<Identifier, MenuLayout> preparedData = new HashMap<>();
-
         Map<Identifier, Resource> foundResources = manager.findResources(MENUS_DIRECTORY, path -> path.getPath().endsWith(".json"));
 
         for (Map.Entry<Identifier, Resource> entry : foundResources.entrySet()) {
             try (Reader reader = new InputStreamReader(entry.getValue().getInputStream())) {
                 JsonElement jsonElement = JsonParser.parseReader(reader);
-
                 MenuLayout layout = MenuLayout.CODEC.parse(JsonOps.INSTANCE, jsonElement)
-                        .getOrThrow(error -> new IllegalStateException("Cannot annalize " + entry.getKey() + ": " + error));
-
+                        .getOrThrow(error -> new IllegalStateException("Cannot analyze " + entry.getKey() + ": " + error));
                 preparedData.put(entry.getKey(), layout);
             } catch (Exception e) {
                 InventoryMenu.LOGGER.error("Error while reading file resource: " + entry.getKey(), e);

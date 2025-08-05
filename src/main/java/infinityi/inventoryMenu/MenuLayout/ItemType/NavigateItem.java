@@ -44,7 +44,8 @@ public record NavigateItem(int slot, MenuNavigationAction navigate, Identifier m
     public ItemStack resolveItemStack(ServerPlayerEntity player) {
         ItemStack item = Items.ARROW.getDefaultStack();
         Identifier menuId = Identifier.of(InventoryMenu.MOD_ID, "menu/" + navigate.destination() + ".json");
-        Text name = MenuDataManager.getMenuName(menuId).orElse(Text.empty());
+
+        Text name = InventoryMenu.getDataManager().menus().getMenuName(menuId);
         switch (navigate.navigate()) {
             case "open":
                 item.set(DataComponentTypes.ITEM_MODEL, Registries.ITEM.getId(Items.PAPER));

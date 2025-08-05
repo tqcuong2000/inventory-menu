@@ -1,7 +1,6 @@
 package infinityi.inventoryMenu.Commands;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
-import infinityi.inventoryMenu.DataParser.MenuDataManager;
 import infinityi.inventoryMenu.InventoryMenu;
 import infinityi.inventoryMenu.MenuLayout.Menu;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -15,48 +14,38 @@ import net.minecraft.util.Identifier;
 import java.util.stream.Collectors;
 
 public class MenuCommand {
-    public static void register() {
-        System.out.println("REGISTED COMMAND");
+    public static void register(){
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-            dispatcher.register(CommandManager.literal("menu")
-                    .then(CommandManager.argument("menu_name", StringArgumentType.word())
-                            .suggests((context, builder) -> {
-                                var loadedMenuNames = MenuDataManager.getLoadedMenuIds().stream()
-                                        .map(id -> {
-                                            String path = id.getPath();
-                                            return path.substring(path.lastIndexOf('/') + 1, path.lastIndexOf('.'));
-                                        })
-                                        .collect(Collectors.toList());
-                                return CommandSource.suggestMatching(loadedMenuNames, builder);
-                            })
-                            .executes(context -> {
-                                ServerPlayerEntity player = context.getSource().getPlayer();
-                                String menuName = StringArgumentType.getString(context, "menu_name");
-
-                                Identifier menuId = Identifier.of(InventoryMenu.MOD_ID, "menu/" + menuName + ".json");
-
-                                if (player != null) {
-                                    MenuDataManager.getMenu(menuId).ifPresentOrElse(
-                                            layout -> player.openHandledScreen(Menu.createMenu(layout)),
-                                            () -> player.sendMessage(Text.translatable("§cError: Cannot open %s menu because it isn't exist or loaded correctly.", menuName).formatted(Formatting.RED))
-                                    );
-                                }
-                                return 1;
-                            }))
+            //region "/menu" command
+            dispatcher.register(CommandManager.literal("menu").then(CommandManager.argument("menu_name", StringArgumentType.word()).suggests((context, builder) -> {
+                var loadedMenuNames =InventoryMenu.getDataManager().menus().getLoadedMenuIds().stream().map(id -> {
+                    String path = id.getPath();
+                    return path.substring(path.lastIndexOf('/') + 1, path.lastIndexOf('.'));}).collect(Collectors.toList()); return CommandSource.suggestMatching(loadedMenuNames, builder);})
+                    .executes(context -> {
+                        ServerPlayerEntity player = context.getSource().getPlayer();
+                        String menuName = StringArgumentType.getString(context, "menu_name");
+                        Identifier menuId = Identifier.of(InventoryMenu.MOD_ID, "menu/" + menuName + ".json");
+                        if (player == null) return 0;
+                        InventoryMenu.getDataManager().menus().getMenu(menuId).ifPresentOrElse(
+                                layout -> player.openHandledScreen(Menu.createMenu(layout)),
+                                () -> player.sendMessage(Text.translatable("§cError: Cannot open %s menu because it isn't exist or loaded correctly.", menuName).formatted(Formatting.RED)));
+                        return 1;
+                    }))
 
             );
+            //endregion
 
-            dispatcher.register(CommandManager.literal("warp")
-                    .executes(context ->
-                    {
+            //region "/warp" command
+            dispatcher.register(CommandManager.literal("warp").
+                    executes(context -> {
                         ServerPlayerEntity player = context.getSource().getPlayer();
-                        if (player != null) {
-                            MenuDataManager.getMenu(Identifier.of(InventoryMenu.MOD_ID, "menu/warp.json")).ifPresentOrElse(layout -> player.openHandledScreen(Menu.createMenu(layout)),
-                                    () -> player.sendMessage(Text.translatable("Warp menu is not loaded or does not exist.").formatted(Formatting.RED)));
-                        }
-                        return 1;
-                    }));
+                        if (player == null) return 0;
+                        InventoryMenu.getDataManager().menus().getMenu(Identifier.of(InventoryMenu.MOD_ID, "menu/warp.json")).ifPresentOrElse(
+                        layout -> player.openHandledScreen(Menu.createMenu(layout)),
+                        () -> player.sendMessage(Text.translatable("Warp menu is not loaded or does not exist.").formatted(Formatting.RED)));
+                    return 1;
+                }));
+            //endregion
         });
-
     }
 }

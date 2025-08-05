@@ -62,7 +62,7 @@ public record MenuNavigationAction(String navigate, String destination) implemen
 
     public void open_menu(ServerPlayerEntity player) {
         Identifier menuId = Identifier.of(InventoryMenu.MOD_ID, "menu/" + this.destination + ".json");
-        MenuDataManager.getMenu(menuId).ifPresentOrElse(
+        InventoryMenu.getDataManager().menus().getMenu(menuId).ifPresentOrElse(
                 layout -> player.openHandledScreen(Menu.createMenu(layout)),
                 () -> player.sendMessage(Text.translatable("§CMenu doesn't exist or loaded correctly: $s", menuId))
         );
@@ -71,7 +71,7 @@ public record MenuNavigationAction(String navigate, String destination) implemen
     public void scroll_menu(ServerPlayerEntity player, MenuLayout currentLayout, Boolean isNext) {
         String name = currentLayout.group().name();
         int currentIndex = currentLayout.group().index();
-        NavigableMap<Integer, MenuLayout> groupMenu = MenuDataManager.getMenu(name);
+        NavigableMap<Integer, MenuLayout> groupMenu = InventoryMenu.getDataManager().menus().getMenu(name);
         if (groupMenu.isEmpty() || groupMenu.size() <= 1) return;
         Map.Entry<Integer, MenuLayout> targetEntry = isNext ? groupMenu.higherEntry(currentIndex) : groupMenu.lowerEntry(currentIndex);
         if (targetEntry == null) targetEntry = groupMenu.firstEntry();
