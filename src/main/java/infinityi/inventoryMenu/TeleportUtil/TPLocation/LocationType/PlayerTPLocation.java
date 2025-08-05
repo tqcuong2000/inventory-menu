@@ -15,7 +15,7 @@ import java.util.UUID;
 public record PlayerTPLocation(String playerName) implements TPLocation {
     public static final MapCodec<PlayerTPLocation> CODEC =
             Codec.STRING.fieldOf("player")
-                    .xmap(PlayerTPLocation::new, target -> ((PlayerTPLocation) target).playerName());
+                    .xmap(PlayerTPLocation::new, target -> target.playerName());
 
     @Override
     public TPLocationType getType() {

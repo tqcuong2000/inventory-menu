@@ -14,7 +14,7 @@ import net.minecraft.util.math.Vec3d;
 public record Vec3dTPLocation(Vec3d position) implements TPLocation {
     public static final MapCodec<Vec3dTPLocation> CODEC =
             Vec3d.CODEC.fieldOf("pos")
-                    .xmap(Vec3dTPLocation::new, target -> ((Vec3dTPLocation) target).position());
+                    .xmap(Vec3dTPLocation::new, target -> target.position());
 
     @Override
     public TPLocationType getType() {

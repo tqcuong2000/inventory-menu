@@ -14,7 +14,7 @@ import net.minecraft.util.math.GlobalPos;
 public record GlobalTPLocation(GlobalPos location) implements TPLocation {
     public static final MapCodec<GlobalTPLocation> CODEC =
             GlobalPos.CODEC.fieldOf("location")
-                    .xmap(GlobalTPLocation::new, target -> ((GlobalTPLocation) target).location());
+                    .xmap(GlobalTPLocation::new, target -> target.location());
 
     @Override
     public TPLocationType getType() {

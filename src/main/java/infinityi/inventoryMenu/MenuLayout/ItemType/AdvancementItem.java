@@ -1,7 +1,5 @@
 package infinityi.inventoryMenu.MenuLayout.ItemType;
 
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import infinityi.inventoryMenu.ItemAction.Action;
