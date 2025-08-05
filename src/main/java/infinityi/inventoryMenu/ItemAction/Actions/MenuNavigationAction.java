@@ -6,7 +6,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import infinityi.inventoryMenu.DataParser.MenuDataManager;
 import infinityi.inventoryMenu.InventoryMenu;
 import infinityi.inventoryMenu.ItemAction.Action;
 import infinityi.inventoryMenu.ItemAction.ActionType;
