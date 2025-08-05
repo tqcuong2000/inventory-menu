@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "inventory-menu",
+  "version": "${version}",
+  "name": "inventory-menu",
+  "description": "Inventory Menu is a server-side mod designed to empower creators and administrators. The mod's core feature allows you to create fully custom chest menus simply by writing simple JSON files!",
+  "authors": [],
+  "contact": {},
+  "license": "LGPL-3.0",
+  "icon": "assets/inventory-menu/icon.png",
+  "environment": "server",
+  "entrypoints": {
+    "fabric-datagen": [
+      "infinityi.inventoryMenu.client.InventoryMenuDataGenerator"
+    ],
+    "main": [
+      "infinityi.inventoryMenu.InventoryMenu"
+    ]
+  },
+  "mixins": [
+    "inventory-menu.mixins.json",
+    {
+      "config": "inventory-menu.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
