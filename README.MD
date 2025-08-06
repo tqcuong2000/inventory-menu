@@ -1,1 +1,2 @@
-Inventory Menu is a server-side mod designed to empower datapack makers and user experience. The mod's core feature allows you to create fully custom chest menus simply by writing simple JSON files! 
+Inventory Menu add a new folder in datapack folder structure called /menu. Allow datapack maker to create fully functional, dynamic chest menu.
+A menu will be defined using json format, just like other element such as predicate , advancement, etc.
