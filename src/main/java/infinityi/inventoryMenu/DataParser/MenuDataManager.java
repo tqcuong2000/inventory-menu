@@ -17,7 +17,6 @@ import net.minecraft.util.profiler.Profiler;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class MenuDataManager extends SinglePreparationResourceReloader<Map<Identifier, MenuLayout>> implements IdentifiableResourceReloadListener {
 
@@ -27,12 +26,6 @@ public class MenuDataManager extends SinglePreparationResourceReloader<Map<Ident
 
     public Optional<MenuLayout> getMenu(Identifier menuId) {
         return Optional.ofNullable(loadedMenus.get(menuId));
-    }
-
-    public Optional<MenuLayout> getMenuById(String id){
-        return loadedMenus.values().stream()
-                .filter(layout -> layout.id().equals(id))
-                .findFirst();
     }
 
     public NavigableMap<Integer, MenuLayout> getMenu(String groupName) {
@@ -45,12 +38,8 @@ public class MenuDataManager extends SinglePreparationResourceReloader<Map<Ident
         return menu.get().name();
     }
 
-    public Set<Identifier> getLoadedMenuIds() {
+    public Set<Identifier> getIds() {
         return loadedMenus.keySet();
-    }
-
-    public List<String> getIds(){
-        return loadedMenus.values().stream().map(MenuLayout::id).collect(Collectors.toList());
     }
 
     @Override
@@ -62,10 +51,12 @@ public class MenuDataManager extends SinglePreparationResourceReloader<Map<Ident
             try (Reader reader = new InputStreamReader(entry.getValue().getInputStream())) {
                 JsonElement jsonElement = JsonParser.parseReader(reader);
                 MenuLayout layout = MenuLayout.CODEC.parse(JsonOps.INSTANCE, jsonElement)
-                        .getOrThrow(error -> new IllegalStateException("Cannot analyze " + entry.getKey() + ": " + error));
-                preparedData.put(entry.getKey(), layout);
+                        .getOrThrow(IllegalStateException::new);
+                String path = entry.getKey().toString();
+                path = path.substring(0, path.lastIndexOf(".")).replaceFirst("menu/", "");
+                preparedData.put(Identifier.of(path), layout);
             } catch (Exception e) {
-                InventoryMenu.LOGGER.error("Error while reading file resource: " + entry.getKey(), e);
+                InventoryMenu.LOGGER.error("Error while reading file resource: {}", entry.getKey(), e);
             }
         }
         return preparedData;

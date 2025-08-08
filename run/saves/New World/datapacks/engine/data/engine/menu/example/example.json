@@ -1,0 +1,20 @@
+{
+  "name": "§3My menu",
+  "group": {
+    "name": "example",
+    "index": 2
+  },
+  "items": [
+    {
+      "type": "item",
+      "slot": [1, 1],
+      "item": {"id": "diamond", "components": {"custom_name": "§bShiny!"}}
+    },
+    {
+      "type": "navigate",
+      "slot": [3, 1],
+      "action": "open",
+      "menu": "engine:warp"
+    }
+  ]
+}

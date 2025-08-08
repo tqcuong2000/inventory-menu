@@ -12,6 +12,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 
+import java.util.Collections;
+
 public record GlobalTPLocation(GlobalPos location) implements TPLocation {
 
     public static final Codec<GlobalTPLocation> CODEC = GlobalPos.CODEC.xmap(GlobalTPLocation::new,GlobalTPLocation::location);
@@ -32,7 +34,7 @@ public record GlobalTPLocation(GlobalPos location) implements TPLocation {
             }
         }
         cost.applyCost(player,location.pos());
-        player.teleport(destinationWorld, location.pos().getX() + 0.5, location.pos().getY(), location.pos().getZ() + 0.5, PositionFlag.DELTA, player.headYaw, player.lastPitch, false);
+        player.teleport(destinationWorld, location.pos().getX() + 0.5, location.pos().getY(), location.pos().getZ() + 0.5, Collections.emptySet(), player.headYaw, player.lastPitch, false);
         player.closeHandledScreen();
     }
 

@@ -11,6 +11,8 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.Collections;
+
 public record BlockTPLocation(BlockPos location) implements TPLocation {
 
     public static final Codec<BlockTPLocation> CODEC = BlockPos.CODEC.xmap(BlockTPLocation::new, BlockTPLocation::location);
@@ -25,7 +27,7 @@ public record BlockTPLocation(BlockPos location) implements TPLocation {
             }
         }
         cost.applyCost(player, location);
-        player.teleport(destinationWorld, location.getX() + 0.5, location.getY(), location.getZ() + 0.5, PositionFlag.DELTA, player.headYaw, player.lastPitch, false);
+        player.teleport(destinationWorld, location.getX() + 0.5, location.getY(), location.getZ() + 0.5, Collections.emptySet() , player.headYaw, player.lastPitch, false);
         player.closeHandledScreen();
     }
 
