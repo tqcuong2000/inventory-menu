@@ -38,9 +38,9 @@ public record TeleportAction(TPLocation target, TeleportCost cost, Boolean safe_
     @Override
     public void execute(ServerPlayerEntity player, MenuLayout layout) {
         BlockPos pos = target.getPos(player.getServer());
+        boolean isPlayerTarget = target.getPlayer(player.getServer()) != null;
         if (cost.hasCost(player, pos)) {
-            cost.applyCost(player, pos);
-            target.teleport(player, safe_check);
+            target.teleport(player, safe_check, cost);
         } else {
             player.sendMessage(Text.translatable("Not enough experience.").formatted(Formatting.RED));
         }

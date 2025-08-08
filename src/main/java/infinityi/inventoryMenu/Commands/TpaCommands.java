@@ -1,6 +1,7 @@
 package infinityi.inventoryMenu.Commands;
 
 import com.mojang.brigadier.CommandDispatcher;
+import infinityi.inventoryMenu.TeleportUtil.TeleportCost;
 import infinityi.inventoryMenu.TeleportUtil.TeleportRequestManager.TeleportRequestManager;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.CommandRegistryAccess;
@@ -33,7 +34,7 @@ public class TpaCommands {
                                 return 0;
                             }
 
-                            TeleportRequestManager.createRequest(requester, target, true);
+                            TeleportRequestManager.createRequest(requester, target, true, TeleportCost.empty());
                             return 1;
                         }))
         );

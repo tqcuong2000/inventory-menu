@@ -3,6 +3,7 @@ package infinityi.inventoryMenu.TeleportUtil.TPLocation.LocationType;
 import com.mojang.serialization.Codec;
 import infinityi.inventoryMenu.ItemAction.Actions.TeleportAction;
 import infinityi.inventoryMenu.TeleportUtil.TPLocation.TPLocation;
+import infinityi.inventoryMenu.TeleportUtil.TeleportCost;
 import infinityi.inventoryMenu.TeleportUtil.TeleportRequestManager.TeleportRequestManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -16,13 +17,13 @@ public record PlayerTPLocation(String playerName) implements TPLocation {
     public static final Codec<PlayerTPLocation> CODEC = Codec.STRING.xmap(PlayerTPLocation::new,PlayerTPLocation::playerName);
 
     @Override
-    public void teleport(ServerPlayerEntity player, boolean safeCheck) {
+    public void teleport(ServerPlayerEntity player, boolean safeCheck, TeleportCost cost) {
         ServerPlayerEntity targetPlayer = getPlayer(player.getServer());
         if (targetPlayer == null) {
             player.sendMessage(Text.translatable("%s §cis not online.", this.playerName));
             return;
         }
-        TeleportRequestManager.createRequest(player, targetPlayer, safeCheck);
+        TeleportRequestManager.createRequest(player, targetPlayer, safeCheck, cost);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package infinityi.inventoryMenu.TeleportUtil.TeleportRequestManager;
 
 import infinityi.inventoryMenu.ItemAction.Actions.TeleportAction;
+import infinityi.inventoryMenu.TeleportUtil.TeleportCost;
 import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.ClickEvent;
@@ -17,14 +18,14 @@ public class TeleportRequestManager {
     private static final Map<UUID, TeleportRequest> PENDING_REQUESTS = new ConcurrentHashMap<>();
     private static final int TIMEOUT_SECONDS = 30;
 
-    public static void createRequest(ServerPlayerEntity requester, ServerPlayerEntity target, Boolean safeCheck) {
+    public static void createRequest(ServerPlayerEntity requester, ServerPlayerEntity target, Boolean safeCheck, TeleportCost cost) {
         if (PENDING_REQUESTS.containsKey(target.getUuid())) {
             requester.sendMessage(Text.translatable("§You already sent a request to %s.", target.getName()));
             return;
         }
 
         long expiryTime = System.currentTimeMillis() + TIMEOUT_SECONDS * 1000L;
-        TeleportRequest request = new TeleportRequest(requester, expiryTime, safeCheck);
+        TeleportRequest request = new TeleportRequest(requester, expiryTime, safeCheck, cost);
         PENDING_REQUESTS.put(target.getUuid(), request);
 
         requester.sendMessage(Text.translatable("§aSent tpa request to %s.", target.getName().getString()));
@@ -68,7 +69,11 @@ public class TeleportRequestManager {
             }
 
         }
-
+        if (!request.cost().hasCost(requester,target.getBlockPos())){
+            requester.sendMessage(Text.translatable("Not enough experience.").formatted(Formatting.RED));
+            return;
+        }
+        request.cost().applyCost(requester, target.getBlockPos());
         requester.teleport(target.getWorld(), target.capeX, target.capeY, target.capeZ, PositionFlag.DELTA, target.bodyYaw, target.lastPitch, false);
         requester.sendMessage(Text.translatable("%s§a has accepted your teleport request.", target.getName()));
         target.sendMessage(Text.translatable("§aYou have accepted %s§a's teleport request.", requester.getName()));

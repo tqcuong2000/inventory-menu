@@ -3,6 +3,7 @@ package infinityi.inventoryMenu.TeleportUtil.TPLocation.LocationType;
 import com.mojang.serialization.Codec;
 import infinityi.inventoryMenu.ItemAction.Actions.TeleportAction;
 import infinityi.inventoryMenu.TeleportUtil.TPLocation.TPLocation;
+import infinityi.inventoryMenu.TeleportUtil.TeleportCost;
 import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -17,7 +18,7 @@ public record GlobalTPLocation(GlobalPos location) implements TPLocation {
 
 
     @Override
-    public void teleport(ServerPlayerEntity player, boolean safeCheck) {
+    public void teleport(ServerPlayerEntity player, boolean safeCheck, TeleportCost cost) {
         if (player.getServer() == null) return;
         ServerWorld destinationWorld = player.getServer().getWorld(location.dimension());
         if (destinationWorld == null) {
@@ -30,6 +31,7 @@ public record GlobalTPLocation(GlobalPos location) implements TPLocation {
                 return;
             }
         }
+        cost.applyCost(player,location.pos());
         player.teleport(destinationWorld, location.pos().getX() + 0.5, location.pos().getY(), location.pos().getZ() + 0.5, PositionFlag.DELTA, player.headYaw, player.lastPitch, false);
         player.closeHandledScreen();
     }

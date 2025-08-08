@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import infinityi.inventoryMenu.TeleportUtil.TPLocation.LocationType.BlockTPLocation;
 import infinityi.inventoryMenu.TeleportUtil.TPLocation.LocationType.GlobalTPLocation;
 import infinityi.inventoryMenu.TeleportUtil.TPLocation.LocationType.PlayerTPLocation;
+import infinityi.inventoryMenu.TeleportUtil.TeleportCost;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
@@ -29,7 +30,7 @@ public interface TPLocation {
             }
     );
 
-    void teleport(ServerPlayerEntity player, boolean safeCheck);
+    void teleport(ServerPlayerEntity player, boolean safeCheck, TeleportCost cost);
     BlockPos getPos(MinecraftServer server);
     ServerPlayerEntity getPlayer(MinecraftServer server);
     Integer getDistance(ServerPlayerEntity player);
