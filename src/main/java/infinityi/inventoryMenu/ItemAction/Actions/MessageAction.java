@@ -16,7 +16,7 @@ import java.util.Map;
 
 public record MessageAction(String content) implements Action {
     public static final MapCodec<MessageAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.STRING.fieldOf("value").forGetter(MessageAction::content)
+            Codec.STRING.fieldOf("message").forGetter(MessageAction::content)
     ).apply(instance, MessageAction::new));
 
     @Override

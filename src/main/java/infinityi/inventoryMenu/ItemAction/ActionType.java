@@ -8,7 +8,7 @@ import infinityi.inventoryMenu.ItemAction.Actions.TeleportAction;
 import net.minecraft.util.StringIdentifiable;
 
 public enum ActionType implements StringIdentifiable {
-    MESSAGE("message", MessageAction.CODEC),
+    MESSAGE("sendmessage", MessageAction.CODEC),
     NONE("none", NoAction.CODEC),
     NAVIGATE("navigate", MenuNavigationAction.CODEC),
     TELEPORT("teleport", TeleportAction.CODEC),

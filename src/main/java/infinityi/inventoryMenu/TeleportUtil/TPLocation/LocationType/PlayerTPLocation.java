@@ -1,9 +1,8 @@
 package infinityi.inventoryMenu.TeleportUtil.TPLocation.LocationType;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
+import infinityi.inventoryMenu.ItemAction.Actions.TeleportAction;
 import infinityi.inventoryMenu.TeleportUtil.TPLocation.TPLocation;
-import infinityi.inventoryMenu.TeleportUtil.TPLocation.TPLocationType;
 import infinityi.inventoryMenu.TeleportUtil.TeleportRequestManager.TeleportRequestManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -13,18 +12,12 @@ import net.minecraft.util.math.BlockPos;
 import java.util.UUID;
 
 public record PlayerTPLocation(String playerName) implements TPLocation {
-    public static final MapCodec<PlayerTPLocation> CODEC =
-            Codec.STRING.fieldOf("player")
-                    .xmap(PlayerTPLocation::new, target -> target.playerName());
 
-    @Override
-    public TPLocationType getType() {
-        return TPLocationType.PLAYER_LOCATION;
-    }
+    public static final Codec<PlayerTPLocation> CODEC = Codec.STRING.xmap(PlayerTPLocation::new,PlayerTPLocation::playerName);
 
     @Override
     public void teleport(ServerPlayerEntity player, boolean safeCheck) {
-        ServerPlayerEntity targetPlayer = getPlayer(player);
+        ServerPlayerEntity targetPlayer = getPlayer(player.getServer());
         if (targetPlayer == null) {
             player.sendMessage(Text.translatable("%s §cis not online.", this.playerName));
             return;
@@ -32,19 +25,26 @@ public record PlayerTPLocation(String playerName) implements TPLocation {
         TeleportRequestManager.createRequest(player, targetPlayer, safeCheck);
     }
 
-
     @Override
-    public BlockPos position(ServerPlayerEntity player) {
-        ServerPlayerEntity targetPlayer = getPlayer(player);
-        if (targetPlayer != null) {
-            return targetPlayer.getBlockPos();
-        }
+    public BlockPos getPos (MinecraftServer server) {
+        ServerPlayerEntity player = getPlayer(server);
+        if (player == null) return null;
         return player.getBlockPos();
     }
 
-    private ServerPlayerEntity getPlayer(ServerPlayerEntity player) {
-        MinecraftServer server = player.getServer();
-        if (server == null) return null;
+    @Override //@Nullable
+    public ServerPlayerEntity getPlayer(MinecraftServer server) {
         return playerName.length() > 16 ? server.getPlayerManager().getPlayer(UUID.fromString(playerName)) : server.getPlayerManager().getPlayer(playerName);
     }
+
+    @Override
+    public Integer getDistance(ServerPlayerEntity player) {
+        BlockPos blockPos = getPos(player.getServer());
+        if (blockPos == null) return 0;
+        return TeleportAction.distanceBetween(player.getBlockPos(), blockPos);
+    }
+
+
+
+
 }

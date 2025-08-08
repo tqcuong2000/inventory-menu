@@ -8,7 +8,7 @@ import net.minecraft.util.StringIdentifiable;
 
 public enum MenuItemType implements StringIdentifiable {
     ITEM("item", StaticItem.CODEC),
-    QUEST("quest", AdvancementItem.CODEC),
+    QUEST("advancement", AdvancementItem.CODEC),
     NAVIGATE("navigate", NavigateItem.CODEC);
 
     private final String name;

@@ -21,10 +21,11 @@
   "%s§c has denied your request": "%s§c đã từ chối yêu cầu của bạn.",
   "§cYou have denied %s§c's teleport request.": "§cBạn đã từ chối yêu cầu dịch chuyển của %s.",
   "§cYou cannot teleport to a dangerous location!": "§cBạn không thể dịch chuyển đến một vị trí nguy hiểm!",
-  "§cThat world is not exist!": "§cThế giới đó không tồn tại!",
+  "§cThat world does not exist! %s": "§cThế giới đó không tồn tại",
   "Open": "Mở",
   "Next page": "Trang sau",
   "Previous page": "Trang trước",
   "Close": "Đóng",
-  "§CMenu doesn't exist or loaded correctly: $s": "§cMenu không tồn tại hoặc không được tải đúng cách: %s"
+  "§CMenu doesn't exist or loaded correctly: $s": "§cMenu không tồn tại hoặc không được tải đúng cách: %s",
+  "%s §cis not online.": "%s §cis not online."
 }

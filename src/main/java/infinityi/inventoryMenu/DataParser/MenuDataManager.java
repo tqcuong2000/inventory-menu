@@ -2,10 +2,10 @@ package infinityi.inventoryMenu.DataParser;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import infinityi.inventoryMenu.InventoryMenu;
 import infinityi.inventoryMenu.MenuLayout.MenuLayout;
-import infinityi.inventoryMenu.MenuLayout.layout.MenuGroup;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
@@ -17,20 +17,24 @@ import net.minecraft.util.profiler.Profiler;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MenuDataManager extends SinglePreparationResourceReloader<Map<Identifier, MenuLayout>> implements IdentifiableResourceReloadListener {
 
     private static final String MENUS_DIRECTORY = "menu";
-    // --- BỎ STATIC ---
     private final Map<Identifier, MenuLayout> loadedMenus = new HashMap<>();
     private final Map<String, Map<Integer, MenuLayout>> groupedMenus = new HashMap<>();
 
-    // --- BỎ STATIC ---
     public Optional<MenuLayout> getMenu(Identifier menuId) {
         return Optional.ofNullable(loadedMenus.get(menuId));
     }
 
-    // --- BỎ STATIC ---
+    public Optional<MenuLayout> getMenuById(String id){
+        return loadedMenus.values().stream()
+                .filter(layout -> layout.id().equals(id))
+                .findFirst();
+    }
+
     public NavigableMap<Integer, MenuLayout> getMenu(String groupName) {
         return new TreeMap<>(groupedMenus.getOrDefault(groupName, Collections.emptyMap()));
     }
@@ -43,6 +47,10 @@ public class MenuDataManager extends SinglePreparationResourceReloader<Map<Ident
 
     public Set<Identifier> getLoadedMenuIds() {
         return loadedMenus.keySet();
+    }
+
+    public List<String> getIds(){
+        return loadedMenus.values().stream().map(MenuLayout::id).collect(Collectors.toList());
     }
 
     @Override
@@ -69,9 +77,9 @@ public class MenuDataManager extends SinglePreparationResourceReloader<Map<Ident
         groupedMenus.clear();
         loadedMenus.putAll(prepared);
         for (MenuLayout layout : loadedMenus.values()) {
-            MenuGroup group = layout.group();
-            if (group != null && !group.name().isEmpty()) {
-                groupedMenus.computeIfAbsent(group.name(), k -> new TreeMap<>()).put(group.index(), layout);
+            Pair<String,Integer> group = layout.menu_group();
+            if (group != null && !group.getFirst().isEmpty()) {
+                groupedMenus.computeIfAbsent(group.getFirst(), k -> new TreeMap<>()).put(group.getSecond(), layout);
             }
         }
         InventoryMenu.LOGGER.info("Successfully loaded {} menu layout.", loadedMenus.size());

@@ -9,34 +9,27 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.GlobalPos;
 
-public record GlobalTPLocation(GlobalPos location) implements TPLocation {
+public record BlockTPLocation(BlockPos location) implements TPLocation {
 
-    public static final Codec<GlobalTPLocation> CODEC = GlobalPos.CODEC.xmap(GlobalTPLocation::new,GlobalTPLocation::location);
-
-
+    public static final Codec<BlockTPLocation> CODEC = BlockPos.CODEC.xmap(BlockTPLocation::new, BlockTPLocation::location);
     @Override
     public void teleport(ServerPlayerEntity player, boolean safeCheck) {
         if (player.getServer() == null) return;
-        ServerWorld destinationWorld = player.getServer().getWorld(location.dimension());
-        if (destinationWorld == null) {
-            player.sendMessage(Text.translatable("§cThat world does not exist! %s", location.dimension().getValue().toString()));
-            return;
-        }
+        ServerWorld destinationWorld = player.getServer().getOverworld();
         if (safeCheck) {
-            if (TeleportAction.isDangerLocation(destinationWorld, location.pos())) {
+            if (TeleportAction.isDangerLocation(destinationWorld, location)) {
                 player.sendMessage(Text.translatable("§cYou cannot teleport to a dangerous location!"));
                 return;
             }
         }
-        player.teleport(destinationWorld, location.pos().getX() + 0.5, location.pos().getY(), location.pos().getZ() + 0.5, PositionFlag.DELTA, player.headYaw, player.lastPitch, false);
+        player.teleport(destinationWorld, location.getX() + 0.5, location.getY(), location.getZ() + 0.5, PositionFlag.DELTA, player.headYaw, player.lastPitch, false);
         player.closeHandledScreen();
     }
 
     @Override
     public BlockPos getPos(MinecraftServer server) {
-        return location.pos();
+        return location;
     }
 
     @Override
@@ -46,9 +39,7 @@ public record GlobalTPLocation(GlobalPos location) implements TPLocation {
 
     @Override
     public Integer getDistance(ServerPlayerEntity player) {
-        if (player.getWorld().getRegistryKey().equals(location.dimension())){
-            return TeleportAction.distanceBetween(player.getBlockPos(), location.pos());
-        }
-        return TeleportAction.distanceBetween(player.getBlockPos(), BlockPos.ofFloored(0, 0, 0));
+        return TeleportAction.distanceBetween(player.getBlockPos(), location);
     }
+
 }

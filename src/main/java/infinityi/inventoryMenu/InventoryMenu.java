@@ -6,7 +6,6 @@ import infinityi.inventoryMenu.DataParser.DataManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.resource.ResourceType;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
@@ -16,7 +15,7 @@ public class InventoryMenu implements ModInitializer {
 
     public static final String MOD_ID = "inventory-menu";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-    public static final Text PREFIX = Text.literal("[InventoryMenu] ").setStyle(Style.EMPTY.withItalic(false)).formatted(Formatting.LIGHT_PURPLE);
+    public static final Text PREFIX = Text.literal("[InventoryMenu] ").formatted(Formatting.LIGHT_PURPLE);
 
     private static DataManager dataManager;
 

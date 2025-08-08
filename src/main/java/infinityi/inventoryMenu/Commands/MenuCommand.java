@@ -11,22 +11,19 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
-import java.util.stream.Collectors;
+import java.util.ArrayList;
 
-public class MenuCommand {
+public class  MenuCommand {
     public static void register(){
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             //region "/menu" command
-            dispatcher.register(CommandManager.literal("menu").then(CommandManager.argument("menu_name", StringArgumentType.word()).suggests((context, builder) -> {
-                var loadedMenuNames =InventoryMenu.getDataManager().menus().getLoadedMenuIds().stream().map(id -> {
-                    String path = id.getPath();
-                    return path.substring(path.lastIndexOf('/') + 1, path.lastIndexOf('.'));}).collect(Collectors.toList()); return CommandSource.suggestMatching(loadedMenuNames, builder);})
+            dispatcher.register(CommandManager.literal("menu").then(CommandManager.argument("menu_id", StringArgumentType.word()).suggests((context, builder) -> {
+                var loadedMenuNames = new ArrayList<>(InventoryMenu.getDataManager().menus().getIds()); return CommandSource.suggestMatching(loadedMenuNames, builder);})
                     .executes(context -> {
                         ServerPlayerEntity player = context.getSource().getPlayer();
-                        String menuName = StringArgumentType.getString(context, "menu_name");
-                        Identifier menuId = Identifier.of(InventoryMenu.MOD_ID, "menu/" + menuName + ".json");
+                        String menuName = StringArgumentType.getString(context, "menu_id");
                         if (player == null) return 0;
-                        InventoryMenu.getDataManager().menus().getMenu(menuId).ifPresentOrElse(
+                        InventoryMenu.getDataManager().menus().getMenuById(StringArgumentType.getString(context, "menu_id")).ifPresentOrElse(
                                 layout -> player.openHandledScreen(Menu.createMenu(layout)),
                                 () -> player.sendMessage(Text.translatable("§cError: Cannot open %s menu because it isn't exist or loaded correctly.", menuName).formatted(Formatting.RED)));
                         return 1;

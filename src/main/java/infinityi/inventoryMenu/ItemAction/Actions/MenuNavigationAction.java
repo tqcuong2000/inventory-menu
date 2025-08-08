@@ -21,8 +21,8 @@ import java.util.Optional;
 
 public record MenuNavigationAction(String navigate, String destination) implements Action {
     public static final MapCodec<MenuNavigationAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.STRING.fieldOf("navigate").forGetter(MenuNavigationAction::navigate),
-            Codec.STRING.optionalFieldOf("destination").xmap(s -> s.orElse(""), Optional::ofNullable).forGetter(MenuNavigationAction::destination)
+            Codec.STRING.fieldOf("action").forGetter(MenuNavigationAction::navigate),
+            Codec.STRING.optionalFieldOf("menu").xmap(s -> s.orElse(""), Optional::ofNullable).forGetter(MenuNavigationAction::destination)
     ).apply(instance, MenuNavigationAction::new));
 
     @Override
@@ -68,8 +68,8 @@ public record MenuNavigationAction(String navigate, String destination) implemen
     }
 
     public void scroll_menu(ServerPlayerEntity player, MenuLayout currentLayout, Boolean isNext) {
-        String name = currentLayout.group().name();
-        int currentIndex = currentLayout.group().index();
+        String name = currentLayout.menu_group().getFirst();
+        int currentIndex = currentLayout.menu_group().getSecond();
         NavigableMap<Integer, MenuLayout> groupMenu = InventoryMenu.getDataManager().menus().getMenu(name);
         if (groupMenu.isEmpty() || groupMenu.size() <= 1) return;
         Map.Entry<Integer, MenuLayout> targetEntry = isNext ? groupMenu.higherEntry(currentIndex) : groupMenu.lowerEntry(currentIndex);

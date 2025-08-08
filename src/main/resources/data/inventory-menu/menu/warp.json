@@ -7,73 +7,81 @@
   "items": [
     {
       "type": "item",
-      "slot": [1,1],
+      "slot": [2,2],
       "item": {
-        "id": "minecraft:bone"
-      },
-      "action": {
-        "type": "teleport",
-        "target": {
-          "type": "location",
-          "location": {
-            "dimension": "minecraft:overworld",
-            "pos": [0, 0, 0]
-          }
-        },
-        "cost": {
-          "amount": 1,
-          "type": "level"
-        },
-        "safe_check": true
-      }
-    },
-    {
-      "type": "item",
-      "slot": [2,4],
-      "item": {
-        "id": "minecraft:book",
+        "id": "minecraft:bone",
         "components": {
-          "minecraft:custom_name": "'Hello %playername%!'",
-          "minecraft:lore": ["'§3World days: §b%worlddays%", "§3Cost: %xpcost%"]
+          "custom_name": "§aFarm quái vật",
+          "minecraft:lore": ["§7Chi phí:§3 %xpcost%","§7Khoảng cách:§a %distance%"]
         }
       },
       "action": {
         "type": "teleport",
-        "target": {
-          "type": "position",
-          "pos": [0, 0, 0]
+        "pos": [0, 1, 0],
+        "cost": {
+          "amount": [0, 30],
+          "saturation": 1000
         },
-        "cost": 99,
-        "safe_check": true
+        "safe_check": false
       }
     },
     {
       "type": "item",
-      "slot": [3, 7],
+      "slot": [2,5],
       "item": {
-        "id": "minecraft:ender_pearl",
+        "id": "minecraft:ender_eye",
         "components": {
-          "minecraft:custom_name": "'§dDịch chuyển đến InfinityI'",
-          "minecraft:lore": ["'§3World days: §b%worlddays% '", "§3Cost: %xpcost%"]
+          "minecraft:custom_name": "§aCăn cứ chính",
+          "minecraft:lore": ["§3Cost: %xpcost%"]
         }
       },
       "action": {
         "type": "teleport",
-        "target": {
-          "type": "player",
-          "player": "900b9dd9-6fe3-4752-89f7-27ebcb6bd95b"
+        "pos": {
+          "pos": [0,1,0],
+          "dimension": "minecraft:overworld"
         },
         "cost": {
-          "type": "level",
-          "amount": 12
+          "amount": [0, 30],
+          "saturation": 1
         },
-        "safe_check": true
+        "safe_check": false
+      }
+    },
+    {
+      "type": "item",
+      "slot": [2, 8],
+      "item": {
+        "id": "minecraft:enchanted_book",
+        "components": {
+          "minecraft:custom_name": "Nhà dân làng",
+          "minecraft:lore": ["§7Chi phí:§3 %xpcost%","§7Khoảng cách:§a %distance%"]
+        }
+      },
+      "action": {
+        "type": "teleport",
+        "pos": "InfinityI",
+        "cost": {
+          "amount": [1, 30],
+          "saturation": 4000
+        },
+        "safe_check": false
       }
     },
     {
       "type": "navigate",
-      "slot": [3,9],
-      "navigate": "close"
+      "slot": [3,5],
+      "action": "close"
+    },
+    {
+      "type": "navigate",
+      "slot": [3, 9],
+      "action": "next"
+    },
+    {
+      "type": "navigate",
+      "slot": [3, 1],
+      "action": "previous"
     }
   ]
 }

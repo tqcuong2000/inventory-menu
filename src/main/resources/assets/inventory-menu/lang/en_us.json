@@ -21,10 +21,11 @@
   "%s§c has denied your request": "%s§c has denied your request",
   "§cYou have denied %s§c's teleport request.": "§cYou have denied %s§c's teleport request.",
   "§cYou cannot teleport to a dangerous location!": "§cYou cannot teleport to a dangerous location!",
-  "§cThat world is not exist!": "§cThat world is not exist!",
+  "§cThat world does not exist! %s": "§cThat world is not exist!",
   "Open": "Open",
   "Next page": "Next page",
   "Previous page": "Previous page",
   "Close": "Close",
-  "§CMenu doesn't exist or loaded correctly: $s": "§CMenu doesn't exist or loaded correctly: $s"
+  "§CMenu doesn't exist or loaded correctly: $s": "§CMenu doesn't exist or loaded correctly: $s",
+  "%s §cis not online.": "%s §cis not online."
 }
