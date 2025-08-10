@@ -1,10 +1,7 @@
 package infinityi.inventorymenu.itemaction;
 
 import com.mojang.serialization.MapCodec;
-import infinityi.inventorymenu.itemaction.actions.MenuNavigationAction;
-import infinityi.inventorymenu.itemaction.actions.MessageAction;
-import infinityi.inventorymenu.itemaction.actions.NoAction;
-import infinityi.inventorymenu.itemaction.actions.TeleportAction;
+import infinityi.inventorymenu.itemaction.actions.*;
 import net.minecraft.util.StringIdentifiable;
 
 public enum ActionType implements StringIdentifiable {
@@ -12,6 +9,7 @@ public enum ActionType implements StringIdentifiable {
     MESSAGE("message", MessageAction.CODEC),
     NAVIGATE("navigate", MenuNavigationAction.CODEC),
     TELEPORT("teleport", TeleportAction.CODEC),
+    COMMAND("command", CommandAction.CODEC)
     ;
     private final String name;
     private final MapCodec<? extends Action> codec;

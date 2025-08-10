@@ -1,4 +1,4 @@
-package infinityi.inventorymenu.placeholders.resolver;
+package infinityi.inventorymenu.placeholders.resolvers;
 
 import infinityi.inventorymenu.placeholders.providers.PlaceholderProvider;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -10,9 +10,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class PlaceholderResolver {
+public interface PlaceholderResolver {
 
-    public static Text resolve(Text input, List<PlaceholderProvider> providers, ServerPlayerEntity player) {
+    Object resolve();
+    List<PlaceholderProvider> constructProviders();
+
+    static Text resolve(Text input, List<PlaceholderProvider> providers, ServerPlayerEntity player) {
         String template = input.getString();
         if (!template.contains("%")) return input;
         String regexString = "%([^%]+)%";
@@ -28,8 +31,9 @@ public class PlaceholderResolver {
                     .orElse("");
         })).setStyle(input.getStyle());
     }
-    public static List<Text> resolve(List<Text> textList, List<PlaceholderProvider> providers ,ServerPlayerEntity player) {
-        return textList.stream().map(line -> resolve(line, providers ,player)).collect(Collectors.toList());
+
+    static List<Text> resolve(List<Text> textList, List<PlaceholderProvider> providers, ServerPlayerEntity player) {
+        return textList.stream().map(line -> resolve(line, providers, player)).collect(Collectors.toList());
     }
 
 }

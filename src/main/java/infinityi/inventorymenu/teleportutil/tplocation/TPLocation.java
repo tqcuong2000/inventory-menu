@@ -1,10 +1,10 @@
-package infinityi.inventorymenu.teleportutil.TPLocation;
+package infinityi.inventorymenu.teleportutil.tplocation;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import infinityi.inventorymenu.teleportutil.TPLocation.LocationType.BlockTPLocation;
-import infinityi.inventorymenu.teleportutil.TPLocation.LocationType.GlobalTPLocation;
-import infinityi.inventorymenu.teleportutil.TPLocation.LocationType.PlayerTPLocation;
+import infinityi.inventorymenu.teleportutil.tplocation.LocationType.BlockTPLocation;
+import infinityi.inventorymenu.teleportutil.tplocation.LocationType.GlobalTPLocation;
+import infinityi.inventorymenu.teleportutil.tplocation.LocationType.PlayerTPLocation;
 import infinityi.inventorymenu.teleportutil.TeleportCost;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -15,7 +15,7 @@ public interface TPLocation {
     Codec<TPLocation> PLAYER_BLOCK = Codec.xor(PlayerTPLocation.CODEC, GlobalTPLocation.CODEC).xmap(
             either -> either.map(l -> l, r -> r),
             location -> {
-                if (location instanceof PlayerTPLocation playerLoc){
+                if (location instanceof PlayerTPLocation playerLoc) {
                     return Either.left(playerLoc);
                 }
                 return Either.right((GlobalTPLocation) location);
@@ -23,15 +23,18 @@ public interface TPLocation {
     );
 
     Codec<TPLocation> CODEC = Codec.xor(BlockTPLocation.CODEC, PLAYER_BLOCK).xmap(
-            either -> either.map( l -> l, r -> r),
+            either -> either.map(l -> l, r -> r),
             location -> {
-                if (location instanceof  BlockTPLocation blockLoc) return Either.left(blockLoc);
+                if (location instanceof BlockTPLocation blockLoc) return Either.left(blockLoc);
                 return Either.right(location);
             }
     );
 
     void teleport(ServerPlayerEntity player, boolean safeCheck, TeleportCost cost);
+
     BlockPos getPos(MinecraftServer server);
+
     ServerPlayerEntity getPlayer(MinecraftServer server);
+
     Integer getDistance(ServerPlayerEntity player);
 }

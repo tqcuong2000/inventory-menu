@@ -24,15 +24,22 @@ import net.minecraft.util.Identifier;
 import java.util.List;
 import java.util.Optional;
 
-public record NavigateItem(SlotPair slotPair, MenuNavigationAction navigate, Identifier model, Text custom_name,
+public record NavigateItem(MenuNavigationAction navigate, SlotPair slotPair, Identifier model, Text custom_name,
                            List<Text> custom_lore) implements MenuItem {
     public static final MapCodec<NavigateItem> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-            SlotPair.LIST_CODEC.xmap(l -> new SlotPair(l.getFirst(),l.getLast()), sp -> List.of(sp.row(),sp.column()))
-                    .forGetter(NavigateItem::slotPair),
             MenuNavigationAction.CODEC.forGetter(NavigateItem::navigate),
-            Identifier.CODEC.optionalFieldOf("model").xmap(m -> m.orElse(Registries.ITEM.getId(Items.ARROW)), Optional::ofNullable).forGetter(NavigateItem::model),
-            TextCodecs.CODEC.optionalFieldOf("custom_name").xmap(t -> t.orElse(Text.empty()), Optional::ofNullable).forGetter(NavigateItem::custom_name),
-            Codec.list(TextCodecs.CODEC).optionalFieldOf("custom_lore").xmap(t -> t.orElse(List.of()), Optional::ofNullable).forGetter(NavigateItem::custom_lore)
+            SlotPair.LIST_CODEC
+                    .xmap(l -> new SlotPair(l.getFirst(), l.getLast()), sp -> List.of(sp.row(), sp.column()))
+                    .forGetter(NavigateItem::slotPair),
+            Identifier.CODEC.optionalFieldOf("model")
+                    .xmap(m -> m.orElse(Registries.ITEM.getId(Items.ARROW)), Optional::ofNullable)
+                    .forGetter(NavigateItem::model),
+            TextCodecs.CODEC.optionalFieldOf("custom_name")
+                    .xmap(t -> t.orElse(Text.empty()), Optional::ofNullable)
+                    .forGetter(NavigateItem::custom_name),
+            Codec.list(TextCodecs.CODEC).optionalFieldOf("custom_lore")
+                    .xmap(t -> t.orElse(List.of()), Optional::ofNullable)
+                    .forGetter(NavigateItem::custom_lore)
     ).apply(inst, NavigateItem::new));
 
     @Override
@@ -54,17 +61,25 @@ public record NavigateItem(SlotPair slotPair, MenuNavigationAction navigate, Ide
         switch (navigate.navigate()) {
             case "open":
                 item.set(DataComponentTypes.ITEM_MODEL, Registries.ITEM.getId(Items.PAPER));
-                item.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("Open", name).setStyle(Style.EMPTY.withItalic(false)).formatted(Formatting.GREEN));
+                item.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("Open", name)
+                        .setStyle(Style.EMPTY.withItalic(false))
+                        .formatted(Formatting.GREEN));
                 break;
             case "next":
-                item.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("Next page", navigate.destination()).setStyle(Style.EMPTY.withItalic(false)).formatted(Formatting.GREEN));
+                item.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("Next page", navigate.destination())
+                        .setStyle(Style.EMPTY.withItalic(false))
+                        .formatted(Formatting.GREEN));
                 break;
             case "previous":
-                item.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("Previous page", navigate.destination()).setStyle(Style.EMPTY.withItalic(false)).formatted(Formatting.GREEN));
+                item.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("Previous page", navigate.destination())
+                        .setStyle(Style.EMPTY.withItalic(false))
+                        .formatted(Formatting.GREEN));
                 break;
             case "close":
                 item.set(DataComponentTypes.ITEM_MODEL, Registries.ITEM.getId(Items.BARRIER));
-                item.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("Close", navigate.destination()).setStyle(Style.EMPTY.withItalic(false)).formatted(Formatting.RED));
+                item.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("Close", navigate.destination())
+                        .setStyle(Style.EMPTY.withItalic(false))
+                        .formatted(Formatting.RED));
                 break;
         }
         if (!custom_name.getString().isEmpty()) item.set(DataComponentTypes.CUSTOM_NAME, custom_name);

@@ -32,9 +32,9 @@ public class MenuDataManager extends SinglePreparationResourceReloader<Map<Ident
         return new TreeMap<>(groupedMenus.getOrDefault(groupName, Collections.emptyMap()));
     }
 
-    public Text getMenuName(Identifier menuId){
-        Optional<MenuLayout>  menu = getMenu(menuId);
-        if (menu.isEmpty()) return  Text.empty();
+    public Text getMenuName(Identifier menuId) {
+        Optional<MenuLayout> menu = getMenu(menuId);
+        if (menu.isEmpty()) return Text.empty();
         return menu.get().name();
     }
 
@@ -45,7 +45,9 @@ public class MenuDataManager extends SinglePreparationResourceReloader<Map<Ident
     @Override
     protected Map<Identifier, MenuLayout> prepare(ResourceManager manager, Profiler profiler) {
         Map<Identifier, MenuLayout> preparedData = new HashMap<>();
-        Map<Identifier, Resource> foundResources = manager.findResources(MENUS_DIRECTORY, path -> path.getPath().endsWith(".json"));
+        Map<Identifier, Resource> foundResources = manager.findResources(
+                MENUS_DIRECTORY,
+                path -> path.getPath().endsWith(".json"));
 
         for (Map.Entry<Identifier, Resource> entry : foundResources.entrySet()) {
             try (Reader reader = new InputStreamReader(entry.getValue().getInputStream())) {
@@ -68,7 +70,7 @@ public class MenuDataManager extends SinglePreparationResourceReloader<Map<Ident
         groupedMenus.clear();
         loadedMenus.putAll(prepared);
         for (MenuLayout layout : loadedMenus.values()) {
-            Pair<String,Integer> group = layout.menu_group();
+            Pair<String, Integer> group = layout.menu_group();
             if (group != null && !group.getFirst().isEmpty()) {
                 groupedMenus.computeIfAbsent(group.getFirst(), k -> new TreeMap<>()).put(group.getSecond(), layout);
             }

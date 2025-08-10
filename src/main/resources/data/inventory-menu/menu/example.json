@@ -1,0 +1,25 @@
+{
+  "name": "Example Menu",
+  "group": {
+    "name": "example",
+    "index": 1
+  },
+  "rows": 3,
+  "items": [
+    {
+      "type": "item",
+      "slot": [1,1],
+      "item": {
+        "id": "minecraft:diamond",
+        "components": {
+          "custom_name": "§bSpecial Diamond %difficulty%",
+          "lore": ["§7Shiny!"]
+        }
+      },
+      "action": {
+        "type": "message",
+        "message": "§aHello %name%"
+      }
+    }
+  ]
+}

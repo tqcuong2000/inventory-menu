@@ -1,10 +1,10 @@
-package infinityi.inventorymenu.teleportutil.TPLocation.LocationType;
+package infinityi.inventorymenu.teleportutil.tplocation.LocationType;
 
 import com.mojang.serialization.Codec;
 import infinityi.inventorymenu.itemaction.actions.TeleportAction;
-import infinityi.inventorymenu.teleportutil.TPLocation.TPLocation;
+import infinityi.inventorymenu.teleportutil.tplocation.TPLocation;
 import infinityi.inventorymenu.teleportutil.TeleportCost;
-import infinityi.inventorymenu.teleportutil.TeleportRequestManager.TeleportRequestManager;
+import infinityi.inventorymenu.teleportutil.requestmanager.TeleportRequestManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public record PlayerTPLocation(String playerName) implements TPLocation {
 
-    public static final Codec<PlayerTPLocation> CODEC = Codec.STRING.xmap(PlayerTPLocation::new,PlayerTPLocation::playerName);
+    public static final Codec<PlayerTPLocation> CODEC = Codec.STRING.xmap(PlayerTPLocation::new, PlayerTPLocation::playerName);
 
     @Override
     public void teleport(ServerPlayerEntity player, boolean safeCheck, TeleportCost cost) {
@@ -27,7 +27,7 @@ public record PlayerTPLocation(String playerName) implements TPLocation {
     }
 
     @Override
-    public BlockPos getPos (MinecraftServer server) {
+    public BlockPos getPos(MinecraftServer server) {
         ServerPlayerEntity player = getPlayer(server);
         if (player == null) return null;
         return player.getBlockPos();
@@ -44,8 +44,6 @@ public record PlayerTPLocation(String playerName) implements TPLocation {
         if (blockPos == null) return 0;
         return TeleportAction.distanceBetween(player.getBlockPos(), blockPos);
     }
-
-
 
 
 }

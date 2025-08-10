@@ -4,7 +4,9 @@
   "version": "${version}",
   "name": "Inventory Menu",
   "description": "Inventory Menu is a server-side mod designed to empower creators and administrators. The mod's core feature allows you to create fully custom chest menus simply by writing simple JSON files!",
-  "authors": ["InfinityI"],
+  "authors": [
+    "InfinityI"
+  ],
   "contact": {},
   "license": "LGPL-3.0",
   "icon": "assets/inventory-menu/icon.png",

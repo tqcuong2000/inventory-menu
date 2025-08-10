@@ -7,27 +7,40 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import infinityi.inventorymenu.itemaction.Action;
 import infinityi.inventorymenu.itemaction.ActionType;
 import infinityi.inventorymenu.menulayout.MenuLayout;
+import infinityi.inventorymenu.placeholders.providers.PlaceholderProvider;
+import infinityi.inventorymenu.placeholders.providers.PlayerProvider;
+import infinityi.inventorymenu.placeholders.providers.ServerProvider;
+import infinityi.inventorymenu.placeholders.resolvers.PlaceholderResolver;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-public record MessageAction(List<Text> content, boolean isGlobal) implements Action {
+public record MessageAction(List<Text> content, boolean isGlobal) implements Action{
 
     public static final Codec<List<Text>> MESSAGE = Codec.xor(Codec.list(TextCodecs.CODEC), TextCodecs.CODEC)
             .xmap(either -> either.map(list -> list, List::of), list -> {
                 if (list.size() == 1) return Either.right(list.getFirst());
                 return Either.left(list);
             });
-        public static final MapCodec<MessageAction> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-                MESSAGE.fieldOf("message").forGetter(MessageAction::content),
-                Codec.BOOL.optionalFieldOf("global", false).forGetter(MessageAction::isGlobal)
-        ).apply(inst, MessageAction::new));
+    public static final MapCodec<MessageAction> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
+            MESSAGE.fieldOf("message").forGetter(MessageAction::content),
+            Codec.BOOL.optionalFieldOf("global", false).forGetter(MessageAction::isGlobal)
+    ).apply(inst, MessageAction::new));
 
     @Override
     public void execute(ServerPlayerEntity player, MenuLayout layout) {
-
+        List<PlaceholderProvider> providers = new ArrayList<>();
+        providers.add(new PlayerProvider(player));
+        Optional.ofNullable(player.getServer()).map(server -> providers.add(new ServerProvider(server)));
+        List<Text> resolvedText = PlaceholderResolver.resolve(content,providers,player);
+        for(Text text : resolvedText){
+            if (isGlobal) player.getServer().sendMessage(text);
+            else player.sendMessage(text);
+        }
     }
 
     @Override

@@ -19,7 +19,9 @@ import java.util.Optional;
 public record MenuNavigationAction(String navigate, String destination) implements Action {
     public static final MapCodec<MenuNavigationAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.STRING.fieldOf("action").forGetter(MenuNavigationAction::navigate),
-            Codec.STRING.optionalFieldOf("menu").xmap(s -> s.orElse(""), Optional::ofNullable).forGetter(MenuNavigationAction::destination)
+            Codec.STRING.optionalFieldOf("menu")
+                    .xmap(s -> s.orElse(""), Optional::ofNullable)
+                    .forGetter(MenuNavigationAction::destination)
     ).apply(instance, MenuNavigationAction::new));
 
     @Override
@@ -58,7 +60,9 @@ public record MenuNavigationAction(String navigate, String destination) implemen
         int currentIndex = currentLayout.menu_group().getSecond();
         NavigableMap<Integer, MenuLayout> groupMenu = InventoryMenu.getDataManager().menus().getMenu(name);
         if (groupMenu.isEmpty() || groupMenu.size() == 1) return;
-        Map.Entry<Integer, MenuLayout> targetEntry = isNext ? groupMenu.higherEntry(currentIndex) : groupMenu.lowerEntry(currentIndex);
+        Map.Entry<Integer, MenuLayout> targetEntry = isNext
+                ? groupMenu.higherEntry(currentIndex)
+                : groupMenu.lowerEntry(currentIndex);
         if (targetEntry == null) targetEntry = groupMenu.firstEntry();
         MenuLayout nextLayout = targetEntry.getValue();
         player.openHandledScreen(Menu.createMenu(nextLayout));

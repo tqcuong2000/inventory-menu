@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 
 public class ServerProvider implements PlaceholderProvider {
     private final Map<String, Supplier<Object>> keySuppliers;
+
     public ServerProvider(MinecraftServer server) {
         this.keySuppliers = Map.of(
                 "online_players", server::getCurrentPlayerCount,
@@ -18,6 +19,7 @@ public class ServerProvider implements PlaceholderProvider {
                 "ip", server::getServerIp
         );
     }
+
     @Override
     public Optional<String> getKey(String key, ServerPlayerEntity player) {
         return Optional.ofNullable(keySuppliers.get(key))

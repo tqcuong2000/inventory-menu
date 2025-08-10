@@ -1,4 +1,4 @@
-package infinityi.inventorymenu.teleportutil.TeleportRequestManager;
+package infinityi.inventorymenu.teleportutil.requestmanager;
 
 import infinityi.inventorymenu.teleportutil.TeleportCost;
 import net.minecraft.server.network.ServerPlayerEntity;

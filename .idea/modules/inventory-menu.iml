@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="4">
+  <component name="AdditionalModuleElements">
+    <content url="file://$MODULE_DIR$/../.." dumb="true">
+      <excludeFolder url="file://$MODULE_DIR$/../../run/config" />
+      <excludeFolder url="file://$MODULE_DIR$/../../run/crash-reports" />
+      <excludeFolder url="file://$MODULE_DIR$/../../run/data" />
+      <excludeFolder url="file://$MODULE_DIR$/../../run/downloads" />
+      <excludeFolder url="file://$MODULE_DIR$/../../run/logs" />
+      <excludeFolder url="file://$MODULE_DIR$/../../run/mods" />
+      <excludeFolder url="file://$MODULE_DIR$/../../run/resourcepacks" />
+      <excludeFolder url="file://$MODULE_DIR$/../../run/resources" />
+      <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/DIM-1" />
+      <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/DIM1" />
+      <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/advancements" />
+      <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/data" />
+      <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/datapacks/engine/data/engine/advancement" />
+      <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/datapacks/engine/data/engine/function" />
+      <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/datapacks/engine/data/minecraft" />
+      <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/datapacks/engine/data/vanilla_qol" />
+      <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/entities" />
+      <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/playerdata" />
+      <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/poi" />
+      <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/region" />
+      <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/stats" />
+      <excludeFolder url="file://$MODULE_DIR$/../../run/world" />
+    </content>
+  </component>
+</module>

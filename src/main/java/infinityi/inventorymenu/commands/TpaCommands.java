@@ -2,9 +2,8 @@ package infinityi.inventorymenu.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import infinityi.inventorymenu.teleportutil.TeleportCost;
-import infinityi.inventorymenu.teleportutil.TeleportRequestManager.TeleportRequestManager;
+import infinityi.inventorymenu.teleportutil.requestmanager.TeleportRequestManager;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -14,26 +13,20 @@ import net.minecraft.util.Formatting;
 
 public class TpaCommands {
     public static void register() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-            TpaCommands.commands(dispatcher, registryAccess);
-
-        });
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> TpaCommands.commands(dispatcher));
     }
 
-    private static void commands(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+    private static void commands(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("tpa")
                 .then(CommandManager.argument("target", EntityArgumentType.player())
                         .executes(context -> {
                             ServerPlayerEntity requester = context.getSource().getPlayer();
                             ServerPlayerEntity target = EntityArgumentType.getPlayer(context, "target");
-
                             if (requester == null) return 0;
-
                             if (requester.equals(target)) {
                                 requester.sendMessage(Text.translatable("Cannot teleport to yourself").formatted(Formatting.RED));
                                 return 0;
                             }
-
                             TeleportRequestManager.createRequest(requester, target, true, TeleportCost.empty());
                             return 1;
                         }))

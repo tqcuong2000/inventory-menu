@@ -1,4 +1,4 @@
-package infinityi.inventorymenu.teleportutil.TeleportRequestManager;
+package infinityi.inventorymenu.teleportutil.requestmanager;
 
 import infinityi.inventorymenu.itemaction.actions.TeleportAction;
 import infinityi.inventorymenu.teleportutil.TeleportCost;
@@ -69,7 +69,7 @@ public class TeleportRequestManager {
             }
 
         }
-        if (!request.cost().hasCost(requester,target.getBlockPos())){
+        if (!request.cost().hasCost(requester, target.getBlockPos())) {
             requester.sendMessage(Text.translatable("Not enough experience.").formatted(Formatting.RED));
             return;
         }

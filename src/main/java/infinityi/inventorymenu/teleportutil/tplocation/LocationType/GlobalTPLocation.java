@@ -1,8 +1,8 @@
-package infinityi.inventorymenu.teleportutil.TPLocation.LocationType;
+package infinityi.inventorymenu.teleportutil.tplocation.LocationType;
 
 import com.mojang.serialization.Codec;
 import infinityi.inventorymenu.itemaction.actions.TeleportAction;
-import infinityi.inventorymenu.teleportutil.TPLocation.TPLocation;
+import infinityi.inventorymenu.teleportutil.tplocation.TPLocation;
 import infinityi.inventorymenu.teleportutil.TeleportCost;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -15,7 +15,7 @@ import java.util.Collections;
 
 public record GlobalTPLocation(GlobalPos location) implements TPLocation {
 
-    public static final Codec<GlobalTPLocation> CODEC = GlobalPos.CODEC.xmap(GlobalTPLocation::new,GlobalTPLocation::location);
+    public static final Codec<GlobalTPLocation> CODEC = GlobalPos.CODEC.xmap(GlobalTPLocation::new, GlobalTPLocation::location);
 
 
     @Override
@@ -32,7 +32,7 @@ public record GlobalTPLocation(GlobalPos location) implements TPLocation {
                 return;
             }
         }
-        cost.applyCost(player,location.pos());
+        cost.applyCost(player, location.pos());
         player.teleport(destinationWorld, location.pos().getX() + 0.5, location.pos().getY(), location.pos().getZ() + 0.5, Collections.emptySet(), player.headYaw, player.lastPitch, false);
         player.closeHandledScreen();
     }
@@ -49,7 +49,7 @@ public record GlobalTPLocation(GlobalPos location) implements TPLocation {
 
     @Override
     public Integer getDistance(ServerPlayerEntity player) {
-        if (player.getWorld().getRegistryKey().equals(location.dimension())){
+        if (player.getWorld().getRegistryKey().equals(location.dimension())) {
             return TeleportAction.distanceBetween(player.getBlockPos(), location.pos());
         }
         return TeleportAction.distanceBetween(player.getBlockPos(), BlockPos.ofFloored(0, 0, 0));

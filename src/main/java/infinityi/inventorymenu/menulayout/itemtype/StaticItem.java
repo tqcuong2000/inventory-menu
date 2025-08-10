@@ -14,7 +14,8 @@ import java.util.List;
 
 public record StaticItem(SlotPair slotPair, ItemStack item, Action action) implements MenuItem {
     public static final MapCodec<StaticItem> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            SlotPair.LIST_CODEC.xmap(l -> new SlotPair(l.getFirst(),l.getLast()), sp -> List.of(sp.row(),sp.column()))
+            SlotPair.LIST_CODEC
+                    .xmap(l -> new SlotPair(l.getFirst(), l.getLast()), sp -> List.of(sp.row(), sp.column()))
                     .forGetter(StaticItem::slotPair),
             ItemStack.CODEC.fieldOf("item").forGetter(StaticItem::item),
             Action.CODEC.optionalFieldOf("action", new NoAction()).forGetter(StaticItem::action)

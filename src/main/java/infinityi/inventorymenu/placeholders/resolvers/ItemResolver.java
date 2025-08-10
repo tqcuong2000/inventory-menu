@@ -1,4 +1,4 @@
-package infinityi.inventorymenu.placeholders.resolver;
+package infinityi.inventorymenu.placeholders.resolvers;
 
 import infinityi.inventorymenu.itemaction.actions.TeleportAction;
 import infinityi.inventorymenu.menulayout.layout.MenuItem;
@@ -15,26 +15,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ItemResolver {
-    public final MenuItem item;
-    public final ServerPlayerEntity player;
-    private final List<PlaceholderProvider> providers;
+public record ItemResolver(MenuItem item, ServerPlayerEntity player) implements PlaceholderResolver {
 
-    public ItemResolver(MenuItem item, ServerPlayerEntity player) {
-        this.item = item;
-        this.player = player;
-        this.providers = new ArrayList<>();
-        constructProviders();
+    @Override
+    public List<PlaceholderProvider> constructProviders() {
+        List<PlaceholderProvider> providers = new ArrayList<>();
+        providers.add(new PlayerProvider(player));
+        if (player.getServer() instanceof MinecraftServer server) providers.add(new ServerProvider(server));
+        if (item.action() instanceof TeleportAction action) providers.add(action);
+        return providers;
     }
 
-    private void constructProviders(){
-        this.providers.add(new PlayerProvider(player));
-        if (player.getServer() instanceof MinecraftServer server) this.providers.add(new ServerProvider(server));
-        if (item.action() instanceof TeleportAction action) this.providers.add(action);
-    }
-
-    public ItemStack resolve(){
+    @Override
+    public ItemStack resolve() {
         ItemStack itemStack = item.resolveItemStack(player);
+        List<PlaceholderProvider> providers = constructProviders();
         Optional.ofNullable(itemStack.get(DataComponentTypes.CUSTOM_NAME))
                 .ifPresent(name -> itemStack
                         .set(DataComponentTypes.CUSTOM_NAME, PlaceholderResolver.resolve(name, providers, player)));

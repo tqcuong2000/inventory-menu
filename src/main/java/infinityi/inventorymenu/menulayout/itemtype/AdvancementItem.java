@@ -23,7 +23,8 @@ import java.util.List;
 
 public record AdvancementItem(SlotPair slotPair, Identifier questId) implements MenuItem {
     public static final MapCodec<AdvancementItem> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            SlotPair.LIST_CODEC.xmap(l -> new SlotPair(l.getFirst(),l.getLast()), sp -> List.of(sp.row(),sp.column()))
+            SlotPair.LIST_CODEC
+                    .xmap(l -> new SlotPair(l.getFirst(), l.getLast()), sp -> List.of(sp.row(), sp.column()))
                     .forGetter(AdvancementItem::slotPair),
             Identifier.CODEC.fieldOf("advancementId").forGetter(AdvancementItem::questId)
     ).apply(instance, AdvancementItem::new));

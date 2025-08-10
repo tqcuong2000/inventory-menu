@@ -2,7 +2,7 @@ package infinityi.inventorymenu.menulayout;
 
 import infinityi.inventorymenu.menulayout.layout.CustomMenuInventory;
 import infinityi.inventorymenu.menulayout.layout.MenuItem;
-import infinityi.inventorymenu.placeholders.resolver.ItemResolver;
+import infinityi.inventorymenu.placeholders.resolvers.ItemResolver;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.GenericContainerScreenHandler;

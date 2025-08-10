@@ -1,8 +1,8 @@
-package infinityi.inventorymenu.teleportutil.TPLocation.LocationType;
+package infinityi.inventorymenu.teleportutil.tplocation.LocationType;
 
 import com.mojang.serialization.Codec;
 import infinityi.inventorymenu.itemaction.actions.TeleportAction;
-import infinityi.inventorymenu.teleportutil.TPLocation.TPLocation;
+import infinityi.inventorymenu.teleportutil.tplocation.TPLocation;
 import infinityi.inventorymenu.teleportutil.TeleportCost;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -15,6 +15,7 @@ import java.util.Collections;
 public record BlockTPLocation(BlockPos location) implements TPLocation {
 
     public static final Codec<BlockTPLocation> CODEC = BlockPos.CODEC.xmap(BlockTPLocation::new, BlockTPLocation::location);
+
     @Override
     public void teleport(ServerPlayerEntity player, boolean safeCheck, TeleportCost cost) {
         if (player.getServer() == null) return;
@@ -26,7 +27,7 @@ public record BlockTPLocation(BlockPos location) implements TPLocation {
             }
         }
         cost.applyCost(player, location);
-        player.teleport(destinationWorld, location.getX() + 0.5, location.getY(), location.getZ() + 0.5, Collections.emptySet() , player.headYaw, player.lastPitch, false);
+        player.teleport(destinationWorld, location.getX() + 0.5, location.getY(), location.getZ() + 0.5, Collections.emptySet(), player.headYaw, player.lastPitch, false);
         player.closeHandledScreen();
     }
 
