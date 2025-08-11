@@ -12,9 +12,6 @@ import java.util.stream.Collectors;
 
 public interface PlaceholderResolver {
 
-    Object resolve();
-    List<PlaceholderProvider> constructProviders();
-
     static Text resolve(Text input, List<PlaceholderProvider> providers, ServerPlayerEntity player) {
         String template = input.getString();
         if (!template.contains("%")) return input;
@@ -35,5 +32,9 @@ public interface PlaceholderResolver {
     static List<Text> resolve(List<Text> textList, List<PlaceholderProvider> providers, ServerPlayerEntity player) {
         return textList.stream().map(line -> resolve(line, providers, player)).collect(Collectors.toList());
     }
+
+    Object resolve();
+
+    List<PlaceholderProvider> constructProviders();
 
 }

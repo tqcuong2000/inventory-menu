@@ -2,10 +2,10 @@ package infinityi.inventorymenu.teleportutil.tplocation;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
+import infinityi.inventorymenu.teleportutil.TeleportCost;
 import infinityi.inventorymenu.teleportutil.tplocation.LocationType.BlockTPLocation;
 import infinityi.inventorymenu.teleportutil.tplocation.LocationType.GlobalTPLocation;
 import infinityi.inventorymenu.teleportutil.tplocation.LocationType.PlayerTPLocation;
-import infinityi.inventorymenu.teleportutil.TeleportCost;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;

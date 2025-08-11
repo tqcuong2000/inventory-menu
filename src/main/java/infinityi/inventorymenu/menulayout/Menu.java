@@ -1,5 +1,6 @@
 package infinityi.inventorymenu.menulayout;
 
+import infinityi.inventorymenu.InventoryMenu;
 import infinityi.inventorymenu.menulayout.layout.CustomMenuInventory;
 import infinityi.inventorymenu.menulayout.layout.MenuItem;
 import infinityi.inventorymenu.placeholders.resolvers.ItemResolver;
@@ -11,6 +12,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +46,6 @@ public class Menu {
                     ItemResolver resolver = new ItemResolver(menuItem, serverPlayer);
                     menuInventory.setStack(menuItem.slot(), resolver.resolve());
                 }
-
                 ScreenHandlerType<?> handlerType = sizeMap.get(rows);
 
                 return new GenericContainerScreenHandler(
@@ -56,6 +57,16 @@ public class Menu {
                 );
             }
         };
+    }
+
+    public static void open(Identifier id, ServerPlayerEntity player) {
+        InventoryMenu.getDataManager().menus().getMenu(id).ifPresentOrElse(
+                layout -> {
+                    if (!layout.predicate().test(player, layout)) return;
+                    player.openHandledScreen(Menu.createMenu(layout));
+                },
+                () -> player.sendMessage(Text.translatable("§CMenu doesn't exist or loaded correctly: $s", id))
+        );
     }
 
 }

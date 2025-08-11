@@ -7,11 +7,18 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import infinityi.inventorymenu.itemaction.Action;
 import infinityi.inventorymenu.itemaction.ActionType;
 import infinityi.inventorymenu.menulayout.MenuLayout;
+import infinityi.inventorymenu.placeholders.providers.PlaceholderProvider;
+import infinityi.inventorymenu.placeholders.providers.PlayerProvider;
+import infinityi.inventorymenu.placeholders.providers.ServerProvider;
+import infinityi.inventorymenu.placeholders.resolvers.PlaceholderResolver;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public record CommandAction(List<String> commands, boolean asPlayer, boolean silent) implements Action {
 
@@ -32,10 +39,15 @@ public record CommandAction(List<String> commands, boolean asPlayer, boolean sil
         ServerCommandSource source = asPlayer ? player.getCommandSource() : player.getServer().getCommandSource();
         if (silent) source = source.withSilent();
         CommandManager manager = player.getServer().getCommandManager();
-        for (String command : commands){
+        List<PlaceholderProvider> providers = new ArrayList<>();
+        providers.add(new PlayerProvider(player));
+        Optional.ofNullable(player.getServer()).map(server -> providers.add(new ServerProvider(server)));
+        for (String command : commands) {
+            command = PlaceholderResolver.resolve(Text.of(command), providers, player).getString();
             manager.executeWithPrefix(source, command);
         }
     }
+
 
     @Override
     public ActionType getType() {

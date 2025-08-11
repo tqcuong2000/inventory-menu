@@ -27,5 +27,6 @@
   "Previous page": "Previous page",
   "Close": "Close",
   "§CMenu doesn't exist or loaded correctly: $s": "§CMenu doesn't exist or loaded correctly: $s",
-  "%s §cis not online.": "%s §cis not online."
+  "%s §cis not online.": "%s §cis not online.",
+  "§cYou can't open this menu": "§cYou can't open this menu"
 }

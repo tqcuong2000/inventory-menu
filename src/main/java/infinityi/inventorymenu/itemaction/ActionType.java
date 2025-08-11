@@ -9,8 +9,7 @@ public enum ActionType implements StringIdentifiable {
     MESSAGE("message", MessageAction.CODEC),
     NAVIGATE("navigate", MenuNavigationAction.CODEC),
     TELEPORT("teleport", TeleportAction.CODEC),
-    COMMAND("command", CommandAction.CODEC)
-    ;
+    COMMAND("command", CommandAction.CODEC);
     private final String name;
     private final MapCodec<? extends Action> codec;
 

@@ -7,8 +7,6 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
@@ -27,9 +25,7 @@ public class MenuCommand {
                                 String menuName = StringArgumentType.getString(context, "menu_id");
                                 if (player == null) return 0;
                                 Identifier identifier = Identifier.of(menuName);
-                                InventoryMenu.getDataManager().menus().getMenu(identifier).ifPresentOrElse(
-                                        layout -> player.openHandledScreen(Menu.createMenu(layout)),
-                                        () -> player.sendMessage(Text.translatable("§cError: Cannot open %s menu because it isn't exist or loaded correctly.", menuName).formatted(Formatting.RED)));
+                                Menu.open(identifier, player);
                                 return 1;
                             }))
 
@@ -37,16 +33,16 @@ public class MenuCommand {
             //endregion
 
             //region "/warp" command
-            dispatcher.register(CommandManager.literal("warp").
-                    executes(context -> {
-                        ServerPlayerEntity player = context.getSource().getPlayer();
-                        if (player == null) return 0;
-                        Identifier identifier = Identifier.of("warp");
-                        InventoryMenu.getDataManager().menus().getMenu(identifier).ifPresentOrElse(
-                                layout -> player.openHandledScreen(Menu.createMenu(layout)),
-                                () -> player.sendMessage(Text.translatable("Warp menu is not loaded or does not exist.").formatted(Formatting.RED)));
-                        return 1;
-                    }));
+//            dispatcher.register(CommandManager.literal("warp").
+//                    executes(context -> {
+//                        ServerPlayerEntity player = context.getSource().getPlayer();
+//                        if (player == null) return 0;
+//                        Identifier identifier = Identifier.of("warp");
+//                        InventoryMenu.getDataManager().menus().getMenu(identifier).ifPresentOrElse(
+//                                layout -> player.openHandledScreen(Menu.createMenu(layout)),
+//                                () -> player.sendMessage(Text.translatable("Warp menu is not loaded or does not exist.").formatted(Formatting.RED)));
+//                        return 1;
+//                    }));
             //endregion
         });
     }

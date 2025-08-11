@@ -27,5 +27,6 @@
   "Previous page": "Trang trước",
   "Close": "Đóng",
   "§CMenu doesn't exist or loaded correctly: $s": "§cMenu không tồn tại hoặc không được tải đúng cách: %s",
-  "%s §cis not online.": "%s §cis not online."
+  "%s §cis not online.": "%s §cđã ngoại tuyến.",
+  "§cYou can't open this menu": "§cBạn không thể mở menu này"
 }

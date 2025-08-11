@@ -55,7 +55,7 @@ public record NavigateItem(MenuNavigationAction navigate, SlotPair slotPair, Ide
     @Override
     public ItemStack resolveItemStack(ServerPlayerEntity player) {
         ItemStack item = Items.ARROW.getDefaultStack();
-        Identifier menuId = Identifier.of(InventoryMenu.MOD_ID, "menu/" + navigate.destination() + ".json");
+        Identifier menuId = navigate.destination();
 
         Text name = InventoryMenu.getDataManager().menus().getMenuName(menuId);
         switch (navigate.navigate()) {

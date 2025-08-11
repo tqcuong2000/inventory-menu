@@ -2,8 +2,8 @@ package infinityi.inventorymenu.teleportutil.tplocation.LocationType;
 
 import com.mojang.serialization.Codec;
 import infinityi.inventorymenu.itemaction.actions.TeleportAction;
-import infinityi.inventorymenu.teleportutil.tplocation.TPLocation;
 import infinityi.inventorymenu.teleportutil.TeleportCost;
+import infinityi.inventorymenu.teleportutil.tplocation.TPLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public record MessageAction(List<Text> content, boolean isGlobal) implements Action{
+public record MessageAction(List<Text> content, boolean isGlobal) implements Action {
 
     public static final Codec<List<Text>> MESSAGE = Codec.xor(Codec.list(TextCodecs.CODEC), TextCodecs.CODEC)
             .xmap(either -> either.map(list -> list, List::of), list -> {
@@ -36,8 +36,8 @@ public record MessageAction(List<Text> content, boolean isGlobal) implements Act
         List<PlaceholderProvider> providers = new ArrayList<>();
         providers.add(new PlayerProvider(player));
         Optional.ofNullable(player.getServer()).map(server -> providers.add(new ServerProvider(server)));
-        List<Text> resolvedText = PlaceholderResolver.resolve(content,providers,player);
-        for(Text text : resolvedText){
+        List<Text> resolvedText = PlaceholderResolver.resolve(content, providers, player);
+        for (Text text : resolvedText) {
             if (isGlobal) player.getServer().sendMessage(text);
             else player.sendMessage(text);
         }

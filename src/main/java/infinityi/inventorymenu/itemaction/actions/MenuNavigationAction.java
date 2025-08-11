@@ -9,19 +9,15 @@ import infinityi.inventorymenu.itemaction.ActionType;
 import infinityi.inventorymenu.menulayout.Menu;
 import infinityi.inventorymenu.menulayout.MenuLayout;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.Map;
 import java.util.NavigableMap;
-import java.util.Optional;
 
-public record MenuNavigationAction(String navigate, String destination) implements Action {
+public record MenuNavigationAction(String navigate, Identifier destination) implements Action {
     public static final MapCodec<MenuNavigationAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.STRING.fieldOf("action").forGetter(MenuNavigationAction::navigate),
-            Codec.STRING.optionalFieldOf("menu")
-                    .xmap(s -> s.orElse(""), Optional::ofNullable)
-                    .forGetter(MenuNavigationAction::destination)
+            Identifier.CODEC.optionalFieldOf("menu", Identifier.of("")).forGetter(MenuNavigationAction::destination)
     ).apply(instance, MenuNavigationAction::new));
 
     @Override
@@ -31,7 +27,7 @@ public record MenuNavigationAction(String navigate, String destination) implemen
                 player.closeHandledScreen();
                 break;
             case "open":
-                open_menu(player);
+                Menu.open(destination, player);
                 break;
             case "next":
                 scroll_menu(player, layout, true);
@@ -47,13 +43,6 @@ public record MenuNavigationAction(String navigate, String destination) implemen
         return ActionType.NAVIGATE;
     }
 
-    public void open_menu(ServerPlayerEntity player) {
-        Identifier menuId = Identifier.of(InventoryMenu.MOD_ID, "menu/" + this.destination + ".json");
-        InventoryMenu.getDataManager().menus().getMenu(menuId).ifPresentOrElse(
-                layout -> player.openHandledScreen(Menu.createMenu(layout)),
-                () -> player.sendMessage(Text.translatable("§CMenu doesn't exist or loaded correctly: $s", menuId))
-        );
-    }
 
     public void scroll_menu(ServerPlayerEntity player, MenuLayout currentLayout, Boolean isNext) {
         String name = currentLayout.menu_group().getFirst();

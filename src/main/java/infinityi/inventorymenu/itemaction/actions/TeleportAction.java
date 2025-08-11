@@ -7,8 +7,8 @@ import infinityi.inventorymenu.itemaction.Action;
 import infinityi.inventorymenu.itemaction.ActionType;
 import infinityi.inventorymenu.menulayout.MenuLayout;
 import infinityi.inventorymenu.placeholders.providers.PlaceholderProvider;
-import infinityi.inventorymenu.teleportutil.tplocation.TPLocation;
 import infinityi.inventorymenu.teleportutil.TeleportCost;
+import infinityi.inventorymenu.teleportutil.tplocation.TPLocation;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -35,7 +35,7 @@ public record TeleportAction(TPLocation target, TeleportCost cost,
         return Map.of(
                 "xp_cost", () -> action.cost.calcCost(player, action.target.getPos(player.getServer())),
                 "xp_cost_type", () -> action.cost.isPoint().toString(),
-                "target_post", () -> action.target.getPos(player.getServer()),
+                "target_pos", () -> action.target.getPos(player.getServer()),
                 "target_name", () -> action.target.getPlayer(player.getServer()),
                 "distance", () -> action.target.getDistance(player)
         );

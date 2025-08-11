@@ -3,7 +3,7 @@
   "id": "inventory-menu",
   "version": "${version}",
   "name": "Inventory Menu",
-  "description": "Inventory Menu is a server-side mod designed to empower creators and administrators. The mod's core feature allows you to create fully custom chest menus simply by writing simple JSON files!",
+  "description": "Inventory Menu is a server-side mod designed to allows player and datapack maker. The mod's core feature allows you to create fully custom chest menus simply by writing simple JSON files!",
   "authors": [
     "InfinityI"
   ],
