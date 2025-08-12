@@ -57,18 +57,18 @@ public record NavigateItem(MenuNavigationAction navigate, Identifier model, Text
                         .formatted(Formatting.GREEN));
                 break;
             case "next":
-                item.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("Next page", navigate.destination())
+                item.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("Next page")
                         .setStyle(Style.EMPTY.withItalic(false))
                         .formatted(Formatting.GREEN));
                 break;
             case "previous":
-                item.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("Previous page", navigate.destination())
+                item.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("Previous page")
                         .setStyle(Style.EMPTY.withItalic(false))
                         .formatted(Formatting.GREEN));
                 break;
             case "close":
                 item.set(DataComponentTypes.ITEM_MODEL, Registries.ITEM.getId(Items.BARRIER));
-                item.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("Close", navigate.destination())
+                item.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("Close")
                         .setStyle(Style.EMPTY.withItalic(false))
                         .formatted(Formatting.RED));
                 break;
