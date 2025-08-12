@@ -1,5 +1,3 @@
-Inventory Menu add a new folder in datapack folder structure called /menu. Allow datapack maker to create fully functional, dynamic chest menu.
-A menu will be defined using json format, just like other element such as predicate , advancement, etc.
 ![Inventory Menu](https://cdn.modrinth.com/data/cached_images/9e0762c520df14b7803ae5d6800f72557284ee4a_0.webp)
 
 ## **About this mod**
@@ -119,6 +117,7 @@ Give night vision and glowing effect to player.
 
 - Hopefully, this mod is powerful enough for you to make any menu you need. If you encounter a bug or have a feature suggestion, please contact me via Discord or GitHub.
 - GitHub homepage and wiki are under construction. I will try to finish them as quickly as possible!
+
 
 
 
