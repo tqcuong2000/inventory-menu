@@ -3,7 +3,9 @@ package infinityi.inventorymenu.menulayout;
 import infinityi.inventorymenu.InventoryMenu;
 import infinityi.inventorymenu.menulayout.layout.CustomMenuInventory;
 import infinityi.inventorymenu.menulayout.layout.MenuElement;
+import infinityi.inventorymenu.placeholders.providers.PlaceholderSets;
 import infinityi.inventorymenu.placeholders.resolvers.ItemResolver;
+import infinityi.inventorymenu.placeholders.resolvers.PlaceholderResolver;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.GenericContainerScreenHandler;
@@ -14,6 +16,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +26,6 @@ public class Menu {
         return new NamedScreenHandlerFactory() {
             @Override
             public Text getDisplayName() {
-
                 return layout.name();
             }
 
