@@ -54,6 +54,6 @@ public record MenuNavigationAction(String navigate, Identifier destination) impl
                 : groupMenu.lowerEntry(currentIndex);
         if (targetEntry == null) targetEntry = groupMenu.firstEntry();
         MenuLayout nextLayout = targetEntry.getValue();
-        player.openHandledScreen(Menu.createMenu(nextLayout));
+        player.openHandledScreen(Menu.createMenu(nextLayout, player));
     }
 }

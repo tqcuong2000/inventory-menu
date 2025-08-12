@@ -16,17 +16,16 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Menu {
 
-    public static NamedScreenHandlerFactory createMenu(MenuLayout layout) {
+    public static NamedScreenHandlerFactory createMenu(MenuLayout layout, ServerPlayerEntity player) {
         return new NamedScreenHandlerFactory() {
             @Override
             public Text getDisplayName() {
-                return layout.name();
+                return PlaceholderResolver.resolve(layout.name(),PlaceholderSets.playerServerSet(player), player);
             }
 
             @Override
@@ -65,7 +64,7 @@ public class Menu {
         InventoryMenu.getDataManager().menus().getMenu(id).ifPresentOrElse(
                 layout -> {
                     if (!layout.predicate().test(player, layout, "menu")) return;
-                    player.openHandledScreen(Menu.createMenu(layout));
+                    player.openHandledScreen(Menu.createMenu(layout, player));
                 },
                 () -> player.sendMessage(Text.translatable("§CMenu doesn't exist or loaded correctly: $s", id))
         );
