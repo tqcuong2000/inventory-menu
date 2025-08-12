@@ -2,7 +2,7 @@ package infinityi.inventorymenu.menulayout;
 
 import infinityi.inventorymenu.InventoryMenu;
 import infinityi.inventorymenu.menulayout.layout.CustomMenuInventory;
-import infinityi.inventorymenu.menulayout.layout.MenuItem;
+import infinityi.inventorymenu.menulayout.layout.MenuElement;
 import infinityi.inventorymenu.placeholders.resolvers.ItemResolver;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -42,9 +42,9 @@ public class Menu {
                 int rows = layout.rows();
                 CustomMenuInventory menuInventory = new CustomMenuInventory(layout, rows * 9);
 
-                for (MenuItem menuItem : layout.items()) {
-                    ItemResolver resolver = new ItemResolver(menuItem, serverPlayer);
-                    menuInventory.setStack(menuItem.slot(), resolver.resolve());
+                for (MenuElement element : layout.items()) {
+                    ItemResolver resolver = new ItemResolver(element.item(), serverPlayer);
+                    menuInventory.setStack(element.slot(), resolver.resolve());
                 }
                 ScreenHandlerType<?> handlerType = sizeMap.get(rows);
 
@@ -62,7 +62,7 @@ public class Menu {
     public static void open(Identifier id, ServerPlayerEntity player) {
         InventoryMenu.getDataManager().menus().getMenu(id).ifPresentOrElse(
                 layout -> {
-                    if (!layout.predicate().test(player, layout)) return;
+                    if (!layout.predicate().test(player, layout, "menu")) return;
                     player.openHandledScreen(Menu.createMenu(layout));
                 },
                 () -> player.sendMessage(Text.translatable("§CMenu doesn't exist or loaded correctly: $s", id))

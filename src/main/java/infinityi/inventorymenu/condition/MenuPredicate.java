@@ -23,18 +23,16 @@ import net.minecraft.util.Identifier;
 import java.util.List;
 import java.util.Optional;
 
-public record MenuCondition(Identifier predicate, Action whenTrue, Action whenFalse) {
+public record MenuPredicate(Identifier predicate, Action whenTrue, Action whenFalse) {
 
-    public static final MenuCondition EMPTY = new MenuCondition(Identifier.of(""), new NoAction(), new NoAction());
-    private static final MessageAction DEFAULT_FALSE_ACTION = new MessageAction(
-            List.of(Text.translatable("§cYou can't open this menu")), false);
-    public static final Codec<MenuCondition> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-            Identifier.CODEC.fieldOf("id").forGetter(MenuCondition::predicate),
-            Action.CODEC.optionalFieldOf("on_true", new NoAction()).forGetter(MenuCondition::whenTrue),
-            Action.CODEC.optionalFieldOf("on_false", DEFAULT_FALSE_ACTION).forGetter(MenuCondition::whenFalse)
-    ).apply(inst, MenuCondition::new));
+    public static final MenuPredicate EMPTY = new MenuPredicate(Identifier.of(""), new NoAction(), new NoAction());
+    public static final Codec<MenuPredicate> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+            Identifier.CODEC.fieldOf("id").forGetter(MenuPredicate::predicate),
+            Action.CODEC.optionalFieldOf("on_true", new NoAction()).forGetter(MenuPredicate::whenTrue),
+            Action.CODEC.optionalFieldOf("on_false", new NoAction()).forGetter(MenuPredicate::whenFalse)
+    ).apply(inst, MenuPredicate::new));
 
-    public boolean test(ServerPlayerEntity player, MenuLayout layout) {
+    public boolean test(ServerPlayerEntity player, MenuLayout layout, String context) {
         ServerWorld serverWorld = player.getWorld();
         if (serverWorld == null) return false;
         MinecraftServer server = serverWorld.getServer();
@@ -44,10 +42,11 @@ public record MenuCondition(Identifier predicate, Action whenTrue, Action whenFa
                 .add(LootContextParameters.DAMAGE_SOURCE, player.getDamageSources().playerAttack(player))
                 .build(LootContextTypes.ENTITY);
 
-        LootContext context = new LootContext.Builder(worldContext)
+        LootContext lootContext = new LootContext.Builder(worldContext)
                 .random(serverWorld.getSeed())
                 .build(Optional.empty());
-        boolean result = read(server).map(condition -> condition.test(context)).orElse(true);
+        boolean result = read(server).map(condition -> condition.test(lootContext)).orElse(true);
+        defaultMessage(player, layout, result, context);
         if (!(whenTrue instanceof NoAction) && result) whenTrue.execute(player, layout);
         if (!(whenFalse instanceof NoAction) && !result) whenFalse.execute(player, layout);
         return result;
@@ -59,5 +58,16 @@ public record MenuCondition(Identifier predicate, Action whenTrue, Action whenFa
                 .getOrThrow(RegistryKeys.PREDICATE)
                 .getOptional(RegistryKey.of(RegistryKeys.PREDICATE, predicate))
                 .map(RegistryEntry::value);
+    }
+
+    private void defaultMessage(ServerPlayerEntity player, MenuLayout layout, boolean result, String context){
+        if (!(whenFalse instanceof NoAction) || result) return;
+        if (context.equals("menu")) new MessageAction(List
+                .of(Text.translatable("§cYou can't open this menu")), false)
+                .execute(player, layout);
+        if (context.equals("item")) new MessageAction(List
+                .of(Text.translatable("§cYou can't perform this action")), false)
+                .execute(player, layout);
+        player.closeHandledScreen();
     }
 }

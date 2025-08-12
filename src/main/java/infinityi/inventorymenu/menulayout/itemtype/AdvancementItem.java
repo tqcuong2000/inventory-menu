@@ -6,7 +6,6 @@ import infinityi.inventorymenu.itemaction.Action;
 import infinityi.inventorymenu.itemaction.actions.NoAction;
 import infinityi.inventorymenu.menulayout.layout.MenuItem;
 import infinityi.inventorymenu.menulayout.layout.MenuItemType;
-import infinityi.inventorymenu.menulayout.layout.SlotPair;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementDisplay;
 import net.minecraft.advancement.AdvancementEntry;
@@ -21,18 +20,10 @@ import net.minecraft.util.Identifier;
 import java.util.ArrayList;
 import java.util.List;
 
-public record AdvancementItem(SlotPair slotPair, Identifier questId) implements MenuItem {
+public record AdvancementItem(Identifier questId) implements MenuItem {
     public static final MapCodec<AdvancementItem> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            SlotPair.LIST_CODEC
-                    .xmap(l -> new SlotPair(l.getFirst(), l.getLast()), sp -> List.of(sp.row(), sp.column()))
-                    .forGetter(AdvancementItem::slotPair),
             Identifier.CODEC.fieldOf("advancementId").forGetter(AdvancementItem::questId)
     ).apply(instance, AdvancementItem::new));
-
-    @Override
-    public Integer slot() {
-        return slotPair.resolveSlot();
-    }
 
     @Override
     public Action action() {

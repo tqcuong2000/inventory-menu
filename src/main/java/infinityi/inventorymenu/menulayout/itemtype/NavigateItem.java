@@ -8,7 +8,6 @@ import infinityi.inventorymenu.itemaction.Action;
 import infinityi.inventorymenu.itemaction.actions.MenuNavigationAction;
 import infinityi.inventorymenu.menulayout.layout.MenuItem;
 import infinityi.inventorymenu.menulayout.layout.MenuItemType;
-import infinityi.inventorymenu.menulayout.layout.SlotPair;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.item.ItemStack;
@@ -24,13 +23,10 @@ import net.minecraft.util.Identifier;
 import java.util.List;
 import java.util.Optional;
 
-public record NavigateItem(MenuNavigationAction navigate, SlotPair slotPair, Identifier model, Text custom_name,
+public record NavigateItem(MenuNavigationAction navigate, Identifier model, Text custom_name,
                            List<Text> custom_lore) implements MenuItem {
     public static final MapCodec<NavigateItem> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
             MenuNavigationAction.CODEC.forGetter(NavigateItem::navigate),
-            SlotPair.LIST_CODEC
-                    .xmap(l -> new SlotPair(l.getFirst(), l.getLast()), sp -> List.of(sp.row(), sp.column()))
-                    .forGetter(NavigateItem::slotPair),
             Identifier.CODEC.optionalFieldOf("model")
                     .xmap(m -> m.orElse(Registries.ITEM.getId(Items.ARROW)), Optional::ofNullable)
                     .forGetter(NavigateItem::model),
@@ -41,11 +37,6 @@ public record NavigateItem(MenuNavigationAction navigate, SlotPair slotPair, Ide
                     .xmap(t -> t.orElse(List.of()), Optional::ofNullable)
                     .forGetter(NavigateItem::custom_lore)
     ).apply(inst, NavigateItem::new));
-
-    @Override
-    public Integer slot() {
-        return slotPair.resolveSlot();
-    }
 
     @Override
     public Action action() {

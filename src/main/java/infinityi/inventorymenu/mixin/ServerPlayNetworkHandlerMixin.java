@@ -33,7 +33,7 @@ public class ServerPlayNetworkHandlerMixin {
                     layout.items().stream()
                             .filter(item -> item.slot() == slotIndex)
                             .findFirst()
-                            .ifPresent(menuItem -> menuItem.action().execute(player, layout));
+                            .ifPresent(element -> element.execute(player, layout));
 
                 }
                 ci.cancel();
