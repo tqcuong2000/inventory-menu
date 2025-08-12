@@ -35,7 +35,10 @@ public record TeleportAction(TPLocation target, TeleportCost cost,
         return Map.of(
                 "xp_cost", () -> action.cost.calcCost(player, action.target.getPos(player.getServer())),
                 "xp_cost_type", () -> action.cost.isPoint().toString(),
-                "target_pos", () -> action.target.getPos(player.getServer()),
+                "target_pos", () -> {
+                        BlockPos pos = action.target.getPos(player.getServer());
+                        return String.format("X: %s Y: %s Z: %s", pos.getX(), pos.getY(), pos.getZ());
+                        },
                 "target_name", () -> action.target.getPlayer(player.getServer()),
                 "distance", () -> action.target.getDistance(player)
         );
