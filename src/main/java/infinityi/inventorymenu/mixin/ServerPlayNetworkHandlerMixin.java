@@ -21,7 +21,7 @@ public class ServerPlayNetworkHandlerMixin {
     public ServerPlayerEntity player;
 
     @Inject(method = "onClickSlot", at = @At("HEAD"), cancellable = true)
-    private void explorers_interceptOnClickSlot(ClickSlotC2SPacket packet, CallbackInfo ci) {
+    private void interceptOnClickSlot(ClickSlotC2SPacket packet, CallbackInfo ci) {
         ScreenHandler currentScreenHandler = this.player.currentScreenHandler;
 
         if (currentScreenHandler instanceof GenericContainerScreenHandler genericHandler) {
@@ -36,7 +36,6 @@ public class ServerPlayNetworkHandlerMixin {
                             .ifPresent(menuItem -> menuItem.action().execute(player, layout));
 
                 }
-
                 ci.cancel();
                 this.player.currentScreenHandler.syncState();
             }
