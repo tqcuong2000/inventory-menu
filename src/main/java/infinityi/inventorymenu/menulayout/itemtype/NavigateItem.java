@@ -52,7 +52,7 @@ public record NavigateItem(MenuNavigationAction navigate, Identifier model, Text
         switch (navigate.navigate()) {
             case "open":
                 item.set(DataComponentTypes.ITEM_MODEL, Registries.ITEM.getId(Items.PAPER));
-                item.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("Open", name)
+                item.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("Open %s", name)
                         .setStyle(Style.EMPTY.withItalic(false))
                         .formatted(Formatting.GREEN));
                 break;

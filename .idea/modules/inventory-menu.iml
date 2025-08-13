@@ -14,16 +14,16 @@
       <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/DIM1" />
       <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/advancements" />
       <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/data" />
-      <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/datapacks/engine/data/engine/advancement" />
-      <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/datapacks/engine/data/engine/function" />
-      <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/datapacks/engine/data/minecraft" />
-      <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/datapacks/engine/data/vanilla_qol" />
       <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/entities" />
       <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/playerdata" />
       <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/poi" />
       <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/region" />
       <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/stats" />
       <excludeFolder url="file://$MODULE_DIR$/../../run/world" />
+      <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/datapacks/inventory-menu/data/inventory-menu/advancement" />
+      <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/datapacks/inventory-menu/data/inventory-menu/function" />
+      <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/datapacks/inventory-menu/data/minecraft" />
+      <excludeFolder url="file://$MODULE_DIR$/../../run/saves/New World/datapacks/inventory-menu/data/vanilla_qol" />
     </content>
   </component>
 </module>
