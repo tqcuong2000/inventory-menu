@@ -39,8 +39,8 @@ public record NavigateItem(MenuNavigationAction navigate, Identifier model, Text
     ).apply(inst, NavigateItem::new));
 
     @Override
-    public Action action() {
-        return navigate;
+    public List<Action> actions() {
+        return List.of(navigate);
     }
 
     @Override

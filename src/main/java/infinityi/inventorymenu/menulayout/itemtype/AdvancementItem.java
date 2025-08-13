@@ -26,8 +26,8 @@ public record AdvancementItem(Identifier questId) implements MenuItem {
     ).apply(instance, AdvancementItem::new));
 
     @Override
-    public Action action() {
-        return new NoAction();
+    public List<Action> actions() {
+        return Action.EMPTY_LIST;
     }
 
     @Override

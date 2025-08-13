@@ -6,11 +6,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.StringIdentifiable;
 
+import java.util.List;
+
 public interface MenuItem {
     Codec<MenuItem> CODEC = StringIdentifiable.createCodec(MenuItemType::values)
             .dispatch(MenuItem::getType, MenuItemType::getCodec);
 
-    Action action();
+    List<Action> actions();
 
     ItemStack resolveItemStack(ServerPlayerEntity player);
 

@@ -9,10 +9,12 @@ import infinityi.inventorymenu.menulayout.layout.MenuItemType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-public record StaticItem(ItemStack item, Action action) implements MenuItem {
+import java.util.List;
+
+public record StaticItem(ItemStack item, List<Action> actions) implements MenuItem {
     public static final MapCodec<StaticItem> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             ItemStack.CODEC.fieldOf("item").forGetter(StaticItem::item),
-            Action.CODEC.optionalFieldOf("action", new NoAction()).forGetter(StaticItem::action)
+            Action.LIST_CODEC.optionalFieldOf("action", Action.EMPTY_LIST).forGetter(MenuItem::actions)
     ).apply(instance, StaticItem::new));
 
     @Override
