@@ -1,6 +1,7 @@
 package infinityi.inventorymenu.menulayout.layout;
 
 import com.mojang.serialization.Codec;
+import infinityi.inventorymenu.itemaction.Action;
 import infinityi.inventorymenu.menulayout.MenuLayout;
 import infinityi.inventorymenu.utils.CodecUtils;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -19,6 +20,10 @@ public record MenuElement(MenuItemMeta meta, MenuItem item) {
     }
 
     public void execute(ServerPlayerEntity player, MenuLayout layout){
-        if (meta.condition().test(player, layout, "item")) item.action().execute(player, layout);
+        if (!meta.condition().test(player, layout, "item")) return;
+        if (item.actions().isEmpty()) return;
+        for (Action action : item.actions()){
+            action.execute(player, layout);
+        }
     }
 }

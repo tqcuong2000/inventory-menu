@@ -3,7 +3,6 @@ package infinityi.inventorymenu.menulayout.itemtype;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import infinityi.inventorymenu.itemaction.Action;
-import infinityi.inventorymenu.itemaction.actions.NoAction;
 import infinityi.inventorymenu.menulayout.layout.MenuItem;
 import infinityi.inventorymenu.menulayout.layout.MenuItemType;
 import net.minecraft.advancement.Advancement;

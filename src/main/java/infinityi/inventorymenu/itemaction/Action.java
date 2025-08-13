@@ -14,7 +14,7 @@ public interface Action {
             .dispatch(Action::getType, ActionType::getCodec);
 
     Action EMPTY = new NoAction();
-    List<Action> EMPTY_LIST = List.of(EMPTY);
+    List<Action> EMPTY_LIST = List.of();
 
     void execute(ServerPlayerEntity player, MenuLayout layout);
 
