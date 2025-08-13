@@ -30,7 +30,7 @@ public record BlockTPLocation(BlockPos location) implements TPLocation {
         }
         cost.applyCost(player, location);
         player.closeHandledScreen();
-        TeleportUtils.teleport(player, location.toCenterPos());
+        TeleportUtils.teleport(player, location.toCenterPos(), destinationWorld);
 
     }
 

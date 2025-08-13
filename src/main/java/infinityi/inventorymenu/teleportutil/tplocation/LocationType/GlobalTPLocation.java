@@ -35,7 +35,7 @@ public record GlobalTPLocation(GlobalPos location) implements TPLocation {
         }
         cost.applyCost(player, location.pos());
         player.closeHandledScreen();
-        TeleportUtils.teleport(player, location.pos().toCenterPos());
+        TeleportUtils.teleport(player, location.pos().toCenterPos(), destinationWorld);
     }
 
     @Override
