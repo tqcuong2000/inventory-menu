@@ -39,7 +39,7 @@ public record PlayerTPLocation(String playerName, Boolean directTP) implements T
             return;
         }
         if (directTP) {
-            TeleportUtils.teleport(player, targetPlayer.getPos());
+            TeleportUtils.teleport(player, targetPlayer.getPos(), targetPlayer.getWorld());
             return;
         }
         TeleportRequestManager.createRequest(player, targetPlayer, safeCheck, cost);
