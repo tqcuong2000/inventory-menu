@@ -26,9 +26,11 @@
   "Next page": "Next page",
   "Previous page": "Previous page",
   "Close": "Close",
-  "§CMenu doesn't exist or loaded correctly: $s": "§CMenu doesn't exist or loaded correctly: $s",
+  "§CMenu doesn't exist or loaded correctly: %s": "§CMenu doesn't exist or loaded correctly: %s",
   "%s §cis not online.": "%s §cis not online.",
   "§cYou can't open this menu": "§cYou can't open this menu",
   "§cYou can't perform this action": "§cYou can't perform this action",
-  "Open %s": "Open %s"
+  "Open %s": "Open %s",
+  "§aCompleted!": "§aCompleted!",
+  "§cNot complete.": "§cNot complete."
 }
