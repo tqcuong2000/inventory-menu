@@ -24,7 +24,7 @@ Written completely for the server side, this means other players can use its fea
 
 Before you start, it is recommended to have a basic understanding of datapacks and how they work. If you are a datapack maker and have experience, then let's get started. If not, you can visit [this page](https://minecraft.wiki/w/Tutorial:Creating_a_data_pack) to learn more about them.
 
-You can visit [this wiki](https://github.com/tqcuong2000/inventory-menu/wiki/Getting-Started) to learn detail about this mod.
+You can visit [this wiki](https://github.com/tqcuong2000/inventory-menu/wiki) to learn detail about this mod.
 
 ### 1. Setup the datapack.
 
@@ -117,6 +117,7 @@ Give night vision and glowing effect to player.
 
 - Hopefully, this mod is powerful enough for you to make any menu you need. If you encounter a bug or have a feature suggestion, please contact me via Discord or GitHub.
 - GitHub homepage and wiki are under construction. I will try to finish them as quickly as possible!
+
 
 
 
