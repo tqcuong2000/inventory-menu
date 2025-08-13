@@ -3,12 +3,14 @@ package infinityi.inventorymenu.teleportutil.tplocation.LocationType;
 import com.mojang.serialization.Codec;
 import infinityi.inventorymenu.itemaction.actions.TeleportAction;
 import infinityi.inventorymenu.teleportutil.TeleportCost;
+import infinityi.inventorymenu.teleportutil.TeleportUtils;
 import infinityi.inventorymenu.teleportutil.tplocation.TPLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.TeleportTarget;
 
 import java.util.Collections;
 
@@ -27,8 +29,9 @@ public record BlockTPLocation(BlockPos location) implements TPLocation {
             }
         }
         cost.applyCost(player, location);
-        player.teleport(destinationWorld, location.getX() + 0.5, location.getY(), location.getZ() + 0.5, Collections.emptySet(), player.headYaw, player.lastPitch, false);
         player.closeHandledScreen();
+        TeleportUtils.teleport(player, location.toCenterPos());
+
     }
 
     @Override

@@ -3,6 +3,7 @@ package infinityi.inventorymenu.teleportutil.tplocation.LocationType;
 import com.mojang.serialization.Codec;
 import infinityi.inventorymenu.itemaction.actions.TeleportAction;
 import infinityi.inventorymenu.teleportutil.TeleportCost;
+import infinityi.inventorymenu.teleportutil.TeleportUtils;
 import infinityi.inventorymenu.teleportutil.tplocation.TPLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -33,8 +34,8 @@ public record GlobalTPLocation(GlobalPos location) implements TPLocation {
             }
         }
         cost.applyCost(player, location.pos());
-        player.teleport(destinationWorld, location.pos().getX() + 0.5, location.pos().getY(), location.pos().getZ() + 0.5, Collections.emptySet(), player.headYaw, player.lastPitch, false);
         player.closeHandledScreen();
+        TeleportUtils.teleport(player, location.pos().toCenterPos());
     }
 
     @Override
