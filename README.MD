@@ -108,7 +108,6 @@ Give night vision and glowing effect to player.
 ```
 ## Planned features
 
-- Placeholder support for menu name.
 - New item types: Claimable and Defined
 - New action: Effect
 - Support for older version
@@ -117,6 +116,7 @@ Give night vision and glowing effect to player.
 
 - Hopefully, this mod is powerful enough for you to make any menu you need. If you encounter a bug or have a feature suggestion, please contact me via Discord or GitHub.
 - GitHub homepage and wiki are under construction. I will try to finish them as quickly as possible!
+
 
 
 
