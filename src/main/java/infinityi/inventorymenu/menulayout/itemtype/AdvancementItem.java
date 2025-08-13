@@ -1,5 +1,6 @@
 package infinityi.inventorymenu.menulayout.itemtype;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import infinityi.inventorymenu.itemaction.Action;
@@ -13,15 +14,20 @@ import net.minecraft.component.type.LoreComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-public record AdvancementItem(Identifier questId) implements MenuItem {
+public record AdvancementItem(Identifier questId, boolean showDescription, boolean showComplete) implements MenuItem {
     public static final MapCodec<AdvancementItem> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Identifier.CODEC.fieldOf("advancementId").forGetter(AdvancementItem::questId)
+            Identifier.CODEC.fieldOf("id").forGetter(AdvancementItem::questId),
+            Codec.BOOL.optionalFieldOf("show_description", true).forGetter(AdvancementItem::showDescription),
+            Codec.BOOL.optionalFieldOf("show_complete", true).forGetter(AdvancementItem::showComplete)
     ).apply(instance, AdvancementItem::new));
 
     @Override
@@ -38,11 +44,24 @@ public record AdvancementItem(Identifier questId) implements MenuItem {
         Advancement advancement = advancementEntry.value();
         AdvancementDisplay display = advancement.display().orElse(null);
         if (display == null) return itemStack;
-        Text name = display.getTitle();
-        Text description = display.getDescription();
+        Text name = display.getTitle().copy();
+        if (name.getStyle().isEmpty()) name = name.copy()
+                .setStyle(Style.EMPTY.withItalic(false))
+                .formatted(Formatting.GREEN);
         ItemStack item = display.getIcon();
+
         List<Text> list = new ArrayList<>();
-        list.add(description);
+        if (showDescription){
+            Text description = display.getDescription();
+            if (description.getStyle().isEmpty()) description = description.copy()
+                    .setStyle(Style.EMPTY.withItalic(false))
+                    .formatted(Formatting.GRAY);
+            list.add(description.copy());
+        }
+        if (showComplete){
+            boolean isDone = player.getAdvancementTracker().getProgress(advancementEntry).isDone();
+            list.add(isDone ? Text.translatable("§aCompleted!") : Text.translatable("§cNot complete."));
+        }
         item.set(DataComponentTypes.CUSTOM_NAME, name);
         item.set(DataComponentTypes.LORE, new LoreComponent(list));
         return item;
