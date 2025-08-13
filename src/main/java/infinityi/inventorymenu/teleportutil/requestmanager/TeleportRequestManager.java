@@ -20,7 +20,7 @@ public class TeleportRequestManager {
 
     public static void createRequest(ServerPlayerEntity requester, ServerPlayerEntity target, Boolean safeCheck, TeleportCost cost) {
         if (PENDING_REQUESTS.containsKey(target.getUuid())) {
-            requester.sendMessage(Text.translatable("§You already sent a request to %s.", target.getName()));
+            requester.sendMessage(Text.translatable("§aYou already sent a request to %s.", target.getName()));
             return;
         }
 

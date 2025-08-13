@@ -3,7 +3,7 @@
   "Cannot teleport to yourself": "Không thể dịch chuyển đến chính bạn.",
   "§cError: Cannot open %s menu because it isn't exist or loaded correctly.": "§cLỗi: Không thể mở menu %s vì nó không tồn tại hoặc không được tải đúng cách.",
   "Warp menu is not loaded or does not exist.": "Menu dịch chuyển (warp) chưa được tải hoặc không tồn tại.",
-  "§You already sent a request to %s.": "§eBạn đã gửi một yêu cầu dịch chuyển đến %s.",
+  "§aYou already sent a request to %s.": "§aBạn đã gửi một yêu cầu dịch chuyển đến %s.",
   "§aSent tpa request to %s.": "§aĐã gửi yêu cầu dịch chuyển đến %s.",
   "§a§l[ACCEPT]": "§a§l[CHẤP NHẬN]",
   "§7Accept teleport request from %s.": "§7Chấp nhận yêu cầu dịch chuyển từ %s.",
@@ -26,12 +26,12 @@
   "Next page": "Trang sau",
   "Previous page": "Trang trước",
   "Close": "Đóng",
-  "§CMenu doesn't exist or loaded correctly: %s": "§cMenu không tồn tại hoặc không được tải đúng cách: %s",
+  "§cMenu doesn't exist or loaded correctly: %s": "§cMenu không tồn tại hoặc không được tải đúng cách: %s",
   "%s §cis not online.": "%s §cđã ngoại tuyến.",
   "§cYou can't open this menu": "§cBạn không thể mở menu này",
-  "§cYou can't perform this action": "§cYou can't perform this action",
-  "Open %s": "Open %s",
-  "§aCompleted!": "§aCompleted!",
-  "§cNot complete.": "§cNot complete.",
-  "§CMenu doesn't exist or loaded correctly: $s": "§CMenu doesn't exist or loaded correctly: $s"
+  "§cYou can't perform this action": "§cBạn không thể thực hiện hành động này",
+  "Open %s": "Mở %s",
+  "§aCompleted!": "§aHoàn thành!",
+  "§cNot complete.": "§cChưa hoàn thành.",
+  "§cMenu doesn't exist or loaded correctly: $s": "§CMenu doesn't exist or loaded correctly: $s"
 }
