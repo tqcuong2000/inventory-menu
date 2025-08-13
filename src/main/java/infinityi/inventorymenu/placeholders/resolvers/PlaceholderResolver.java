@@ -6,13 +6,14 @@ import net.minecraft.text.Text;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public interface PlaceholderResolver {
 
-    static Text resolve(Text input, List<PlaceholderProvider> providers, ServerPlayerEntity player) {
+    static Text resolve(Text input, Set<PlaceholderProvider> providers, ServerPlayerEntity player) {
         String template = input.getString();
         if (!template.contains("%")) return input;
         String regexString = "%([^%]+)%";
@@ -29,12 +30,8 @@ public interface PlaceholderResolver {
         })).setStyle(input.getStyle());
     }
 
-    static List<Text> resolve(List<Text> textList, List<PlaceholderProvider> providers, ServerPlayerEntity player) {
+    static List<Text> resolve(List<Text> textList, Set<PlaceholderProvider> providers, ServerPlayerEntity player) {
         return textList.stream().map(line -> resolve(line, providers, player)).collect(Collectors.toList());
     }
-
-    Object resolve();
-
-    List<PlaceholderProvider> constructProviders();
 
 }
