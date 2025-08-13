@@ -1,0 +1,15 @@
+package infinityi.inventorymenu.teleportutil;
+
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.Vec3d;
+
+import java.util.Collections;
+
+public class TeleportUtils {
+
+    public static void teleport(ServerPlayerEntity player, Vec3d target){
+        if (player.getServer() == null) return;
+        player.getServer().execute(() -> player.teleport(player.getWorld(), target.x , target.y, target.z, Collections.emptySet(), player.headYaw, player.lastPitch, false));
+    }
+
+}
