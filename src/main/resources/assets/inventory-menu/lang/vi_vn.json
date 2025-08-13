@@ -26,7 +26,12 @@
   "Next page": "Trang sau",
   "Previous page": "Trang trước",
   "Close": "Đóng",
-  "§CMenu doesn't exist or loaded correctly: $s": "§cMenu không tồn tại hoặc không được tải đúng cách: %s",
+  "§CMenu doesn't exist or loaded correctly: %s": "§cMenu không tồn tại hoặc không được tải đúng cách: %s",
   "%s §cis not online.": "%s §cđã ngoại tuyến.",
-  "§cYou can't open this menu": "§cBạn không thể mở menu này"
+  "§cYou can't open this menu": "§cBạn không thể mở menu này",
+  "§cYou can't perform this action": "§cYou can't perform this action",
+  "Open %s": "Open %s",
+  "§aCompleted!": "§aCompleted!",
+  "§cNot complete.": "§cNot complete.",
+  "§CMenu doesn't exist or loaded correctly: $s": "§CMenu doesn't exist or loaded correctly: $s"
 }
