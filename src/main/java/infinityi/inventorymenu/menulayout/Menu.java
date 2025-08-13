@@ -13,7 +13,9 @@ import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.util.HashMap;
@@ -66,7 +68,10 @@ public class Menu {
                     if (!layout.predicate().test(player, layout, "menu")) return;
                     player.openHandledScreen(Menu.createMenu(layout, player));
                 },
-                () -> player.sendMessage(Text.translatable("§CMenu doesn't exist or loaded correctly: $s", id))
+                () -> player.sendMessage(Text.translatable("§CMenu doesn't exist or loaded correctly: %s",
+                        Text.literal(id.toString())
+                                .setStyle(Style.EMPTY.withItalic(false))
+                                .formatted(Formatting.GRAY)))
         );
     }
 
