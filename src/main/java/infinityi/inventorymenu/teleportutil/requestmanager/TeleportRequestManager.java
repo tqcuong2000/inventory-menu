@@ -23,7 +23,6 @@ public class TeleportRequestManager {
             requester.sendMessage(Text.translatable("§aYou already sent a request to %s.", target.getName()));
             return;
         }
-
         long expiryTime = System.currentTimeMillis() + TIMEOUT_SECONDS * 1000L;
         TeleportRequest request = new TeleportRequest(requester, expiryTime, safeCheck, cost);
         PENDING_REQUESTS.put(target.getUuid(), request);

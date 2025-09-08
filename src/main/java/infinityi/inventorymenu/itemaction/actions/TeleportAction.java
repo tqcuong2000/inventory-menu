@@ -39,7 +39,7 @@ public record TeleportAction(TPLocation target, TeleportCost cost,
                         BlockPos pos = action.target.getPos(player.getServer());
                         return String.format("X: %s Y: %s Z: %s", pos.getX(), pos.getY(), pos.getZ());
                         },
-                "target_name", () -> action.target.getPlayer(player.getServer()),
+                "target_name", () -> Optional.ofNullable(action.target.getPlayer(player.getServer())).map(s -> s.getName().getString()).orElse("?"),
                 "distance", () -> action.target.getDistance(player)
         );
     }
