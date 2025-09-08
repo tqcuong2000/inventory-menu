@@ -75,6 +75,7 @@ public class MenuDataManager extends SinglePreparationResourceReloader<Map<Ident
                 groupedMenus.computeIfAbsent(group.getFirst(), k -> new TreeMap<>()).put(group.getSecond(), layout);
             }
         }
+        if (loadedMenus.isEmpty()) return;
         InventoryMenu.LOGGER.info("Successfully loaded {} menu layout.", loadedMenus.size());
     }
 
