@@ -5,25 +5,39 @@ import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 import infinityi.inventorymenu.InventoryMenu;
 import infinityi.inventorymenu.menulayout.layout.MenuItem;
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.SinglePreparationResourceReloader;
+import net.minecraft.resource.ResourceReloader;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.profiler.Profiler;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
-public class ItemDataManager extends SinglePreparationResourceReloader<Map<Identifier, MenuItem>> implements IdentifiableResourceReloadListener {
+public class ItemDataManager implements ResourceReloader {
     private static final String MENU_ITEMS_DIR = "menu-item";
     private static final Map<Identifier, MenuItem> loadItems = new HashMap<>();
 
     @Override
-    protected Map<Identifier,MenuItem> prepare(ResourceManager manager, Profiler profiler) {
+    public CompletableFuture<Void> reload(
+            ResourceReloader.Store store,
+            Executor prepareExecutor,
+            ResourceReloader.Synchronizer reloadSynchronizer,
+            Executor applyExecutor
+    ) {
+        ResourceManager manager = store.getResourceManager();
+
+        return CompletableFuture.supplyAsync(() -> prepare(manager), prepareExecutor)
+                .thenCompose(reloadSynchronizer::whenPrepared)
+                .thenAcceptAsync(this::apply, applyExecutor);
+    }
+
+
+    protected Map<Identifier,MenuItem> prepare(ResourceManager manager) {
         Map<Identifier, MenuItem> preparedData = new HashMap<>();
         Map<Identifier, Resource> foundResources = manager.findResources(
                 MENU_ITEMS_DIR,
@@ -44,17 +58,11 @@ public class ItemDataManager extends SinglePreparationResourceReloader<Map<Ident
         return preparedData;
     }
 
-    @Override
-    protected void apply(Map<Identifier, MenuItem> prepared, ResourceManager manager, Profiler profiler) {
+    protected void apply(Map<Identifier, MenuItem> prepared) {
         loadItems.clear();
         loadItems.putAll(prepared);
         if (loadItems.isEmpty()) return;
         InventoryMenu.LOGGER.info("Successfully loaded {} menu item.", loadItems.size());
-    }
-
-    @Override
-    public Identifier getFabricId() {
-        return Identifier.of(InventoryMenu.MOD_ID, "item_data_manager");
     }
 
     public Optional<MenuItem> getItem(Identifier identifier){
