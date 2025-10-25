@@ -29,10 +29,10 @@ public record MessageAction(List<Text> content, boolean isGlobal) implements Act
 
     @Override
     public void execute(ServerPlayerEntity player, MenuLayout layout) {
-        if (player.getServer() == null) return;
+        if (player.getEntityWorld().getServer() == null) return;
         List<Text> resolvedText = PlaceholderResolver.resolve(content, PlaceholderSets.playerServerSet(player), player);
         for (Text text : resolvedText) {
-            if (isGlobal) player.getServer().sendMessage(text);
+            if (isGlobal) player.getEntityWorld().getServer().sendMessage(text);
             else player.sendMessage(text);
         }
     }

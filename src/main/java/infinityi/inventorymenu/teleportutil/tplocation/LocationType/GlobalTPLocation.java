@@ -20,8 +20,8 @@ public record GlobalTPLocation(GlobalPos location) implements TPLocation {
 
     @Override
     public void teleport(ServerPlayerEntity player, boolean safeCheck, TeleportCost cost) {
-        if (player.getServer() == null) return;
-        ServerWorld destinationWorld = player.getServer().getWorld(location.dimension());
+        if (player.getEntityWorld().getServer() == null) return;
+        ServerWorld destinationWorld = player.getEntityWorld().getServer().getWorld(location.dimension());
         if (destinationWorld == null) {
             player.sendMessage(Text.translatable("§cThat world does not exist! %s", location.dimension().getValue().toString()));
             return;
@@ -49,7 +49,7 @@ public record GlobalTPLocation(GlobalPos location) implements TPLocation {
 
     @Override
     public Integer getDistance(ServerPlayerEntity player) {
-        if (player.getWorld().getRegistryKey().equals(location.dimension())) {
+        if (player.getEntityWorld().getRegistryKey().equals(location.dimension())) {
             return TeleportAction.distanceBetween(player.getBlockPos(), location.pos());
         }
         return TeleportAction.distanceBetween(player.getBlockPos(), BlockPos.ofFloored(0, 0, 0));

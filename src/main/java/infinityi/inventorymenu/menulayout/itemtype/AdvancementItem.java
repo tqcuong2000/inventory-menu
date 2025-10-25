@@ -38,8 +38,8 @@ public record AdvancementItem(Identifier questId, boolean showDescription, boole
     @Override
     public ItemStack resolveItemStack(ServerPlayerEntity player) {
         ItemStack itemStack = new ItemStack(Items.BOOK);
-        if (player.getServer() == null) return itemStack;
-        AdvancementEntry advancementEntry = player.getServer().getAdvancementLoader().get(questId);
+        if (player.getEntityWorld().getServer() == null) return itemStack;
+        AdvancementEntry advancementEntry = player.getEntityWorld().getServer().getAdvancementLoader().get(questId);
         if (advancementEntry == null) return itemStack;
         Advancement advancement = advancementEntry.value();
         AdvancementDisplay display = advancement.display().orElse(null);

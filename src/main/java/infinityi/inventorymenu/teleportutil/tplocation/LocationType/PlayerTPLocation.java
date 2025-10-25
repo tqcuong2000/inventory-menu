@@ -26,12 +26,12 @@ public record PlayerTPLocation(String playerName) implements TPLocation {
 
     @Override
     public void teleport(ServerPlayerEntity player, boolean safeCheck, TeleportCost cost) {
-        ServerPlayerEntity targetPlayer = getPlayer(player.getServer());
+        ServerPlayerEntity targetPlayer = getPlayer(player.getEntityWorld().getServer());
         if (targetPlayer == null) {
             player.sendMessage(Text.translatable("§cPlayer is not online."));
             return;
         }
-        TeleportUtils.teleport(player, targetPlayer.getPos(), targetPlayer.getWorld());
+        TeleportUtils.teleport(player, targetPlayer.getEntityPos(), targetPlayer.getEntityWorld());
     }
 
     @Override
@@ -48,7 +48,7 @@ public record PlayerTPLocation(String playerName) implements TPLocation {
 
     @Override
     public Integer getDistance(ServerPlayerEntity player) {
-        BlockPos blockPos = getPos(player.getServer());
+        BlockPos blockPos = getPos(player.getEntityWorld().getServer());
         if (blockPos == null) return 0;
         return TeleportAction.distanceBetween(player.getBlockPos(), blockPos);
     }
