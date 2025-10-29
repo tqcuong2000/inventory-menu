@@ -5,8 +5,9 @@ import infinityi.inventorymenu.commands.TpaCommands;
 import infinityi.inventorymenu.dataparser.ConfigManager;
 import infinityi.inventorymenu.dataparser.DataManager;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +30,8 @@ public class InventoryMenu implements ModInitializer {
             TpaCommands.register();
         }
         dataManager = new DataManager();
-        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(dataManager.getMenuDataManager());
-        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(dataManager.items());
+
+        ResourceLoader.get(ResourceType.SERVER_DATA).registerReloader(Identifier.of(InventoryMenu.MOD_ID, "menu_data_manager"), dataManager.getMenuDataManager());
+        ResourceLoader.get(ResourceType.SERVER_DATA).registerReloader(Identifier.of(InventoryMenu.MOD_ID, "item_menu_data_manager"), dataManager.items());
     }
 }

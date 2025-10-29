@@ -26,7 +26,7 @@ public class MenuCommand {
                                 ServerPlayerEntity player = context.getSource().getPlayer();
                                 String menuName = StringArgumentType.getString(context, "menu_id");
                                 if (player == null) return 0;
-                                Identifier identifier = Identifier.of(menuName);
+                                Identifier identifier = Identifier.tryParse(menuName);
                                 Menu.open(identifier, player);
                                 return 1;
                             }))

@@ -6,19 +6,19 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import infinityi.inventorymenu.InventoryMenu;
 import infinityi.inventorymenu.menulayout.MenuLayout;
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.SinglePreparationResourceReloader;
+import net.minecraft.resource.ResourceReloader;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.profiler.Profiler;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
-public class MenuDataManager extends SinglePreparationResourceReloader<Map<Identifier, MenuLayout>> implements IdentifiableResourceReloadListener {
+public class MenuDataManager implements ResourceReloader  {
 
     private static final String MENUS_DIRECTORY = "menu";
     private final Map<Identifier, MenuLayout> loadedMenus = new HashMap<>();
@@ -42,8 +42,22 @@ public class MenuDataManager extends SinglePreparationResourceReloader<Map<Ident
         return loadedMenus.keySet();
     }
 
+
     @Override
-    protected Map<Identifier, MenuLayout> prepare(ResourceManager manager, Profiler profiler) {
+    public CompletableFuture<Void> reload(
+            ResourceReloader.Store store,
+            Executor prepareExecutor,
+            ResourceReloader.Synchronizer reloadSynchronizer,
+            Executor applyExecutor
+    ) {
+        ResourceManager manager = store.getResourceManager();
+
+        return CompletableFuture.supplyAsync(() -> prepare(manager), prepareExecutor)
+                .thenCompose(reloadSynchronizer::whenPrepared)
+                .thenAcceptAsync(this::apply, applyExecutor);
+    }
+
+    protected Map<Identifier, MenuLayout> prepare(ResourceManager manager) {
         Map<Identifier, MenuLayout> preparedData = new HashMap<>();
         Map<Identifier, Resource> foundResources = manager.findResources(
                 MENUS_DIRECTORY,
@@ -54,9 +68,14 @@ public class MenuDataManager extends SinglePreparationResourceReloader<Map<Ident
                 JsonElement jsonElement = JsonParser.parseReader(reader);
                 MenuLayout layout = MenuLayout.CODEC.parse(JsonOps.INSTANCE, jsonElement)
                         .getOrThrow(IllegalStateException::new);
-                String path = entry.getKey().toString();
-                path = path.substring(0, path.lastIndexOf(".")).replaceFirst("menu/", "");
-                preparedData.put(Identifier.of(path), layout);
+
+                Identifier originalId = entry.getKey();
+                String path = originalId.getPath();
+                path = path.substring(0, path.lastIndexOf("."))
+                        .replaceFirst("^menu/", "");
+
+                Identifier menuId = Identifier.of(originalId.getNamespace(), path);
+                preparedData.put(menuId, layout);
             } catch (Exception e) {
                 InventoryMenu.LOGGER.error("Error while reading file resource: {}", entry.getKey(), e);
             }
@@ -64,23 +83,18 @@ public class MenuDataManager extends SinglePreparationResourceReloader<Map<Ident
         return preparedData;
     }
 
-    @Override
-    protected void apply(Map<Identifier, MenuLayout> prepared, ResourceManager manager, Profiler profiler) {
+
+    protected void apply(Map<Identifier, MenuLayout> prepared) {
         loadedMenus.clear();
         groupedMenus.clear();
         loadedMenus.putAll(prepared);
         for (MenuLayout layout : loadedMenus.values()) {
             Pair<String, Integer> group = layout.menu_group();
             if (group != null && !group.getFirst().isEmpty()) {
-                groupedMenus.computeIfAbsent(group.getFirst(), k -> new TreeMap<>()).put(group.getSecond(), layout);
+                groupedMenus.computeIfAbsent(group.getFirst(), k -> new TreeMap<>())
+                        .put(group.getSecond(), layout);
             }
         }
-        if (loadedMenus.isEmpty()) return;
-        InventoryMenu.LOGGER.info("Successfully loaded {} menu layout.", loadedMenus.size());
     }
 
-    @Override
-    public Identifier getFabricId() {
-        return Identifier.of(InventoryMenu.MOD_ID, "menu_data_manager");
-    }
 }

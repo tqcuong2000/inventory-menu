@@ -31,10 +31,10 @@ public record CommandAction(List<String> commands, boolean asPlayer, boolean sil
 
     @Override
     public void execute(ServerPlayerEntity player, MenuLayout layout) {
-        if (player.getServer() == null) return;
-        ServerCommandSource source = asPlayer ? player.getCommandSource() : player.getServer().getCommandSource();
+        if (player.getEntityWorld().getServer() == null) return;
+        ServerCommandSource source = asPlayer ? player.getCommandSource() : player.getEntityWorld().getServer().getCommandSource();
         if (silent) source = source.withSilent();
-        CommandManager manager = player.getServer().getCommandManager();
+        CommandManager manager = player.getEntityWorld().getServer().getCommandManager();
         for (String command : commands) {
             command = PlaceholderResolver.resolve(Text.of(command), PlaceholderSets.playerServerSet(player), player).getString();
             manager.executeWithPrefix(source, command);

@@ -62,7 +62,7 @@ public class TeleportRequestManager {
             return;
         }
         if (request.safeCheck()) {
-            if (TeleportAction.isDangerLocation(target.getWorld(), target.getBlockPos())) {
+            if (TeleportAction.isDangerLocation(target.getEntityWorld(), target.getBlockPos())) {
                 requester.sendMessage(Text.translatable("§cTeleport request denied: %s §cis in a dangerous location.", target.getName()));
                 return;
             }
@@ -73,7 +73,7 @@ public class TeleportRequestManager {
             return;
         }
         request.cost().applyCost(requester, target.getBlockPos());
-        requester.teleport(target.getWorld(), target.capeX, target.capeY, target.capeZ, Collections.emptySet(), target.bodyYaw, target.lastPitch, false);
+        requester.teleport(target.getEntityWorld(), target.getX(), target.getY(), target.getZ(), Collections.emptySet(), target.bodyYaw, target.lastPitch, false);
         requester.sendMessage(Text.translatable("%s§a has accepted your teleport request.", target.getName()));
         target.sendMessage(Text.translatable("§aYou have accepted %s§a's teleport request.", requester.getName()));
     }
