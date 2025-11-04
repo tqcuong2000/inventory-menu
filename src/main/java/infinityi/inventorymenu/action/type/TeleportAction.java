@@ -5,7 +5,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import infinityi.inventorymenu.action.Action;
 import infinityi.inventorymenu.action.ActionType;
-import infinityi.inventorymenu.menu.MenuLayout;
 import infinityi.inventorymenu.placeholder.providers.PlaceholderProvider;
 import infinityi.inventorymenu.util.teleportutil.TeleportCost;
 import infinityi.inventorymenu.util.teleportutil.tplocation.TPLocation;

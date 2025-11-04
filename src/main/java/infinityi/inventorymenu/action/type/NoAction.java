@@ -3,7 +3,6 @@ package infinityi.inventorymenu.action.type;
 import com.mojang.serialization.MapCodec;
 import infinityi.inventorymenu.action.Action;
 import infinityi.inventorymenu.action.ActionType;
-import infinityi.inventorymenu.menu.MenuLayout;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 public record NoAction() implements Action {

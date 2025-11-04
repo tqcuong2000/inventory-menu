@@ -2,7 +2,9 @@ package infinityi.inventorymenu.placeholder.providers;
 
 import net.minecraft.server.network.ServerPlayerEntity;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 public class PlaceholderSets {
 

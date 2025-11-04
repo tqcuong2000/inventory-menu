@@ -2,7 +2,6 @@ package infinityi.inventorymenu.menu.layout;
 
 import com.mojang.serialization.Codec;
 import infinityi.inventorymenu.action.Action;
-import infinityi.inventorymenu.menu.MenuLayout;
 import infinityi.inventorymenu.util.CodecUtils;
 import net.minecraft.server.network.ServerPlayerEntity;
 

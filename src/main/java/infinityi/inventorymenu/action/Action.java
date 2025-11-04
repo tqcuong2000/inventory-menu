@@ -3,7 +3,6 @@ package infinityi.inventorymenu.action;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import infinityi.inventorymenu.action.type.NoAction;
-import infinityi.inventorymenu.menu.MenuLayout;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.StringIdentifiable;
 

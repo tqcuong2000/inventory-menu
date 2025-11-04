@@ -6,7 +6,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import infinityi.inventorymenu.action.Action;
 import infinityi.inventorymenu.action.ActionType;
-import infinityi.inventorymenu.menu.MenuLayout;
 import infinityi.inventorymenu.placeholder.providers.PlaceholderSets;
 import infinityi.inventorymenu.placeholder.resolvers.PlaceholderResolver;
 import net.minecraft.server.network.ServerPlayerEntity;
