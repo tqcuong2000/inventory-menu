@@ -1,6 +1,7 @@
 # Project exclude paths
 /.gradle/
 /build/
-/run/world/
+/run/saves/world/
 /run/saves/
 /run/
+/remappedSrc/

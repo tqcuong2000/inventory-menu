@@ -29,8 +29,9 @@
   "§cMenu doesn't exist or loaded correctly: %s": "§CMenu doesn't exist or loaded correctly: %s",
   "§cPlayer is not online.": "§cPlayer is not online.",
   "§cYou can't open this menu": "§cYou can't open this menu",
-  "§cYou can't perform this action": "§cYou can't perform this action",
+  "§cYou can't run this action": "§cYou can't perform this action",
   "Open %s": "Open %s",
   "§aCompleted!": "§aCompleted!",
-  "§cNot complete.": "§cNot complete."
+  "§cNot complete.": "§cNot complete.",
+  "§CMenu doesn't exist or loaded correctly: %s": "§CMenu doesn't exist or loaded correctly: %s"
 }

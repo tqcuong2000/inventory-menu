@@ -5,20 +5,23 @@ import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import infinityi.inventorymenu.InventoryMenu;
-import infinityi.inventorymenu.menulayout.MenuLayout;
+import infinityi.inventorymenu.menu.MenuLayout;
+import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceReloader;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.profiler.Profiler;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-public class MenuDataManager implements ResourceReloader  {
+public class MenuDataManager implements ResourceReloader, IdentifiableResourceReloadListener {
 
     private static final String MENUS_DIRECTORY = "menu";
     private final Map<Identifier, MenuLayout> loadedMenus = new HashMap<>();
@@ -28,7 +31,7 @@ public class MenuDataManager implements ResourceReloader  {
         return Optional.ofNullable(loadedMenus.get(menuId));
     }
 
-    public NavigableMap<Integer, MenuLayout> getMenu(String groupName) {
+    public NavigableMap<Integer, MenuLayout> getGroup(String groupName) {
         return new TreeMap<>(groupedMenus.getOrDefault(groupName, Collections.emptyMap()));
     }
 
@@ -42,21 +45,6 @@ public class MenuDataManager implements ResourceReloader  {
         return loadedMenus.keySet();
     }
 
-
-    @Override
-    public CompletableFuture<Void> reload(
-            ResourceReloader.Store store,
-            Executor prepareExecutor,
-            ResourceReloader.Synchronizer reloadSynchronizer,
-            Executor applyExecutor
-    ) {
-        ResourceManager manager = store.getResourceManager();
-
-        return CompletableFuture.supplyAsync(() -> prepare(manager), prepareExecutor)
-                .thenCompose(reloadSynchronizer::whenPrepared)
-                .thenAcceptAsync(this::apply, applyExecutor);
-    }
-
     protected Map<Identifier, MenuLayout> prepare(ResourceManager manager) {
         Map<Identifier, MenuLayout> preparedData = new HashMap<>();
         Map<Identifier, Resource> foundResources = manager.findResources(
@@ -64,7 +52,7 @@ public class MenuDataManager implements ResourceReloader  {
                 path -> path.getPath().endsWith(".json"));
 
         for (Map.Entry<Identifier, Resource> entry : foundResources.entrySet()) {
-            try (Reader reader = new InputStreamReader(entry.getValue().getInputStream())) {
+            try (Reader reader = new InputStreamReader(entry.getValue().getInputStream(), StandardCharsets.UTF_8)) {
                 JsonElement jsonElement = JsonParser.parseReader(reader);
                 MenuLayout layout = MenuLayout.CODEC.parse(JsonOps.INSTANCE, jsonElement)
                         .getOrThrow(IllegalStateException::new);
@@ -77,7 +65,7 @@ public class MenuDataManager implements ResourceReloader  {
                 Identifier menuId = Identifier.of(originalId.getNamespace(), path);
                 preparedData.put(menuId, layout);
             } catch (Exception e) {
-                InventoryMenu.LOGGER.error("Error while reading file resource: {}", entry.getKey(), e);
+                InventoryMenu.LOGGER.error("Error while reading file resource: {}\n{}", entry.getKey(), e.getMessage());
             }
         }
         return preparedData;
@@ -97,4 +85,15 @@ public class MenuDataManager implements ResourceReloader  {
         }
     }
 
+    @Override
+    public CompletableFuture<Void> reload(Synchronizer synchronizer, ResourceManager manager, Profiler prepareProfiler, Profiler applyProfiler, Executor prepareExecutor, Executor applyExecutor) {
+        return CompletableFuture.supplyAsync(() -> prepare(manager), prepareExecutor)
+                .thenCompose(synchronizer::whenPrepared)
+                .thenAcceptAsync(this::apply, applyExecutor);
+    }
+
+    @Override
+    public Identifier getFabricId() {
+        return Identifier.of(InventoryMenu.MOD_ID, "menu-data-manager");
+    }
 }
