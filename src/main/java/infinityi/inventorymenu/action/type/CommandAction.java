@@ -31,7 +31,7 @@ public record CommandAction(List<String> commands, boolean asPlayer, boolean sil
 
     @Override
     public void execute(ServerPlayerEntity player) {
-        MinecraftServer serverWorld = player.getEntityWorld().getServer();
+        MinecraftServer serverWorld = player.getServer();
         if (serverWorld == null) return;
         ServerCommandSource source = asPlayer ? player.getCommandSource() : serverWorld.getCommandSource();
         if (silent) source = source.withSilent();

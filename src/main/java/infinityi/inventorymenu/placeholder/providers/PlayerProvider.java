@@ -21,7 +21,7 @@ public class PlayerProvider implements PlaceholderProvider {
 
     public PlayerProvider(ServerPlayerEntity player) {
         this.player = player;
-        ServerWorld world = player.getServerWorld();
+        ServerWorld world = player.getWorld();
         this.keySuppliers = Map.of(
                 "xp", () -> player.experienceLevel,
                 "world_time", () -> getWorldHour(world),

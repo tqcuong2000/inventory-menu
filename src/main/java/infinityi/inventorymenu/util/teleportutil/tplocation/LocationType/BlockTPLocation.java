@@ -17,8 +17,8 @@ public record BlockTPLocation(BlockPos location) implements TPLocation {
 
     @Override
     public void teleport(ServerPlayerEntity player, boolean safeCheck, TeleportCost cost) {
-        if (player.getEntityWorld().getServer() == null) return;
-        ServerWorld destinationWorld = player.getEntityWorld().getServer().getOverworld();
+        if (player.getServer() == null) return;
+        ServerWorld destinationWorld = player.getWorld().getServer().getOverworld();
         if (safeCheck) {
             if (TeleportAction.isDangerLocation(destinationWorld, location)) {
                 player.sendMessage(Text.translatable("§cYou cannot teleport to a dangerous location!"));
