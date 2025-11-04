@@ -28,7 +28,7 @@ public class ServerPlayNetworkHandlerMixin {
         if (currentScreenHandler instanceof GenericContainerScreenHandler genericHandler) {
             Inventory inventory = genericHandler.getInventory();
             if (inventory instanceof CustomMenuInventory customMenuInventory) {
-                int slotIndex = packet.getSlot();
+                int slotIndex = packet.slot();
                 if (slotIndex >= 0 && slotIndex < inventory.size()) {
                     MenuLayout layout = customMenuInventory.getLayout();
                     InventoryMenu.getDataManager().playerData().set(player, layout);
