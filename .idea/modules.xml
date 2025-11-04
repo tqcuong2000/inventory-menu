@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/inventory-menu-1.21.1.client.iml" filepath="$PROJECT_DIR$/.idea/modules/inventory-menu-1.21.1.client.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/inventory-menu-1.21.1.main.iml" filepath="$PROJECT_DIR$/.idea/modules/inventory-menu-1.21.1.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/inventory-menu-1.21.1.test.iml" filepath="$PROJECT_DIR$/.idea/modules/inventory-menu-1.21.1.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/inventory-menu.client.iml" filepath="$PROJECT_DIR$/.idea/modules/inventory-menu.client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/inventory-menu.main.iml" filepath="$PROJECT_DIR$/.idea/modules/inventory-menu.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/inventory-menu.test.iml" filepath="$PROJECT_DIR$/.idea/modules/inventory-menu.test.iml" />
     </modules>
   </component>
 </project>

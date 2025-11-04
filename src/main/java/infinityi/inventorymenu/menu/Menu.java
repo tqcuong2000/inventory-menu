@@ -1,6 +1,5 @@
 package infinityi.inventorymenu.menu;
 
-import infinityi.inventorymenu.InventoryMenu;
 import infinityi.inventorymenu.menu.layout.CustomMenuInventory;
 import infinityi.inventorymenu.menu.layout.MenuElement;
 import infinityi.inventorymenu.placeholder.providers.PlaceholderSets;
@@ -13,10 +12,7 @@ import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -60,20 +56,6 @@ public class Menu {
                 );
             }
         };
-    }
-
-    @Deprecated
-    public static void open(Identifier id, ServerPlayerEntity player) {
-        InventoryMenu.getDataManager().menus().getMenu(id).ifPresentOrElse(
-                layout -> {
-                    if (!layout.predicate().test(player, "menu")) return;
-                    player.openHandledScreen(Menu.createMenu(layout, player));
-                },
-                () -> player.sendMessage(Text.translatable("§CMenu doesn't exist or loaded correctly: %s",
-                        Text.literal(id.toString())
-                                .setStyle(Style.EMPTY.withItalic(false))
-                                .formatted(Formatting.GRAY)))
-        );
     }
 
 }

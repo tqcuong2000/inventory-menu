@@ -10,7 +10,6 @@ import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceReloader;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.profiler.Profiler;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -57,7 +56,7 @@ public class ItemDataManager implements ResourceReloader, IdentifiableResourceRe
     }
 
     @Override
-    public CompletableFuture<Void> reload(Synchronizer synchronizer, ResourceManager manager, Profiler prepareProfiler, Profiler applyProfiler, Executor prepareExecutor, Executor applyExecutor) {
+    public CompletableFuture<Void> reload(Synchronizer synchronizer, ResourceManager manager, Executor prepareExecutor, Executor applyExecutor) {
         return CompletableFuture.supplyAsync(() -> prepare(manager), prepareExecutor)
                 .thenCompose(synchronizer::whenPrepared)
                 .thenAcceptAsync(this::apply, applyExecutor);

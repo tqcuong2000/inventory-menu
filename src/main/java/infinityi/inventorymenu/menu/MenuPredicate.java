@@ -8,9 +8,9 @@ import infinityi.inventorymenu.action.type.NoAction;
 import infinityi.inventorymenu.dataparser.ConfigManager;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.context.LootContext;
-import net.minecraft.loot.context.LootContextParameterSet;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.loot.context.LootContextTypes;
+import net.minecraft.loot.context.LootWorldContext;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -33,17 +33,16 @@ public record MenuPredicate(Identifier predicate, Action whenTrue, Action whenFa
     ).apply(inst, MenuPredicate::new));
 
     public boolean test(ServerPlayerEntity player, String context) {
-
         ServerWorld serverWorld = player.getServerWorld();
         if (serverWorld == null) return false;
         MinecraftServer server = serverWorld.getServer();
-
-        var params = new LootContextParameterSet.Builder(serverWorld)
+        LootWorldContext worldContext = new LootWorldContext.Builder(serverWorld)
                 .add(LootContextParameters.THIS_ENTITY, player)
                 .add(LootContextParameters.ORIGIN, player.getBlockPos().toCenterPos())
                 .add(LootContextParameters.DAMAGE_SOURCE, player.getDamageSources().playerAttack(player))
                 .build(LootContextTypes.ENTITY);
-        LootContext lootContext = new LootContext.Builder(params)
+
+        LootContext lootContext = new LootContext.Builder(worldContext)
                 .random(serverWorld.getSeed())
                 .build(Optional.empty());
         boolean result = read(server).map(condition -> condition.test(lootContext)).orElse(true);

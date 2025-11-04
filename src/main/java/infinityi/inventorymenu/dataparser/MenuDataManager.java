@@ -12,7 +12,6 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceReloader;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.profiler.Profiler;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -86,7 +85,7 @@ public class MenuDataManager implements ResourceReloader, IdentifiableResourceRe
     }
 
     @Override
-    public CompletableFuture<Void> reload(Synchronizer synchronizer, ResourceManager manager, Profiler prepareProfiler, Profiler applyProfiler, Executor prepareExecutor, Executor applyExecutor) {
+    public CompletableFuture<Void> reload(Synchronizer synchronizer, ResourceManager manager, Executor prepareExecutor, Executor applyExecutor) {
         return CompletableFuture.supplyAsync(() -> prepare(manager), prepareExecutor)
                 .thenCompose(synchronizer::whenPrepared)
                 .thenAcceptAsync(this::apply, applyExecutor);
@@ -96,4 +95,5 @@ public class MenuDataManager implements ResourceReloader, IdentifiableResourceRe
     public Identifier getFabricId() {
         return Identifier.of(InventoryMenu.MOD_ID, "menu-data-manager");
     }
+
 }

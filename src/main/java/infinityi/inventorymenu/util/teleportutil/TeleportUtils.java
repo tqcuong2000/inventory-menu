@@ -10,7 +10,7 @@ public class TeleportUtils {
 
     public static void teleport(ServerPlayerEntity player, Vec3d target, ServerWorld world){
         if (player.getEntityWorld().getServer() == null) return;
-        player.getEntityWorld().getServer().execute(() -> player.teleport(world, target.x , target.y, target.z, Collections.emptySet(), player.headYaw, player.getPitch()));
+        player.getEntityWorld().getServer().execute(() -> player.teleport(world, target.x , target.y, target.z, Collections.emptySet(), player.headYaw, player.getPitch(), true));
     }
 
 }

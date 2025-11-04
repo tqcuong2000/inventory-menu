@@ -68,7 +68,7 @@ public class PlayerProvider implements PlaceholderProvider {
         String category = parts[1];
         String objectId = parts[2];
         ServerStatHandler statHandler = player.getStatHandler();
-        Optional<StatType<?>> statTypeOpt = Registries.STAT_TYPE.getOrEmpty(Identifier.of("minecraft", category));
+        Optional<StatType<?>> statTypeOpt = Registries.STAT_TYPE.getOptionalValue(Identifier.of("minecraft", category));
         if (statTypeOpt.isEmpty()) {
             return 0;
         }
@@ -77,7 +77,7 @@ public class PlayerProvider implements PlaceholderProvider {
         String stringId = objectId.contains(":") ? objectId : "minecraft:" + objectId;
         if (statType == Stats.CUSTOM) {
             Identifier customStatId = Identifier.of(stringId);
-            finalStatOpt = Registries.CUSTOM_STAT.getOrEmpty(customStatId)
+            finalStatOpt = Registries.CUSTOM_STAT.getOptionalValue(customStatId)
                     .map(Stats.CUSTOM::getOrCreateStat);
         } else {
             Identifier objectIdentifier = Identifier.of(stringId);

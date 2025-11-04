@@ -29,7 +29,7 @@
   "§cMenu doesn't exist or loaded correctly: %s": "§cMenu không tồn tại hoặc không được tải đúng cách: %s",
   "§cPlayer is not online.": "§cNgười chơi đã ngoại tuyến.",
   "§cYou can't open this menu": "§cBạn không thể mở menu này",
-  "§cYou can't perform this action": "§cBạn không thể thực hiện hành động này",
+  "§cYou can't run this action": "§cBạn không thể thực hiện hành động này",
   "Open %s": "Mở %s",
   "§aCompleted!": "§aHoàn thành!",
   "§cNot complete.": "§cChưa hoàn thành."
