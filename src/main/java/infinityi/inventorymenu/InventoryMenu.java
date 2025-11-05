@@ -1,7 +1,6 @@
 package infinityi.inventorymenu;
 
-import infinityi.inventorymenu.commands.MenuCommand;
-import infinityi.inventorymenu.commands.TpaCommands;
+import infinityi.inventorymenu.command.MenuCommand;
 import infinityi.inventorymenu.dataparser.ConfigManager;
 import infinityi.inventorymenu.dataparser.DataManager;
 import net.fabricmc.api.ModInitializer;
@@ -26,12 +25,10 @@ public class InventoryMenu implements ModInitializer {
     public void onInitialize() {
         ConfigManager.loadConfig();
         MenuCommand.register();
-        if (ConfigManager.getConfig().enable_tpa_commands){
-            TpaCommands.register();
-        }
         dataManager = new DataManager();
 
-        ResourceLoader.get(ResourceType.SERVER_DATA).registerReloader(Identifier.of(InventoryMenu.MOD_ID, "menu_data_manager"), dataManager.getMenuDataManager());
+        ResourceLoader.get(ResourceType.SERVER_DATA).registerReloader(Identifier.of(InventoryMenu.MOD_ID, "menu_data_manager"), dataManager.menus());
         ResourceLoader.get(ResourceType.SERVER_DATA).registerReloader(Identifier.of(InventoryMenu.MOD_ID, "item_menu_data_manager"), dataManager.items());
+        ConfigManager.saveConfig();
     }
 }

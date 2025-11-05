@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 import infinityi.inventorymenu.InventoryMenu;
-import infinityi.inventorymenu.menulayout.layout.MenuItem;
+import infinityi.inventorymenu.menu.layout.MenuItem;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceReloader;

@@ -1,7 +1,8 @@
 package infinityi.inventorymenu.mixin;
 
-import infinityi.inventorymenu.menulayout.MenuLayout;
-import infinityi.inventorymenu.menulayout.layout.CustomMenuInventory;
+import infinityi.inventorymenu.InventoryMenu;
+import infinityi.inventorymenu.menu.MenuLayout;
+import infinityi.inventorymenu.menu.layout.CustomMenuInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.network.packet.c2s.play.ClickSlotC2SPacket;
 import net.minecraft.screen.GenericContainerScreenHandler;
@@ -30,10 +31,11 @@ public class ServerPlayNetworkHandlerMixin {
                 int slotIndex = packet.slot();
                 if (slotIndex >= 0 && slotIndex < inventory.size()) {
                     MenuLayout layout = customMenuInventory.getLayout();
+                    InventoryMenu.getDataManager().playerData().set(player, layout);
                     layout.items().stream()
                             .filter(item -> item.slot() == slotIndex)
                             .findFirst()
-                            .ifPresent(element -> element.execute(player, layout));
+                            .ifPresent(element -> element.execute(player));
 
                 }
                 ci.cancel();
