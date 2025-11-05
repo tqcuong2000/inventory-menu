@@ -32,13 +32,13 @@ public record TeleportAction(TPLocation target, TeleportCost cost,
 
     public static Map<String, Supplier<Object>> createKeySuppliers(ServerPlayerEntity player, TeleportAction action) {
         return Map.of(
-                "xp_cost", () -> action.cost.calcCost(player, action.target.getPos(player.getWorld().getServer())),
+                "xp_cost", () -> action.cost.calcCost(player, action.target.getPos(player.getEntityWorld().getServer())),
                 "xp_cost_type", () -> action.cost.isPoint().toString(),
                 "target_pos", () -> {
-                        BlockPos pos = action.target.getPos(player.getWorld().getServer());
+                        BlockPos pos = action.target.getPos(player.getEntityWorld().getServer());
                         return String.format("X: %s Y: %s Z: %s", pos.getX(), pos.getY(), pos.getZ());
                         },
-                "target_name", () -> Optional.ofNullable(action.target.getPlayer(player.getWorld().getServer())).map(s -> s.getName().getString()).orElse("?"),
+                "target_name", () -> Optional.ofNullable(action.target.getPlayer(player.getEntityWorld().getServer())).map(s -> s.getName().getString()).orElse("?"),
                 "distance", () -> action.target.getDistance(player)
         );
     }
@@ -67,7 +67,7 @@ public record TeleportAction(TPLocation target, TeleportCost cost,
 
     @Override
     public void execute(ServerPlayerEntity player) {
-        BlockPos pos = target.getPos(player.getWorld().getServer());
+        BlockPos pos = target.getPos(player.getEntityWorld().getServer());
         if (cost.hasCost(player, pos)) {
             target.teleport(player, safe_check, cost);
         } else {

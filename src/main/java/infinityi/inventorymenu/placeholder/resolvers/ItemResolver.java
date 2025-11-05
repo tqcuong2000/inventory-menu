@@ -21,7 +21,7 @@ public record ItemResolver(MenuItem item, ServerPlayerEntity player) {
     public Set<PlaceholderProvider> constructProviders() {
         Set<PlaceholderProvider> providers = new HashSet<>();
         providers.add(new PlayerProvider(player));
-        if (player.getWorld().getServer() instanceof MinecraftServer server) providers.add(new ServerProvider(server));
+        if (player.getEntityWorld().getServer() instanceof MinecraftServer server) providers.add(new ServerProvider(server));
         for (Action action : item().actions()) if (action instanceof TeleportAction tp) providers.add(tp);
         return providers;
     }

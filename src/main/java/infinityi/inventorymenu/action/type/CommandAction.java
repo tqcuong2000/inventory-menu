@@ -8,7 +8,6 @@ import infinityi.inventorymenu.action.Action;
 import infinityi.inventorymenu.action.ActionType;
 import infinityi.inventorymenu.placeholder.providers.PlaceholderSets;
 import infinityi.inventorymenu.placeholder.resolvers.PlaceholderResolver;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -31,11 +30,9 @@ public record CommandAction(List<String> commands, boolean asPlayer, boolean sil
 
     @Override
     public void execute(ServerPlayerEntity player) {
-        MinecraftServer serverWorld = player.getServer();
-        if (serverWorld == null) return;
-        ServerCommandSource source = asPlayer ? player.getCommandSource() : serverWorld.getCommandSource();
+        ServerCommandSource source = asPlayer ? player.getCommandSource() : player.getEntityWorld().getServer().getCommandSource();
         if (silent) source = source.withSilent();
-        CommandManager manager = serverWorld.getCommandManager();
+        CommandManager manager = player.getEntityWorld().getServer().getCommandManager();
         for (String command : commands) {
             command = PlaceholderResolver.resolve(Text.of(command), PlaceholderSets.playerServerSet(player), player).getString();
             manager.executeWithPrefix(source, command);

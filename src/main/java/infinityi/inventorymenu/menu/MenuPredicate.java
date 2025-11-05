@@ -33,7 +33,7 @@ public record MenuPredicate(Identifier predicate, Action whenTrue, Action whenFa
     ).apply(inst, MenuPredicate::new));
 
     public boolean test(ServerPlayerEntity player, String context) {
-        ServerWorld serverWorld = player.getWorld();
+        ServerWorld serverWorld = player.getEntityWorld();
         if (serverWorld == null) return false;
         MinecraftServer server = serverWorld.getServer();
         LootWorldContext worldContext = new LootWorldContext.Builder(serverWorld)

@@ -6,7 +6,6 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import infinityi.inventorymenu.InventoryMenu;
 import infinityi.inventorymenu.menu.MenuLayout;
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceReloader;
@@ -20,7 +19,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-public class MenuDataManager implements ResourceReloader, IdentifiableResourceReloadListener {
+public class MenuDataManager implements ResourceReloader  {
 
     private static final String MENUS_DIRECTORY = "menu";
     private final Map<Identifier, MenuLayout> loadedMenus = new HashMap<>();
@@ -42,6 +41,21 @@ public class MenuDataManager implements ResourceReloader, IdentifiableResourceRe
 
     public Set<Identifier> getIds() {
         return loadedMenus.keySet();
+    }
+
+
+    @Override
+    public CompletableFuture<Void> reload(
+            ResourceReloader.Store store,
+            Executor prepareExecutor,
+            ResourceReloader.Synchronizer reloadSynchronizer,
+            Executor applyExecutor
+    ) {
+        ResourceManager manager = store.getResourceManager();
+
+        return CompletableFuture.supplyAsync(() -> prepare(manager), prepareExecutor)
+                .thenCompose(reloadSynchronizer::whenPrepared)
+                .thenAcceptAsync(this::apply, applyExecutor);
     }
 
     protected Map<Identifier, MenuLayout> prepare(ResourceManager manager) {
@@ -82,18 +96,6 @@ public class MenuDataManager implements ResourceReloader, IdentifiableResourceRe
                         .put(group.getSecond(), layout);
             }
         }
-    }
-
-    @Override
-    public CompletableFuture<Void> reload(Synchronizer synchronizer, ResourceManager manager, Executor prepareExecutor, Executor applyExecutor) {
-        return CompletableFuture.supplyAsync(() -> prepare(manager), prepareExecutor)
-                .thenCompose(synchronizer::whenPrepared)
-                .thenAcceptAsync(this::apply, applyExecutor);
-    }
-
-    @Override
-    public Identifier getFabricId() {
-        return Identifier.of(InventoryMenu.MOD_ID, "menu-data-manager");
     }
 
 }

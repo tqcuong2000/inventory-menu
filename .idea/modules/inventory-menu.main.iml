@@ -5,7 +5,6 @@
       <configuration>
         <autoDetectTypes>
           <platformType>MIXIN</platformType>
-          <platformType>MCP</platformType>
           <platformType>FABRIC</platformType>
         </autoDetectTypes>
         <projectReimportVersion>1</projectReimportVersion>
@@ -13,6 +12,6 @@
     </facet>
   </component>
   <component name="McpModuleSettings">
-    <option name="minecraftVersion" value="1.21.6" />
+    <option name="minecraftVersion" value="1.21.9" />
   </component>
 </module>
