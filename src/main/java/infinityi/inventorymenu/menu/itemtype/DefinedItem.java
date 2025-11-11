@@ -33,6 +33,6 @@ public record DefinedItem(Identifier id) implements MenuItem {
     }
 
     private Optional<MenuItem> getItem(){
-        return InventoryMenu.getDataManager().items().getItem(id);
+        return InventoryMenu.dataManager.items().getItem(id);
     }
 }

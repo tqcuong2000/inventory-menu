@@ -22,13 +22,13 @@ public record MenuNavigationAction(String navigate, Identifier destination) impl
 
     @Override
     public void execute(ServerPlayerEntity player) {
-        MenuLayout layout = InventoryMenu.getDataManager().playerData().currentMenu.get(player);
+        MenuLayout layout = InventoryMenu.dataManager.playerData().currentMenu.get(player);
         switch (navigate) {
             case "close":
                 player.closeHandledScreen();
                 break;
             case "open":
-                InventoryMenu.getDataManager().menus().getMenu(destination).ifPresentOrElse(menuLayout -> menuLayout.open(player), () -> {
+                InventoryMenu.dataManager.menus().getMenu(destination).ifPresentOrElse(menuLayout -> menuLayout.open(player), () -> {
                     player.sendMessage(Text.literal("§cThis menu doesn't exist"));
                     player.closeHandledScreen();
                 });
@@ -51,7 +51,7 @@ public record MenuNavigationAction(String navigate, Identifier destination) impl
     public void scroll_menu(ServerPlayerEntity player, MenuLayout currentLayout, Boolean isNext) {
         String name = currentLayout.menu_group().getFirst();
         int currentIndex = currentLayout.menu_group().getSecond();
-        NavigableMap<Integer, MenuLayout> groupMenu = InventoryMenu.getDataManager().menus().getGroup(name);
+        NavigableMap<Integer, MenuLayout> groupMenu = InventoryMenu.dataManager.menus().getGroup(name);
         if (groupMenu.isEmpty() || groupMenu.size() == 1) return;
         Map.Entry<Integer, MenuLayout> targetEntry = isNext
                 ? groupMenu.higherEntry(currentIndex)

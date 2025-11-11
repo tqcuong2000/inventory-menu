@@ -31,7 +31,7 @@ public class ServerPlayNetworkHandlerMixin {
                 int slotIndex = packet.slot();
                 if (slotIndex >= 0 && slotIndex < inventory.size()) {
                     MenuLayout layout = customMenuInventory.getLayout();
-                    InventoryMenu.getDataManager().playerData().set(player, layout);
+                    InventoryMenu.dataManager.playerData().set(player, layout);
                     layout.items().stream()
                             .filter(item -> item.slot() == slotIndex)
                             .findFirst()

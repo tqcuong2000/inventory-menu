@@ -48,7 +48,7 @@ public record NavigateItem(MenuNavigationAction navigate, Identifier model, Text
         ItemStack item = Items.ARROW.getDefaultStack();
         Identifier menuId = navigate.destination();
 
-        Text name = InventoryMenu.getDataManager().menus().getMenuName(menuId);
+        Text name = InventoryMenu.dataManager.menus().getMenuName(menuId);
         switch (navigate.navigate()) {
             case "open":
                 item = new ItemStack(Items.PAPER);

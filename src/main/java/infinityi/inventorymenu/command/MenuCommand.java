@@ -19,7 +19,7 @@ public class MenuCommand {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             //region "/menu" command
             dispatcher.register(CommandManager.literal("menu").requires(source -> source.hasPermissionLevel(permissionLevel)).then(CommandManager.argument("menu_id", StringArgumentType.greedyString()).suggests((context, builder) -> {
-                                var loadedMenuNames = new ArrayList<>(InventoryMenu.getDataManager().menus().getIds());
+                                var loadedMenuNames = new ArrayList<>(InventoryMenu.dataManager.menus().getIds());
                                 var list = loadedMenuNames.stream().map(Identifier::toString).collect(Collectors.toList());
                                 if (!ConfigManager.getConfig().menu_command_suggestion) list = new ArrayList<>();
                                 return CommandSource.suggestMatching(list, builder);
@@ -29,7 +29,7 @@ public class MenuCommand {
                                 String menuName = StringArgumentType.getString(context, "menu_id");
                                 if (player == null) return 0;
                                 Identifier identifier = Identifier.tryParse(menuName);
-                                InventoryMenu.getDataManager().menus().getMenu(identifier).ifPresentOrElse(layout -> layout.open(player), () -> player.sendMessage(Text.literal("§cThis menu doesn't exist")));
+                                InventoryMenu.dataManager.menus().getMenu(identifier).ifPresentOrElse(layout -> layout.open(player), () -> player.sendMessage(Text.literal("§cThis menu doesn't exist")));
                                 return 1;
                             }))
 

@@ -43,6 +43,10 @@ public class MenuDataManager implements ResourceReloader  {
         return loadedMenus.keySet();
     }
 
+    public boolean hasMenu(Identifier menuId){
+        return this.loadedMenus.containsKey(menuId);
+    }
+
 
     @Override
     public CompletableFuture<Void> reload(
