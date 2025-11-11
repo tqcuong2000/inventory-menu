@@ -6,6 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="98197fe4-cd13-49b3-be0e-4cfc9e055082" name="Changes" comment="initial commit">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/inventory-menu.client.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/inventory-menu.client.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/inventory-menu.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/inventory-menu.main.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/inventory-menu.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/inventory-menu.test.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Data_Generation.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Minecraft_Server.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/Minecraft_Server.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/infinityi/inventorymenu/InventoryMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/infinityi/inventorymenu/InventoryMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/infinityi/inventorymenu/dataparser/MenuDataManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/infinityi/inventorymenu/dataparser/MenuDataManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/infinityi/inventorymenu/menu/MenuLayout.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/infinityi/inventorymenu/menu/MenuLayout.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,6 +57,13 @@
       </state>
     </system>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
@@ -73,20 +89,27 @@
   &quot;associatedIndex&quot;: 2
 }</component>
   <component name="ProjectId" id="352Lk9Oikrlop85p8DbXhOQvWbw" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
+    "Gradle.Build inventory-menu.executor": "Run",
+    "Gradle.inventory-menu [:net.fabricmc.devlaunchinjector.Main.main()].executor": "Run",
     "Gradle.inventory-menu [build].executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master"
+    "git-widget-placeholder": "master",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
 }]]></component>
-  <component name="RunManager" selected="Gradle.inventory-menu [build]">
+  <component name="RunManager" selected="Application.Minecraft Client">
     <configuration name="inventory-menu [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
