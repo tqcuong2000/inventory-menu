@@ -4,11 +4,11 @@ import com.mojang.serialization.MapCodec;
 import infinityi.inventorymenu.menu.itemtype.AdvancementItem;
 import infinityi.inventorymenu.menu.itemtype.DefinedItem;
 import infinityi.inventorymenu.menu.itemtype.NavigateItem;
-import infinityi.inventorymenu.menu.itemtype.StaticItem;
+import infinityi.inventorymenu.menu.itemtype.StandardItem;
 import net.minecraft.util.StringIdentifiable;
 
 public enum MenuItemType implements StringIdentifiable {
-    ITEM("item", StaticItem.CODEC),
+    ITEM("item", StandardItem.CODEC),
     QUEST("advancement", AdvancementItem.CODEC),
     NAVIGATE("navigate", NavigateItem.CODEC),
     DEFINED("defined", DefinedItem.CODEC);
