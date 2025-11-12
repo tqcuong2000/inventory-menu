@@ -41,8 +41,7 @@ public record TeleportCost(List<Integer> amount, Integer saturation, Boolean isP
     }
 
     public boolean hasCost(ServerPlayerEntity player, BlockPos pos) {
-        if (amount.getFirst().equals(0)) return true;
-        return player.experienceLevel > calcCost(player, pos);
+        return player.experienceLevel >= calcCost(player, pos);
     }
 
     public void applyCost(ServerPlayerEntity player, BlockPos pos) {
