@@ -19,7 +19,11 @@ public record MenuElement(MenuItemMeta meta, MenuItem item) {
     }
 
     public void onClick(ServerPlayerEntity player){
-        if (!meta.condition().test(player, "item")) return;
+        if (!meta.condition().test(player, "item")) {
+            meta.resolveSound(player, false);
+            return;
+        }
+        meta.resolveSound(player, true);
         if (item.actions().isEmpty()) return;
         for (Action action : item.actions()){
             action.execute(player);
