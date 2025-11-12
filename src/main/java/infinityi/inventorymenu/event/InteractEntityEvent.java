@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -30,7 +31,11 @@ public class InteractEntityEvent extends EventManager{
                 .findFirst();
         if (found.isEmpty()) return ActionResult.PASS;
         Identifier menuId = Identifier.of(found.get().substring(5).toLowerCase(Locale.ROOT));
-        return openMenu(menuId, getServerPlayer(playerEntity));
+        ServerPlayerEntity player = getServerPlayer(playerEntity);
+        if (player == null) {
+            return ActionResult.PASS;
+        }
+        return openMenu(menuId, player);
     }
 
     public static void register(MinecraftServer server){

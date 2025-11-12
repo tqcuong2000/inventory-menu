@@ -1,10 +1,12 @@
 package infinityi.inventorymenu.event;
 
+import infinityi.inventorymenu.InventoryMenu;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -22,7 +24,11 @@ public class UseItemEvent extends EventManager{
         var customData = itemStack.get(DataComponentTypes.CUSTOM_DATA);
         if (customData == null || !customData.copyNbt().contains("menu")) return ActionResult.PASS;
         Identifier menuId = Identifier.of(customData.copyNbt().getString("menu", ""));
-        return openMenu(menuId, getServerPlayer(playerEntity));
+        ServerPlayerEntity player = getServerPlayer(playerEntity);
+        if (player == null) {
+            return ActionResult.PASS;
+        }
+        return openMenu(menuId, player);
     }
 
     public static void register(MinecraftServer server){
