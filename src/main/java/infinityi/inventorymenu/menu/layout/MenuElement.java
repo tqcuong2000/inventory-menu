@@ -18,7 +18,7 @@ public record MenuElement(MenuItemMeta meta, MenuItem item) {
         return meta.slot().resolveSlot();
     }
 
-    public void execute(ServerPlayerEntity player){
+    public void onClick(ServerPlayerEntity player){
         if (!meta.condition().test(player, "item")) return;
         if (item.actions().isEmpty()) return;
         for (Action action : item.actions()){

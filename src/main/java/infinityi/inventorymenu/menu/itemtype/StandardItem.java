@@ -10,11 +10,11 @@ import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.List;
 
-public record StaticItem(ItemStack item, List<Action> actions) implements MenuItem {
-    public static final MapCodec<StaticItem> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            ItemStack.CODEC.fieldOf("item").forGetter(StaticItem::item),
+public record StandardItem(ItemStack item, List<Action> actions) implements MenuItem {
+    public static final MapCodec<StandardItem> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            ItemStack.CODEC.fieldOf("item").forGetter(StandardItem::item),
             Action.LIST_CODEC.optionalFieldOf("action", Action.EMPTY_LIST).forGetter(MenuItem::actions)
-    ).apply(instance, StaticItem::new));
+    ).apply(instance, StandardItem::new));
 
     @Override
     public ItemStack resolveItemStack(ServerPlayerEntity player) {
