@@ -1,6 +1,5 @@
 package infinityi.inventorymenu.event;
 
-import infinityi.inventorymenu.InventoryMenu;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.player.PlayerEntity;
