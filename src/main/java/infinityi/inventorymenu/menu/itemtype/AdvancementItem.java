@@ -22,17 +22,13 @@ import net.minecraft.util.Identifier;
 import java.util.ArrayList;
 import java.util.List;
 
-public record AdvancementItem(Identifier questId, boolean showDescription, boolean showComplete) implements MenuItem {
+public record AdvancementItem(Identifier questId, boolean showDescription, boolean showComplete, List<Action> actions) implements MenuItem {
     public static final MapCodec<AdvancementItem> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Identifier.CODEC.fieldOf("id").forGetter(AdvancementItem::questId),
             Codec.BOOL.optionalFieldOf("show_description", true).forGetter(AdvancementItem::showDescription),
-            Codec.BOOL.optionalFieldOf("show_complete", true).forGetter(AdvancementItem::showComplete)
+            Codec.BOOL.optionalFieldOf("show_complete", true).forGetter(AdvancementItem::showComplete),
+            Action.LIST_CODEC.optionalFieldOf("action", Action.EMPTY_LIST).forGetter(MenuItem::actions)
     ).apply(instance, AdvancementItem::new));
-
-    @Override
-    public List<Action> actions() {
-        return Action.EMPTY_LIST;
-    }
 
     @Override
     public ItemStack resolveItemStack(ServerPlayerEntity player) {
