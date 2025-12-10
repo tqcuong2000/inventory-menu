@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.11.8'
+    id 'fabric-loom' version '1.14-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -10,22 +10,6 @@ base {
     archivesName = project.archives_base_name
 }
 
-loom {
-    splitEnvironmentSourceSets()
-
-    mods {
-        "inventory-menu" {
-            sourceSet sourceSets.main
-            sourceSet sourceSets.client
-        }
-    }
-}
-
-fabricApi {
-    configureDataGeneration {
-        client = true
-    }
-}
 
 repositories {
     // Add repositories to retrieve artifacts from in here.

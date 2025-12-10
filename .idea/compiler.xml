@@ -3,11 +3,4 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="21" />
   </component>
-  <component name="JavacSettings">
-    <option name="ADDITIONAL_OPTIONS_STRING" value="-AoutRefMapFile=D:\Cloud_Storage\Devolopements\inventory-menu\build\classes\java\client\client-inventory-menu-refmap.json -AdefaultObfuscationEnv=named:intermediary -Aquiet=true -AoutMapFileNamedIntermediary=D:\Cloud_Storage\Devolopements\inventory-menu\build\loom-cache\mixin-map-net.fabricmc.yarn.1_21_10.1.21.10+build.2-v2.client.tiny -AinMapFileNamedIntermediary=C:\Users\cuong\.gradle\caches\fabric-loom\1.21.10\net.fabricmc.yarn.1_21_10.1.21.10+build.2-v2\mappings.tiny" />
-    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="inventory-menu.main" options="-AoutRefMapFile=D:\Cloud_Storage\Devolopements\inventory-menu\build\classes\java\main\inventory-menu-refmap.json -AdefaultObfuscationEnv=named:intermediary -Aquiet=true -AoutMapFileNamedIntermediary=D:\Cloud_Storage\Devolopements\inventory-menu\build\loom-cache\mixin-map-net.fabricmc.yarn.1_21_10.1.21.10+build.2-v2.main.tiny -AinMapFileNamedIntermediary=C:\Users\cuong\.gradle\caches\fabric-loom\1.21.10\net.fabricmc.yarn.1_21_10.1.21.10+build.2-v2\mappings.tiny" />
-      <module name="inventory-menu.test" options="-AoutRefMapFile=D:\Cloud_Storage\Devolopements\inventory-menu\build\classes\java\test\test-inventory-menu-refmap.json -AdefaultObfuscationEnv=named:intermediary -Aquiet=true -AoutMapFileNamedIntermediary=D:\Cloud_Storage\Devolopements\inventory-menu\build\loom-cache\mixin-map-net.fabricmc.yarn.1_21_10.1.21.10+build.2-v2.test.tiny -AinMapFileNamedIntermediary=C:\Users\cuong\.gradle\caches\fabric-loom\1.21.10\net.fabricmc.yarn.1_21_10.1.21.10+build.2-v2\mappings.tiny" />
-    </option>
-  </component>
 </project>

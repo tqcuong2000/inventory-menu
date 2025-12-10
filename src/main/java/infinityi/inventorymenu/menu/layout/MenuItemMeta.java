@@ -5,7 +5,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import infinityi.inventorymenu.menu.MenuPredicate;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import oshi.util.tuples.Pair;
@@ -44,10 +43,10 @@ public record MenuItemMeta(SlotPair slot, MenuPredicate condition, List<String> 
         if (sounds.isEmpty()) return;
         if (success && soundMap.containsKey(sounds.getFirst())){
             var sound = soundMap.get(sounds.getFirst());
-            player.playSoundToPlayer(sound.getA(), SoundCategory.UI, 0.5f, sound.getB());
+            player.playSound(sound.getA(), 0.5f, sound.getB());
         } else if (!success && soundMap.containsKey(sounds.getLast())){
             var sound = soundMap.get(sounds.getLast());
-            player.playSoundToPlayer(sound.getA(), SoundCategory.UI, 0.5f, sound.getB());
+            player.playSound(sound.getA(), 0.5f, sound.getB());
         }
     }
 
