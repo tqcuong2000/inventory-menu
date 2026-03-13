@@ -1,13 +1,10 @@
 package infinityi.inventorymenu.menu.layout;
 
 import com.mojang.serialization.MapCodec;
-import infinityi.inventorymenu.menu.itemtype.AdvancementItem;
-import infinityi.inventorymenu.menu.itemtype.DefinedItem;
-import infinityi.inventorymenu.menu.itemtype.NavigateItem;
-import infinityi.inventorymenu.menu.itemtype.StandardItem;
-import net.minecraft.util.StringIdentifiable;
+import infinityi.inventorymenu.menu.itemtype.*;
+import net.minecraft.util.StringRepresentable;
 
-public enum MenuItemType implements StringIdentifiable {
+public enum MenuItemType implements StringRepresentable {
     ITEM("item", StandardItem.CODEC),
     QUEST("advancement", AdvancementItem.CODEC),
     NAVIGATE("navigate", NavigateItem.CODEC),
@@ -22,7 +19,7 @@ public enum MenuItemType implements StringIdentifiable {
     }
 
     @Override
-    public String asString() {
+    public String getSerializedName() {
         return this.name;
     }
 

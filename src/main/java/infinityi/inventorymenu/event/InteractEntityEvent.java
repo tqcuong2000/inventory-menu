@@ -1,15 +1,15 @@
 package infinityi.inventorymenu.event;
 
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
@@ -21,19 +21,19 @@ public class InteractEntityEvent extends EventManager{
         super(server);
     }
 
-    public ActionResult interact(PlayerEntity playerEntity, World world, Hand hand, Entity entity, @Nullable EntityHitResult entityHitResult) {
-        if (world.isClient()) return ActionResult.PASS;
-        if (hand != Hand.MAIN_HAND) return ActionResult.PASS;
-        var tags = entity.getCommandTags();
-        if (tags.isEmpty()) return ActionResult.PASS;
+    public InteractionResult interact(Player playerEntity, Level world, InteractionHand hand, Entity entity, @Nullable EntityHitResult entityHitResult) {
+        if (world.isClientSide()) return InteractionResult.PASS;
+        if (hand != InteractionHand.MAIN_HAND) return InteractionResult.PASS;
+        var tags = entity.getTags();
+        if (tags.isEmpty()) return InteractionResult.PASS;
         Optional<String> found = tags.stream()
                 .filter(tag -> tag.startsWith("menu-"))
                 .findFirst();
-        if (found.isEmpty()) return ActionResult.PASS;
-        Identifier menuId = Identifier.of(found.get().substring(5).toLowerCase(Locale.ROOT));
-        ServerPlayerEntity player = getServerPlayer(playerEntity);
+        if (found.isEmpty()) return InteractionResult.PASS;
+        Identifier menuId = Identifier.parse(found.get().substring(5).toLowerCase(Locale.ROOT));
+        ServerPlayer player = getServerPlayer(playerEntity);
         if (player == null) {
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         }
         return openMenu(menuId, player);
     }

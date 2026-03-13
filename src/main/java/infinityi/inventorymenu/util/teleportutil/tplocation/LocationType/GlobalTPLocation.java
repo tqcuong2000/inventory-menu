@@ -5,12 +5,12 @@ import infinityi.inventorymenu.action.type.TeleportAction;
 import infinityi.inventorymenu.util.teleportutil.TeleportCost;
 import infinityi.inventorymenu.util.teleportutil.TeleportUtils;
 import infinityi.inventorymenu.util.teleportutil.tplocation.TPLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.GlobalPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 
 
 public record GlobalTPLocation(GlobalPos location) implements TPLocation {
@@ -19,21 +19,21 @@ public record GlobalTPLocation(GlobalPos location) implements TPLocation {
 
 
     @Override
-    public void teleport(ServerPlayerEntity player, boolean safeCheck, TeleportCost cost) {
-        ServerWorld destinationWorld = player.getEntityWorld().getServer().getWorld(location.dimension());
+    public void teleport(ServerPlayer player, boolean safeCheck, TeleportCost cost) {
+        ServerLevel destinationWorld = player.level().getServer().getLevel(location.dimension());
         if (destinationWorld == null) {
-            player.sendMessage(Text.translatable("§cThat world does not exist! %s", location.dimension().getValue().toString()));
+            player.sendSystemMessage(Component.translatable("§cThat world does not exist! %s", location.dimension().identifier().toString()));
             return;
         }
         if (safeCheck) {
             if (TeleportAction.isDangerLocation(destinationWorld, location.pos())) {
-                player.sendMessage(Text.translatable("§cYou cannot teleport to a dangerous location!"));
+                player.sendSystemMessage(Component.translatable("§cYou cannot teleport to a dangerous location!"));
                 return;
             }
         }
         cost.applyCost(player, location.pos());
-        player.closeHandledScreen();
-        TeleportUtils.teleport(player, location.pos().toCenterPos(), destinationWorld);
+        player.closeContainer();
+        TeleportUtils.teleport(player, location.pos().getCenter(), destinationWorld);
     }
 
     @Override
@@ -42,15 +42,15 @@ public record GlobalTPLocation(GlobalPos location) implements TPLocation {
     }
 
     @Override
-    public ServerPlayerEntity getPlayer(MinecraftServer server) {
+    public ServerPlayer getPlayer(MinecraftServer server) {
         return null;
     }
 
     @Override
-    public Integer getDistance(ServerPlayerEntity player) {
-        if (player.getEntityWorld().getRegistryKey().equals(location.dimension())) {
-            return TeleportAction.distanceBetween(player.getBlockPos(), location.pos());
+    public Integer getDistance(ServerPlayer player) {
+        if (player.level().dimension().equals(location.dimension())) {
+            return TeleportAction.distanceBetween(player.blockPosition(), location.pos());
         }
-        return TeleportAction.distanceBetween(player.getBlockPos(), BlockPos.ofFloored(0, 0, 0));
+        return TeleportAction.distanceBetween(player.blockPosition(), BlockPos.containing(0, 0, 0));
     }
 }

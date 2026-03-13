@@ -5,28 +5,28 @@ import infinityi.inventorymenu.action.type.TeleportAction;
 import infinityi.inventorymenu.util.teleportutil.TeleportCost;
 import infinityi.inventorymenu.util.teleportutil.TeleportUtils;
 import infinityi.inventorymenu.util.teleportutil.tplocation.TPLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 
 public record BlockTPLocation(BlockPos location) implements TPLocation {
 
     public static final Codec<BlockTPLocation> CODEC = BlockPos.CODEC.xmap(BlockTPLocation::new, BlockTPLocation::location);
 
     @Override
-    public void teleport(ServerPlayerEntity player, boolean safeCheck, TeleportCost cost) {
-        ServerWorld destinationWorld = player.getEntityWorld().getServer().getOverworld();
+    public void teleport(ServerPlayer player, boolean safeCheck, TeleportCost cost) {
+        ServerLevel destinationWorld = player.level().getServer().overworld();
         if (safeCheck) {
             if (TeleportAction.isDangerLocation(destinationWorld, location)) {
-                player.sendMessage(Text.translatable("§cYou cannot teleport to a dangerous location!"));
+                player.sendSystemMessage(Component.translatable("§cYou cannot teleport to a dangerous location!"));
                 return;
             }
         }
         cost.applyCost(player, location);
-        player.closeHandledScreen();
-        TeleportUtils.teleport(player, location.toCenterPos(), destinationWorld);
+        player.closeContainer();
+        TeleportUtils.teleport(player, location.getCenter(), destinationWorld);
 
     }
 
@@ -36,13 +36,13 @@ public record BlockTPLocation(BlockPos location) implements TPLocation {
     }
 
     @Override
-    public ServerPlayerEntity getPlayer(MinecraftServer server) {
+    public ServerPlayer getPlayer(MinecraftServer server) {
         return null;
     }
 
     @Override
-    public Integer getDistance(ServerPlayerEntity player) {
-        return TeleportAction.distanceBetween(player.getBlockPos(), location);
+    public Integer getDistance(ServerPlayer player) {
+        return TeleportAction.distanceBetween(player.blockPosition(), location);
     }
 
 }

@@ -8,17 +8,16 @@ import infinityi.inventorymenu.action.ActionType;
 import infinityi.inventorymenu.placeholder.providers.PlaceholderProvider;
 import infinityi.inventorymenu.util.teleportutil.TeleportCost;
 import infinityi.inventorymenu.util.teleportutil.tplocation.TPLocation;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
-
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 
 
 public record TeleportAction(TPLocation target, TeleportCost cost,
@@ -30,48 +29,48 @@ public record TeleportAction(TPLocation target, TeleportCost cost,
                     Codec.BOOL.optionalFieldOf("safe_check", false).forGetter(TeleportAction::safe_check)
             ).apply(instance, TeleportAction::new));
 
-    public static Map<String, Supplier<Object>> createKeySuppliers(ServerPlayerEntity player, TeleportAction action) {
+    public static Map<String, Supplier<Object>> createKeySuppliers(ServerPlayer player, TeleportAction action) {
         return Map.of(
-                "xp_cost", () -> action.cost.calcCost(player, action.target.getPos(player.getEntityWorld().getServer())),
+                "xp_cost", () -> action.cost.calcCost(player, action.target.getPos(player.level().getServer())),
                 "xp_cost_type", () -> action.cost.isPoint().toString(),
                 "target_pos", () -> {
-                        BlockPos pos = action.target.getPos(player.getEntityWorld().getServer());
+                        BlockPos pos = action.target.getPos(player.level().getServer());
                         return String.format("X: %s Y: %s Z: %s", pos.getX(), pos.getY(), pos.getZ());
                         },
-                "target_name", () -> Optional.ofNullable(action.target.getPlayer(player.getEntityWorld().getServer())).map(s -> s.getName().getString()).orElse("?"),
+                "target_name", () -> Optional.ofNullable(action.target.getPlayer(player.level().getServer())).map(s -> s.getName().getString()).orElse("?"),
                 "distance", () -> action.target.getDistance(player)
         );
     }
 
-    public static boolean isDangerLocation(ServerWorld world, BlockPos pos) {
+    public static boolean isDangerLocation(ServerLevel world, BlockPos pos) {
         if (world == null || pos == null) {
             return true;
         }
-        BlockPos floorPos = pos.down();
-        BlockPos headPos = pos.up();
+        BlockPos floorPos = pos.below();
+        BlockPos headPos = pos.above();
         world.getChunk(floorPos);
-        if (!world.getBlockState(floorPos).isSolidBlock(world, headPos)) return true;
+        if (!world.getBlockState(floorPos).isRedstoneConductor(world, headPos)) return true;
         BlockState feetState = world.getBlockState(pos);
         BlockState headState = world.getBlockState(headPos);
-        if (feetState.shouldSuffocate(world, pos) || headState.shouldSuffocate(world, headPos)) return true;
+        if (feetState.isSuffocating(world, pos) || headState.isSuffocating(world, headPos)) return true;
         return isDangerBlock(feetState) || isDangerBlock(headState);
     }
 
     public static int distanceBetween(BlockPos pos1, BlockPos pos2) {
-        return pos1.getChebyshevDistance(pos2);
+        return pos1.distChessboard(pos2);
     }
 
     private static boolean isDangerBlock(BlockState state) {
-        return state.isOf(Blocks.LAVA) || state.isOf(Blocks.FIRE) || state.isOf(Blocks.CACTUS) || state.isOf(Blocks.SWEET_BERRY_BUSH) || state.isOf(Blocks.POWDER_SNOW);
+        return state.is(Blocks.LAVA) || state.is(Blocks.FIRE) || state.is(Blocks.CACTUS) || state.is(Blocks.SWEET_BERRY_BUSH) || state.is(Blocks.POWDER_SNOW);
     }
 
     @Override
-    public void execute(ServerPlayerEntity player) {
-        BlockPos pos = target.getPos(player.getEntityWorld().getServer());
+    public void execute(ServerPlayer player) {
+        BlockPos pos = target.getPos(player.level().getServer());
         if (cost.hasCost(player, pos)) {
             target.teleport(player, safe_check, cost);
         } else {
-            player.sendMessage(Text.translatable("Not enough experience.").formatted(Formatting.RED));
+            player.sendSystemMessage(Component.translatable("Not enough experience.").withStyle(ChatFormatting.RED));
         }
     }
 
@@ -81,7 +80,7 @@ public record TeleportAction(TPLocation target, TeleportCost cost,
     }
 
     @Override
-    public Optional<String> getKey(String key, ServerPlayerEntity player) {
+    public Optional<String> getKey(String key, ServerPlayer player) {
         Map<String, Supplier<Object>> keySuppliers = createKeySuppliers(player, this);
         return Optional.ofNullable(keySuppliers.get(key))
                 .map(Supplier::get)

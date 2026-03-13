@@ -8,11 +8,11 @@ import infinityi.inventorymenu.action.Action;
 import infinityi.inventorymenu.action.ActionType;
 import infinityi.inventorymenu.placeholder.providers.PlaceholderSets;
 import infinityi.inventorymenu.placeholder.resolvers.PlaceholderResolver;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import java.util.List;
 
 public record CommandAction(List<String> commands, boolean asPlayer, boolean silent) implements Action {
@@ -29,13 +29,16 @@ public record CommandAction(List<String> commands, boolean asPlayer, boolean sil
     ).apply(inst, CommandAction::new));
 
     @Override
-    public void execute(ServerPlayerEntity player) {
-        ServerCommandSource source = asPlayer ? player.getCommandSource() : player.getEntityWorld().getServer().getCommandSource();
-        if (silent) source = source.withSilent();
-        CommandManager manager = player.getEntityWorld().getServer().getCommandManager();
+    public void execute(ServerPlayer player) {
+        MinecraftServer server = player.level().getServer();
+        if (server == null) return;
+        CommandSourceStack commandSource = server.createCommandSourceStack();
+        if (asPlayer) commandSource = player.createCommandSourceStack();
+        if (silent) commandSource = commandSource.withSuppressedOutput();
+        Commands manager = server.getCommands();
         for (String command : commands) {
-            command = PlaceholderResolver.resolve(Text.of(command), PlaceholderSets.playerServerSet(player), player).getString();
-            manager.parseAndExecute(source, command);
+            command = PlaceholderResolver.resolve(Component.nullToEmpty(command), PlaceholderSets.playerServerSet(player), player).getString();
+            manager.performPrefixedCommand(commandSource, command);
         }
     }
 

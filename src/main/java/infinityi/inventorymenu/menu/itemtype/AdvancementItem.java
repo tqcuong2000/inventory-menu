@@ -6,21 +6,20 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import infinityi.inventorymenu.action.Action;
 import infinityi.inventorymenu.menu.layout.MenuItem;
 import infinityi.inventorymenu.menu.layout.MenuItemType;
-import net.minecraft.advancement.Advancement;
-import net.minecraft.advancement.AdvancementDisplay;
-import net.minecraft.advancement.AdvancementEntry;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.LoreComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.DisplayInfo;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ItemLore;
 
 public record AdvancementItem(Identifier questId, boolean showDescription, boolean showComplete, List<Action> actions) implements MenuItem {
     public static final MapCodec<AdvancementItem> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -31,33 +30,33 @@ public record AdvancementItem(Identifier questId, boolean showDescription, boole
     ).apply(instance, AdvancementItem::new));
 
     @Override
-    public ItemStack resolveItemStack(ServerPlayerEntity player) {
+    public ItemStack resolveItemStack(ServerPlayer player) {
         ItemStack itemStack = new ItemStack(Items.BOOK);
-        AdvancementEntry advancementEntry = player.getEntityWorld().getServer().getAdvancementLoader().get(questId);
+        AdvancementHolder advancementEntry = player.level().getServer().getAdvancements().get(questId);
         if (advancementEntry == null) return itemStack;
         Advancement advancement = advancementEntry.value();
-        AdvancementDisplay display = advancement.display().orElse(null);
+        DisplayInfo display = advancement.display().orElse(null);
         if (display == null) return itemStack;
-        Text name = display.getTitle().copy();
+        Component name = display.getTitle().copy();
         if (name.getStyle().isEmpty()) name = name.copy()
                 .setStyle(Style.EMPTY.withItalic(false))
-                .formatted(Formatting.GREEN);
+                .withStyle(ChatFormatting.GREEN);
         ItemStack item = display.getIcon();
 
-        List<Text> list = new ArrayList<>();
+        List<Component> list = new ArrayList<>();
         if (showDescription){
-            Text description = display.getDescription();
+            Component description = display.getDescription();
             if (description.getStyle().isEmpty()) description = description.copy()
                     .setStyle(Style.EMPTY.withItalic(false))
-                    .formatted(Formatting.GRAY);
+                    .withStyle(ChatFormatting.GRAY);
             list.add(description.copy());
         }
         if (showComplete){
-            boolean isDone = player.getAdvancementTracker().getProgress(advancementEntry).isDone();
-            list.add(isDone ? Text.translatable("§aCompleted!") : Text.translatable("§cNot complete."));
+            boolean isDone = player.getAdvancements().getOrStartProgress(advancementEntry).isDone();
+            list.add(isDone ? Component.translatable("§aCompleted!") : Component.translatable("§cNot complete."));
         }
-        item.set(DataComponentTypes.CUSTOM_NAME, name);
-        item.set(DataComponentTypes.LORE, new LoreComponent(list));
+        item.set(DataComponents.CUSTOM_NAME, name);
+        item.set(DataComponents.LORE, new ItemLore(list));
         return item;
     }
 

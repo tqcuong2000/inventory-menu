@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "inventory-menu",
+  "id": "${id}",
   "version": "${version}",
-  "name": "Inventory Menu",
+  "name": "${name}",
   "description": "nventory Menu is a server side data-driven mod that allows players to create customizable, chest-style menus in Minecraft.",
   "authors": [
     "InfinityI"
@@ -20,8 +20,11 @@
     "inventory-menu.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=${loader_version}",
+    "fabricloader": ">=${loader}",
     "fabric": "*",
-    "minecraft": "${minecraft_version}"
+    "minecraft": "${minecraft}"
+  },
+  "suggests": {
+    "fabricproxy-lite": ">=2.11.0"
   }
 }

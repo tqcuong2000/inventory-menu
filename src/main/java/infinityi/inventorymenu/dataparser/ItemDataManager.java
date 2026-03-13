@@ -5,11 +5,6 @@ import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 import infinityi.inventorymenu.InventoryMenu;
 import infinityi.inventorymenu.menu.layout.MenuItem;
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.ResourceReloader;
-import net.minecraft.util.Identifier;
-
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.HashMap;
@@ -17,40 +12,44 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
 
-public class ItemDataManager implements ResourceReloader {
+public class ItemDataManager implements PreparableReloadListener {
     private static final String MENU_ITEMS_DIR = "menu-item";
     private static final Map<Identifier, MenuItem> loadItems = new HashMap<>();
 
     @Override
     public CompletableFuture<Void> reload(
-            ResourceReloader.Store store,
+            PreparableReloadListener.SharedState store,
             Executor prepareExecutor,
-            ResourceReloader.Synchronizer reloadSynchronizer,
+            PreparableReloadListener.PreparationBarrier reloadSynchronizer,
             Executor applyExecutor
     ) {
-        ResourceManager manager = store.getResourceManager();
+        ResourceManager manager = store.resourceManager();
 
         return CompletableFuture.supplyAsync(() -> prepare(manager), prepareExecutor)
-                .thenCompose(reloadSynchronizer::whenPrepared)
+                .thenCompose(reloadSynchronizer::wait)
                 .thenAcceptAsync(this::apply, applyExecutor);
     }
 
 
     protected Map<Identifier,MenuItem> prepare(ResourceManager manager) {
         Map<Identifier, MenuItem> preparedData = new HashMap<>();
-        Map<Identifier, Resource> foundResources = manager.findResources(
+        Map<Identifier, Resource> foundResources = manager.listResources(
                 MENU_ITEMS_DIR,
                 path -> path.getPath().endsWith(".json"));
 
         for (Map.Entry<Identifier, Resource> entry : foundResources.entrySet()) {
-            try (Reader reader = new InputStreamReader(entry.getValue().getInputStream())) {
+            try (Reader reader = new InputStreamReader(entry.getValue().open())) {
                 JsonElement jsonElement = JsonParser.parseReader(reader);
                 MenuItem element = MenuItem.CODEC.parse(JsonOps.INSTANCE, jsonElement)
                         .getOrThrow(IllegalStateException::new);
                 String path = entry.getKey().toString();
                 path = path.substring(0, path.lastIndexOf(".")).replaceFirst("menu-item/", "");
-                preparedData.put(Identifier.of(path), element);
+                preparedData.put(Identifier.parse(path), element);
             } catch (Exception e) {
                 InventoryMenu.LOGGER.error("Error while reading file resource: {}", entry.getKey(), e);
             }

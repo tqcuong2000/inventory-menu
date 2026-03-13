@@ -5,10 +5,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import infinityi.inventorymenu.action.Action;
 import infinityi.inventorymenu.menu.layout.MenuItem;
 import infinityi.inventorymenu.menu.layout.MenuItemType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
-
 import java.util.List;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 
 public record StandardItem(ItemStack item, List<Action> actions) implements MenuItem {
     public static final MapCodec<StandardItem> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -17,7 +16,7 @@ public record StandardItem(ItemStack item, List<Action> actions) implements Menu
     ).apply(instance, StandardItem::new));
 
     @Override
-    public ItemStack resolveItemStack(ServerPlayerEntity player) {
+    public ItemStack resolveItemStack(ServerPlayer player) {
         return this.item.copy();
     }
 

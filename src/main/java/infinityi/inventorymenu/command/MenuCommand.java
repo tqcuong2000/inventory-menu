@@ -4,14 +4,13 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import infinityi.inventorymenu.InventoryMenu;
 import infinityi.inventorymenu.dataparser.ConfigManager;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.permission.Permission;
-import net.minecraft.command.permission.PermissionLevel;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permission;
+import net.minecraft.server.permissions.PermissionLevel;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -21,19 +20,19 @@ public class MenuCommand {
                 .register((dispatcher, registryAccess, environment) -> {
             //region "/menu" command
             dispatcher
-                    .register(CommandManager.literal("menu").requires(
+                    .register(Commands.literal("menu").requires(
                                     MenuCommand::hasPermit
                             )
-                    .then(CommandManager
+                    .then(Commands
                             .argument("menu_id", StringArgumentType.greedyString())
                             .suggests((context, builder) -> {
                                 var loadedMenuNames = new ArrayList<>(InventoryMenu.dataManager.menus().getIds());
                                 var list = loadedMenuNames.stream().map(Identifier::toString).collect(Collectors.toList());
                                 if (!ConfigManager.getConfig().menu_command_suggestion) list = new ArrayList<>();
-                                return CommandSource.suggestMatching(list, builder);
+                                return SharedSuggestionProvider.suggest(list, builder);
                             })
                             .executes(context -> {
-                                ServerPlayerEntity player = context.getSource().getPlayer();
+                                ServerPlayer player = context.getSource().getPlayer();
                                 String menuName = StringArgumentType.getString(context, "menu_id");
                                 if (player == null) return 0;
                                 Identifier identifier = Identifier.tryParse(menuName);
@@ -41,7 +40,7 @@ public class MenuCommand {
                                         .getMenu(identifier)
                                         .ifPresentOrElse(layout ->
                                                 layout.open(player), () ->
-                                                player.sendMessage(Text.literal("§cThis menu doesn't exist")));
+                                                player.sendSystemMessage(Component.literal("§cThis menu doesn't exist")));
                                 return 1;
                             }))
 
@@ -49,9 +48,9 @@ public class MenuCommand {
             //endregion
         });
     }
-    private static boolean hasPermit(CommandSource source) {
+    private static boolean hasPermit(SharedSuggestionProvider source) {
         int level = ConfigManager.getConfig().menu_command_permission;
-        var permission = new Permission.Level(PermissionLevel.fromLevel(level));
-        return source.getPermissions().hasPermission(permission);
+        var permission = new Permission.HasCommandLevel(PermissionLevel.byId(level));
+        return source.permissions().hasPermission(permission);
     }
 }

@@ -1,34 +1,33 @@
-package infinityi.inventorymenu.menu.itemtype;
+package infinityi.inventorymenu.action.type;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import infinityi.inventorymenu.action.Action;
-import infinityi.inventorymenu.menu.layout.MenuItem;
-import infinityi.inventorymenu.menu.layout.MenuItemType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
+import infinityi.inventorymenu.action.ActionType;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 
-import java.util.List;
 
-public record ProxyItem(ItemStack item, String serverName) implements MenuItem {
+public record ProxyAction(ItemStack item, String serverName) implements Action{
 
-    public static final MapCodec<ProxyItem> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            ItemStack.CODEC.fieldOf("item").forGetter(ProxyItem::item),
-            Codec.STRING.fieldOf("server")
-    ).apply(instance, StandardItem::new));
+    public static final MapCodec<ProxyAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            ItemStack.CODEC.fieldOf("item").forGetter(ProxyAction::item),
+            Codec.STRING.fieldOf("server").forGetter(ProxyAction::serverName)
+    ).apply(instance, ProxyAction::new));
+
     @Override
-    public List<Action> actions() {
-        return List.of();
+    public void execute(ServerPlayer player) {
+
     }
 
     @Override
-    public ItemStack resolveItemStack(ServerPlayerEntity player) {
-        return this.item.copy();
+    public ActionType getType() {
+        return ActionType.PROXY;
     }
 
-    @Override
-    public MenuItemType getType() {
-        return MenuItemType.PROXY;
+    public static void register(ServerPlayNetworking networking){
+
     }
 }

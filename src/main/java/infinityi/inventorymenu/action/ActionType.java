@@ -2,14 +2,15 @@ package infinityi.inventorymenu.action;
 
 import com.mojang.serialization.MapCodec;
 import infinityi.inventorymenu.action.type.*;
-import net.minecraft.util.StringIdentifiable;
+import net.minecraft.util.StringRepresentable;
 
-public enum ActionType implements StringIdentifiable {
+public enum ActionType implements StringRepresentable {
     NONE("none", NoAction.CODEC),
     MESSAGE("message", MessageAction.CODEC),
     NAVIGATE("navigate", MenuNavigationAction.CODEC),
     TELEPORT("teleport", TeleportAction.CODEC),
-    COMMAND("command", CommandAction.CODEC);
+    COMMAND("command", CommandAction.CODEC),
+    PROXY("proxy", ProxyAction.CODEC);
     private final String name;
     private final MapCodec<? extends Action> codec;
 
@@ -19,7 +20,7 @@ public enum ActionType implements StringIdentifiable {
     }
 
     @Override
-    public String asString() {
+    public String getSerializedName() {
         return this.name;
     }
 

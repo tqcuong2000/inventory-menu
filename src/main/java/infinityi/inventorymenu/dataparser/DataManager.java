@@ -2,8 +2,8 @@ package infinityi.inventorymenu.dataparser;
 
 import infinityi.inventorymenu.InventoryMenu;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.PackType;
 
 public class DataManager {
     private final MenuDataManager menuDataManager;
@@ -23,7 +23,7 @@ public class DataManager {
     public PlayerData playerData() {return playerData;}
 
     public void register(){
-        ResourceLoader.get(ResourceType.SERVER_DATA).registerReloader(Identifier.of(InventoryMenu.MOD_ID, "menu_data_manager"), this.menus());
-        ResourceLoader.get(ResourceType.SERVER_DATA).registerReloader(Identifier.of(InventoryMenu.MOD_ID, "item_menu_data_manager"), this.items());
+        ResourceLoader.get(PackType.SERVER_DATA).registerReloader(Identifier.fromNamespaceAndPath(InventoryMenu.MOD_ID, "menu_data_manager"), this.menus());
+        ResourceLoader.get(PackType.SERVER_DATA).registerReloader(Identifier.fromNamespaceAndPath(InventoryMenu.MOD_ID, "item_menu_data_manager"), this.items());
     }
 }
