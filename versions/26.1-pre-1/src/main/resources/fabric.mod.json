@@ -23,8 +23,5 @@
     "fabricloader": ">=${loader}",
     "fabric-api": "*",
     "minecraft": "${minecraft}"
-  },
-  "suggests": {
-    "fabricproxy-lite": ">=2.11.0"
   }
 }
