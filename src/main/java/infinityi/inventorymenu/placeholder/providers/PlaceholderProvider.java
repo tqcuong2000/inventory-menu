@@ -1,10 +1,9 @@
 package infinityi.inventorymenu.placeholder.providers;
 
-import net.minecraft.server.network.ServerPlayerEntity;
-
 import java.util.Optional;
+import net.minecraft.server.level.ServerPlayer;
 
 public interface PlaceholderProvider {
 
-    Optional<String> getKey(String key, ServerPlayerEntity player);
+    Optional<String> getKey(String key, ServerPlayer player);
 }

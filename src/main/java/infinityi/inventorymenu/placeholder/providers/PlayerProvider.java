@@ -1,56 +1,55 @@
 package infinityi.inventorymenu.placeholder.providers;
 
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.stat.ServerStatHandler;
-import net.minecraft.stat.Stat;
-import net.minecraft.stat.StatType;
-import net.minecraft.stat.Stats;
-import net.minecraft.util.Identifier;
-
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.ServerStatsCounter;
+import net.minecraft.stats.Stat;
+import net.minecraft.stats.StatType;
+import net.minecraft.stats.Stats;
 
 public class PlayerProvider implements PlaceholderProvider {
 
-    public final ServerPlayerEntity player;
+    public final ServerPlayer player;
     private final Map<String, Supplier<Object>> keySuppliers;
 
-    public PlayerProvider(ServerPlayerEntity player) {
+    public PlayerProvider(ServerPlayer player) {
         this.player = player;
-        ServerWorld world = player.getEntityWorld();
+        ServerLevel world = player.level();
         this.keySuppliers = Map.of(
                 "xp", () -> player.experienceLevel,
                 "world_time", () -> getWorldHour(world),
                 "name", () -> player.getName().getString(),
-                "ping", () -> player.networkHandler.getLatency(),
-                "difficulty", () -> world.getDifficulty().asString(),
-                "food_level", () -> player.getHungerManager().getFoodLevel(),
-                "world_name", () -> world.getRegistryKey().getValue().getPath(),
+                "ping", () -> player.connection.latency(),
+                "difficulty", () -> world.getDifficulty().getSerializedName(),
+                "food_level", () -> player.getFoodData().getFoodLevel(),
+                "world_name", () -> world.dimension().identifier().getPath(),
                 "max_health", () -> String.format("%.1f", player.getMaxHealth()),
-                "world_days", () -> String.valueOf(world.getTime() / 24000L + 1),
-                "saturation", () -> String.format("%.1f", player.getHungerManager().getSaturationLevel())
+                "world_days", () -> String.valueOf(world.getGameTime() / 24000L + 1),
+                "saturation", () -> String.format("%.1f", player.getFoodData().getSaturationLevel())
         );
     }
 
     @SuppressWarnings("unchecked")
     private static <T> Stat<T> createStat(StatType<T> type, Object value) {
-        return type.getOrCreateStat((T) value);
+        return type.get((T) value);
     }
 
     @Override
-    public Optional<String> getKey(String key, ServerPlayerEntity player) {
+    public Optional<String> getKey(String key, ServerPlayer player) {
         if (key.startsWith("stat.")) return Optional.of(String.valueOf(getStatFromString(key)));
         return Optional.ofNullable(keySuppliers.get(key))
                 .map(Supplier::get)
                 .map(String::valueOf);
     }
 
-    private String getWorldHour(ServerWorld world) {
-        long timeOfDay = world.getTimeOfDay();
+    private String getWorldHour(ServerLevel world) {
+        long timeOfDay = world.getDayTime();
         long gameTime = (timeOfDay + 6000) % 24000;
         int hours = (int) (gameTime / 1000);
         int minutes = (int) ((gameTime % 1000) * 60 / 1000.0);
@@ -67,8 +66,8 @@ public class PlayerProvider implements PlaceholderProvider {
         }
         String category = parts[1];
         String objectId = parts[2];
-        ServerStatHandler statHandler = player.getStatHandler();
-        Optional<StatType<?>> statTypeOpt = Registries.STAT_TYPE.getOptionalValue(Identifier.of("minecraft", category));
+        ServerStatsCounter statHandler = player.getStats();
+        Optional<StatType<?>> statTypeOpt = BuiltInRegistries.STAT_TYPE.getOptional(Identifier.fromNamespaceAndPath("minecraft", category));
         if (statTypeOpt.isEmpty()) {
             return 0;
         }
@@ -76,15 +75,15 @@ public class PlayerProvider implements PlaceholderProvider {
         Optional<Stat<?>> finalStatOpt;
         String stringId = objectId.contains(":") ? objectId : "minecraft:" + objectId;
         if (statType == Stats.CUSTOM) {
-            Identifier customStatId = Identifier.of(stringId);
-            finalStatOpt = Registries.CUSTOM_STAT.getOptionalValue(customStatId)
-                    .map(Stats.CUSTOM::getOrCreateStat);
+            Identifier customStatId = Identifier.parse(stringId);
+            finalStatOpt = BuiltInRegistries.CUSTOM_STAT.getOptional(customStatId)
+                    .map(Stats.CUSTOM::get);
         } else {
-            Identifier objectIdentifier = Identifier.of(stringId);
+            Identifier objectIdentifier = Identifier.parse(stringId);
             Registry<?> objectRegistry = statType.getRegistry();
-            finalStatOpt = Optional.ofNullable(objectRegistry.get(objectIdentifier))
+            finalStatOpt = Optional.ofNullable(objectRegistry.getValue(objectIdentifier))
                     .map(statObject -> createStat(statType, statObject));
         }
-        return finalStatOpt.map(statHandler::getStat).orElse(0);
+        return finalStatOpt.map(statHandler::getValue).orElse(0);
     }
 }

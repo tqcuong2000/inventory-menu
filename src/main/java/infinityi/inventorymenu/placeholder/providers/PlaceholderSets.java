@@ -1,17 +1,16 @@
 package infinityi.inventorymenu.placeholder.providers;
 
-import net.minecraft.server.network.ServerPlayerEntity;
-
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import net.minecraft.server.level.ServerPlayer;
 
 public class PlaceholderSets {
 
-    public static Set<PlaceholderProvider> playerServerSet(ServerPlayerEntity player){
+    public static Set<PlaceholderProvider> playerServerSet(ServerPlayer player){
         Set<PlaceholderProvider> providers = new HashSet<>();
         providers.add(new PlayerProvider(player));
-        Optional.of(player.getEntityWorld().getServer()).map(server -> providers.add(new ServerProvider(server)));
+        Optional.of(player.level().getServer()).map(server -> providers.add(new ServerProvider(server)));
         return providers;
     }
 }

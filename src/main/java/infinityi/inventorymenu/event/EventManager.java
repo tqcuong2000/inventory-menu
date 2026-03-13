@@ -2,11 +2,11 @@ package infinityi.inventorymenu.event;
 
 import infinityi.inventorymenu.InventoryMenu;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Identifier;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class EventManager {
@@ -16,15 +16,15 @@ public abstract class EventManager {
         this.server = server;
     }
 
-    protected ServerPlayerEntity getServerPlayer(@NotNull PlayerEntity player) {
-        return server.getPlayerManager().getPlayer(player.getUuid());
+    protected ServerPlayer getServerPlayer(@NotNull Player player) {
+        return server.getPlayerList().getPlayer(player.getUUID());
     }
 
-    protected ActionResult openMenu(Identifier menuId, ServerPlayerEntity player){
+    protected InteractionResult openMenu(Identifier menuId, ServerPlayer player){
         var loadedMenus = InventoryMenu.dataManager.menus();
-        if (!loadedMenus.hasMenu(menuId)) return ActionResult.PASS;
+        if (!loadedMenus.hasMenu(menuId)) return InteractionResult.PASS;
         loadedMenus.getMenu(menuId).ifPresent(menuLayout -> menuLayout.open(player));
-        return ActionResult.FAIL;
+        return InteractionResult.FAIL;
     }
 
     public static void register(){

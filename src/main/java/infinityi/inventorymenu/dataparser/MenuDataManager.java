@@ -6,20 +6,19 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import infinityi.inventorymenu.InventoryMenu;
 import infinityi.inventorymenu.menu.MenuLayout;
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.ResourceReloader;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
 
-public class MenuDataManager implements ResourceReloader  {
+public class MenuDataManager implements PreparableReloadListener  {
 
     private static final String MENUS_DIRECTORY = "menu";
     private final Map<Identifier, MenuLayout> loadedMenus = new HashMap<>();
@@ -33,9 +32,9 @@ public class MenuDataManager implements ResourceReloader  {
         return new TreeMap<>(groupedMenus.getOrDefault(groupName, Collections.emptyMap()));
     }
 
-    public Text getMenuName(Identifier menuId) {
+    public Component getMenuName(Identifier menuId) {
         Optional<MenuLayout> menu = getMenu(menuId);
-        if (menu.isEmpty()) return Text.empty();
+        if (menu.isEmpty()) return Component.empty();
         return menu.get().name();
     }
 
@@ -50,26 +49,26 @@ public class MenuDataManager implements ResourceReloader  {
 
     @Override
     public CompletableFuture<Void> reload(
-            ResourceReloader.Store store,
+            PreparableReloadListener.SharedState store,
             Executor prepareExecutor,
-            ResourceReloader.Synchronizer reloadSynchronizer,
+            PreparableReloadListener.PreparationBarrier reloadSynchronizer,
             Executor applyExecutor
     ) {
-        ResourceManager manager = store.getResourceManager();
+        ResourceManager manager = store.resourceManager();
 
         return CompletableFuture.supplyAsync(() -> prepare(manager), prepareExecutor)
-                .thenCompose(reloadSynchronizer::whenPrepared)
+                .thenCompose(reloadSynchronizer::wait)
                 .thenAcceptAsync(this::apply, applyExecutor);
     }
 
     protected Map<Identifier, MenuLayout> prepare(ResourceManager manager) {
         Map<Identifier, MenuLayout> preparedData = new HashMap<>();
-        Map<Identifier, Resource> foundResources = manager.findResources(
+        Map<Identifier, Resource> foundResources = manager.listResources(
                 MENUS_DIRECTORY,
                 path -> path.getPath().endsWith(".json"));
 
         for (Map.Entry<Identifier, Resource> entry : foundResources.entrySet()) {
-            try (Reader reader = new InputStreamReader(entry.getValue().getInputStream(), StandardCharsets.UTF_8)) {
+            try (Reader reader = new InputStreamReader(entry.getValue().open(), StandardCharsets.UTF_8)) {
                 JsonElement jsonElement = JsonParser.parseReader(reader);
                 MenuLayout layout = MenuLayout.CODEC.parse(JsonOps.INSTANCE, jsonElement)
                         .getOrThrow(IllegalStateException::new);
@@ -79,7 +78,7 @@ public class MenuDataManager implements ResourceReloader  {
                 path = path.substring(0, path.lastIndexOf("."))
                         .replaceFirst("^menu/", "");
 
-                Identifier menuId = Identifier.of(originalId.getNamespace(), path);
+                Identifier menuId = Identifier.fromNamespaceAndPath(originalId.getNamespace(), path);
                 preparedData.put(menuId, layout);
             } catch (Exception e) {
                 InventoryMenu.LOGGER.error("Error while reading file resource: {}\n{}", entry.getKey(), e.getMessage());

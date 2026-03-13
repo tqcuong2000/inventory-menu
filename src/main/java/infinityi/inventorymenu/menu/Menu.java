@@ -5,49 +5,48 @@ import infinityi.inventorymenu.menu.layout.MenuElement;
 import infinityi.inventorymenu.placeholder.providers.PlaceholderSets;
 import infinityi.inventorymenu.placeholder.resolvers.ItemResolver;
 import infinityi.inventorymenu.placeholder.resolvers.PlaceholderResolver;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.NamedScreenHandlerFactory;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-
 import java.util.HashMap;
 import java.util.Map;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.MenuType;
 
 public class Menu {
 
-    public static NamedScreenHandlerFactory createMenu(MenuLayout layout, ServerPlayerEntity player) {
-        return new NamedScreenHandlerFactory() {
+    public static MenuProvider createMenu(MenuLayout layout, ServerPlayer player) {
+        return new MenuProvider() {
             @Override
-            public Text getDisplayName() {
+            public Component getDisplayName() {
                 return PlaceholderResolver.resolve(layout.name(),PlaceholderSets.playerServerSet(player), player);
             }
 
             @Override
-            public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
-                Map<Integer, ScreenHandlerType<?>> sizeMap = new HashMap<>();
+            public AbstractContainerMenu createMenu(int syncId, Inventory playerInventory, Player player) {
+                Map<Integer, MenuType<?>> sizeMap = new HashMap<>();
 
-                sizeMap.put(1, ScreenHandlerType.GENERIC_9X1);
-                sizeMap.put(2, ScreenHandlerType.GENERIC_9X2);
-                sizeMap.put(3, ScreenHandlerType.GENERIC_9X3);
-                sizeMap.put(4, ScreenHandlerType.GENERIC_9X4);
-                sizeMap.put(5, ScreenHandlerType.GENERIC_9X5);
-                sizeMap.put(6, ScreenHandlerType.GENERIC_9X6);
+                sizeMap.put(1, MenuType.GENERIC_9x1);
+                sizeMap.put(2, MenuType.GENERIC_9x2);
+                sizeMap.put(3, MenuType.GENERIC_9x3);
+                sizeMap.put(4, MenuType.GENERIC_9x4);
+                sizeMap.put(5, MenuType.GENERIC_9x5);
+                sizeMap.put(6, MenuType.GENERIC_9x6);
 
-                ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
+                ServerPlayer serverPlayer = (ServerPlayer) player;
                 int rows = layout.rows();
                 CustomMenuInventory menuInventory = new CustomMenuInventory(layout, rows * 9);
 
                 for (MenuElement element : layout.items()) {
                     ItemResolver resolver = new ItemResolver(element.item(), serverPlayer);
-                    menuInventory.setStack(element.slot(), resolver.resolve());
+                    menuInventory.setItem(element.slot(), resolver.resolve());
                 }
-                ScreenHandlerType<?> handlerType = sizeMap.get(rows);
+                MenuType<?> handlerType = sizeMap.get(rows);
 
-                return new GenericContainerScreenHandler(
+                return new ChestMenu(
                         handlerType,
                         syncId,
                         playerInventory,

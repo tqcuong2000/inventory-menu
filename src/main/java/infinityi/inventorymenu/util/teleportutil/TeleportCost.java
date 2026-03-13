@@ -5,12 +5,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import infinityi.inventorymenu.action.type.TeleportAction;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.dynamic.Codecs;
-import net.minecraft.util.math.BlockPos;
-
 import java.util.List;
 import java.util.Objects;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ExtraCodecs;
 
 public record TeleportCost(List<Integer> amount, Integer saturation, Boolean isPoint) {
 
@@ -22,7 +21,7 @@ public record TeleportCost(List<Integer> amount, Integer saturation, Boolean isP
 
     public static final Codec<TeleportCost> OBJ_COST = RecordCodecBuilder.create(inst -> inst.group(
             AMOUNT.fieldOf("amount").forGetter(TeleportCost::amount),
-            Codecs.POSITIVE_INT.optionalFieldOf("saturation", 1).forGetter(TeleportCost::saturation),
+            ExtraCodecs.POSITIVE_INT.optionalFieldOf("saturation", 1).forGetter(TeleportCost::saturation),
             Codec.BOOL.optionalFieldOf("is_point", false).forGetter(TeleportCost::isPoint)
     ).apply(inst, TeleportCost::new));
 
@@ -40,20 +39,20 @@ public record TeleportCost(List<Integer> amount, Integer saturation, Boolean isP
         return new TeleportCost(List.of(0, 0), 1, false);
     }
 
-    public boolean hasCost(ServerPlayerEntity player, BlockPos pos) {
+    public boolean hasCost(ServerPlayer player, BlockPos pos) {
         return player.experienceLevel >= calcCost(player, pos);
     }
 
-    public void applyCost(ServerPlayerEntity player, BlockPos pos) {
+    public void applyCost(ServerPlayer player, BlockPos pos) {
         int costInLevels = calcCost(player, pos);
-        player.addExperienceLevels(-costInLevels);
+        player.giveExperienceLevels(-costInLevels);
     }
 
-    public int calcCost(ServerPlayerEntity player, BlockPos pos) {
+    public int calcCost(ServerPlayer player, BlockPos pos) {
         if (pos == null) return 0;
         if (Objects.equals(amount.getFirst(), amount.getLast())) return amount.getFirst();
         // Calculate follow formular: min + (max - min) * (distance / (distance + saturation))
-        double distance = TeleportAction.distanceBetween(player.getBlockPos(), pos);
+        double distance = TeleportAction.distanceBetween(player.blockPosition(), pos);
         if (distance == 0) return 0;
         return (int) (amount.getFirst() + (amount.getLast() - amount.getFirst()) * (distance / (distance + saturation)));
     }

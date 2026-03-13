@@ -7,30 +7,29 @@ import infinityi.inventorymenu.InventoryMenu;
 import infinityi.inventorymenu.action.Action;
 import infinityi.inventorymenu.action.ActionType;
 import infinityi.inventorymenu.menu.MenuLayout;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-
 import java.util.Map;
 import java.util.NavigableMap;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerPlayer;
 
 public record MenuNavigationAction(String navigate, Identifier destination) implements Action {
     public static final MapCodec<MenuNavigationAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.STRING.fieldOf("action").forGetter(MenuNavigationAction::navigate),
-            Identifier.CODEC.optionalFieldOf("menu", Identifier.of("")).forGetter(MenuNavigationAction::destination)
+            Identifier.CODEC.optionalFieldOf("menu", Identifier.parse("")).forGetter(MenuNavigationAction::destination)
     ).apply(instance, MenuNavigationAction::new));
 
     @Override
-    public void execute(ServerPlayerEntity player) {
+    public void execute(ServerPlayer player) {
         MenuLayout layout = InventoryMenu.dataManager.playerData().currentMenu.get(player);
         switch (navigate) {
             case "close":
-                player.closeHandledScreen();
+                player.closeContainer();
                 break;
             case "open":
                 InventoryMenu.dataManager.menus().getMenu(destination).ifPresentOrElse(menuLayout -> menuLayout.open(player), () -> {
-                    player.sendMessage(Text.literal("§cThis menu doesn't exist"));
-                    player.closeHandledScreen();
+                    player.sendSystemMessage(Component.literal("§cThis menu doesn't exist"));
+                    player.closeContainer();
                 });
                 break;
             case "next":
@@ -48,7 +47,7 @@ public record MenuNavigationAction(String navigate, Identifier destination) impl
     }
 
 
-    public void scroll_menu(ServerPlayerEntity player, MenuLayout currentLayout, Boolean isNext) {
+    public void scroll_menu(ServerPlayer player, MenuLayout currentLayout, Boolean isNext) {
         String name = currentLayout.menu_group().getFirst();
         int currentIndex = currentLayout.menu_group().getSecond();
         NavigableMap<Integer, MenuLayout> groupMenu = InventoryMenu.dataManager.menus().getGroup(name);

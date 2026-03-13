@@ -8,15 +8,14 @@ import infinityi.inventorymenu.action.Action;
 import infinityi.inventorymenu.action.ActionType;
 import infinityi.inventorymenu.placeholder.providers.PlaceholderSets;
 import infinityi.inventorymenu.placeholder.resolvers.PlaceholderResolver;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextCodecs;
-
 import java.util.List;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.server.level.ServerPlayer;
 
-public record MessageAction(List<Text> content, boolean isGlobal) implements Action {
+public record MessageAction(List<Component> content, boolean isGlobal) implements Action {
 
-    public static final Codec<List<Text>> MESSAGE = Codec.xor(Codec.list(TextCodecs.CODEC), TextCodecs.CODEC)
+    public static final Codec<List<Component>> MESSAGE = Codec.xor(Codec.list(ComponentSerialization.CODEC), ComponentSerialization.CODEC)
             .xmap(either -> either.map(list -> list, List::of), list -> {
                 if (list.size() == 1) return Either.right(list.getFirst());
                 return Either.left(list);
@@ -27,11 +26,11 @@ public record MessageAction(List<Text> content, boolean isGlobal) implements Act
     ).apply(inst, MessageAction::new));
 
     @Override
-    public void execute(ServerPlayerEntity player) {
-        List<Text> resolvedText = PlaceholderResolver.resolve(content, PlaceholderSets.playerServerSet(player), player);
-        for (Text text : resolvedText) {
-            if (isGlobal) player.getEntityWorld().getServer().sendMessage(text);
-            else player.sendMessage(text);
+    public void execute(ServerPlayer player) {
+        List<Component> resolvedText = PlaceholderResolver.resolve(content, PlaceholderSets.playerServerSet(player), player);
+        for (Component text : resolvedText) {
+            if (isGlobal) player.level().getServer().sendSystemMessage(text);
+            else player.sendSystemMessage(text);
         }
     }
     @Override
