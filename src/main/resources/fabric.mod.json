@@ -3,7 +3,7 @@
   "id": "${id}",
   "version": "${version}",
   "name": "${name}",
-  "description": "nventory Menu is a server side data-driven mod that allows players to create customizable, chest-style menus in Minecraft.",
+  "description": "Inventory Menu is a server side data-driven mod that allows players to create customizable, chest-style menus in Minecraft.",
   "authors": [
     "InfinityI"
   ],

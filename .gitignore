@@ -5,6 +5,7 @@ out/
 classes/
 versions/*/.gradle/
 versions/*/build/
+versions/*/bin/
 
 # eclipse
 *.launch

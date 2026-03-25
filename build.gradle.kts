@@ -1,5 +1,34 @@
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
+import net.fabricmc.loom.task.RunGameTask
+import org.gradle.api.DefaultTask
+import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.TaskAction
+import java.io.File
+
+abstract class GenerateDevRemapClasspathTask : DefaultTask() {
+    @get:InputFiles
+    abstract val remapClasspath: ConfigurableFileCollection
+
+    @get:OutputFile
+    abstract val outputFile: RegularFileProperty
+
+    @TaskAction
+    fun generate() {
+        val output = outputFile.get().asFile
+        output.parentFile.mkdirs()
+
+        val classpath = remapClasspath.files
+            .map(File::getAbsolutePath)
+            .distinct()
+            .joinToString(File.pathSeparator)
+
+        output.writeText(classpath)
+    }
+}
 
 plugins {
     id("maven-publish")
@@ -17,6 +46,8 @@ val minecraftDependency = property("mod.mc_dep") as String
 val loaderVersion = property("deps.fabric_loader") as String
 val fabricApiVersion = property("deps.fabric_api") as String
 val loomExtension = extensions.getByType<LoomGradleExtensionAPI>()
+val devRemapClasspathFile = layout.projectDirectory.file(".gradle/loom-cache/remapClasspath.txt")
+val usesFabricApi = sc.current.version != "26.1"
 
 version = modVersion
 group = modGroup
@@ -36,7 +67,9 @@ dependencies {
 
     if (isUnobfuscatedBranch) {
         add("implementation", "net.fabricmc:fabric-loader:$loaderVersion")
-        add("implementation", "net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
+        if (usesFabricApi) {
+            add("implementation", "net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
+        }
     } else {
         add("mappings", loomExtension.officialMojangMappings())
         add("modImplementation", "net.fabricmc:fabric-loader:$loaderVersion")
@@ -47,7 +80,11 @@ dependencies {
 configure<LoomGradleExtensionAPI> {
     runConfigs.all {
         ideConfigGenerated(true)
-        runDir = "../../run"
+        runDir = "../../run/${sc.current.version}"
+
+        if (isUnobfuscatedBranch) {
+            property("fabric.remapClasspathFile", devRemapClasspathFile.asFile.absolutePath)
+        }
     }
 }
 
@@ -65,7 +102,28 @@ tasks.withType<JavaCompile>().configureEach {
     options.release = requiredJava.majorVersion.toInt()
 }
 
+val generateDevRemapClasspath = if (isUnobfuscatedBranch) {
+    tasks.register("generateDevRemapClasspath", GenerateDevRemapClasspathTask::class.java) {
+        remapClasspath.from(sourceSets.main.get().runtimeClasspath)
+        outputFile.set(devRemapClasspathFile)
+    }
+} else {
+    null
+}
+
+tasks.withType<RunGameTask>().configureEach {
+    if (generateDevRemapClasspath != null) {
+        dependsOn(generateDevRemapClasspath)
+    }
+}
+
 tasks {
+    if (generateDevRemapClasspath != null) {
+        named("configureLaunch") {
+            dependsOn(generateDevRemapClasspath)
+        }
+    }
+
     processResources {
         inputs.property("id", modId)
         inputs.property("name", modName)

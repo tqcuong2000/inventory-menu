@@ -9,8 +9,8 @@ public enum ActionType implements StringRepresentable {
     MESSAGE("message", MessageAction.CODEC),
     NAVIGATE("navigate", MenuNavigationAction.CODEC),
     TELEPORT("teleport", TeleportAction.CODEC),
-    COMMAND("command", CommandAction.CODEC),
-    PROXY("proxy", ProxyAction.CODEC);
+    COMMAND("command", CommandAction.CODEC);
+
     private final String name;
     private final MapCodec<? extends Action> codec;
 
