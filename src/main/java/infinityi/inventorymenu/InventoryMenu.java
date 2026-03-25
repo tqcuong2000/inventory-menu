@@ -5,11 +5,8 @@ import infinityi.inventorymenu.dataparser.ConfigManager;
 import infinityi.inventorymenu.dataparser.DataManager;
 import infinityi.inventorymenu.event.EventManager;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.nio.channels.Channel;
 
 public class InventoryMenu implements ModInitializer {
 

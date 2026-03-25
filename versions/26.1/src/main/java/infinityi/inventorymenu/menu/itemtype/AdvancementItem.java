@@ -53,7 +53,11 @@ public record AdvancementItem(Identifier questId, boolean showDescription, boole
         }
         if (showComplete){
             boolean isDone = player.getAdvancements().getOrStartProgress(advancementEntry).isDone();
-            list.add(isDone ? Component.translatable("Â§aCompleted!") : Component.translatable("Â§cNot complete."));
+            list.add(
+                    isDone
+                            ? Component.literal("Completed!").withStyle(ChatFormatting.GREEN)
+                            : Component.literal("Not complete.").withStyle(ChatFormatting.RED)
+            );
         }
         item.set(DataComponents.CUSTOM_NAME, name);
         item.set(DataComponents.LORE, new ItemLore(list));
