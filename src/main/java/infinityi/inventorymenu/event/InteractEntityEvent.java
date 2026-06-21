@@ -15,10 +15,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Locale;
 import java.util.Optional;
 
-public class InteractEntityEvent extends EventManager{
+public class InteractEntityEvent extends EventManager {
 
     public InteractEntityEvent(MinecraftServer server) {
         super(server);
+    }
+
+    public static void register(MinecraftServer server) {
+        InteractEntityEvent interact = new InteractEntityEvent(server);
+        UseEntityCallback.EVENT.register(interact::interact);
     }
 
     public InteractionResult interact(Player playerEntity, Level world, InteractionHand hand, Entity entity, @Nullable EntityHitResult entityHitResult) {
@@ -36,10 +41,5 @@ public class InteractEntityEvent extends EventManager{
             return InteractionResult.PASS;
         }
         return openMenu(menuId, player);
-    }
-
-    public static void register(MinecraftServer server){
-        InteractEntityEvent interact = new InteractEntityEvent(server);
-        UseEntityCallback.EVENT.register(interact::interact);
     }
 }

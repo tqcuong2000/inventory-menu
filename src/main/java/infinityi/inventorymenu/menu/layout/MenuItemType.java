@@ -1,7 +1,10 @@
 package infinityi.inventorymenu.menu.layout;
 
 import com.mojang.serialization.MapCodec;
-import infinityi.inventorymenu.menu.itemtype.*;
+import infinityi.inventorymenu.menu.itemtype.AdvancementItem;
+import infinityi.inventorymenu.menu.itemtype.DefinedItem;
+import infinityi.inventorymenu.menu.itemtype.NavigateItem;
+import infinityi.inventorymenu.menu.itemtype.StandardItem;
 import net.minecraft.util.StringRepresentable;
 
 public enum MenuItemType implements StringRepresentable {

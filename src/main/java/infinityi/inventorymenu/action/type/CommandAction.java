@@ -13,6 +13,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+
 import java.util.List;
 
 public record CommandAction(List<String> commands, boolean asPlayer, boolean silent) implements Action {

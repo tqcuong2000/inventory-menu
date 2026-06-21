@@ -6,8 +6,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import infinityi.inventorymenu.action.Action;
 import infinityi.inventorymenu.menu.layout.MenuItem;
 import infinityi.inventorymenu.menu.layout.MenuItemType;
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
@@ -21,7 +19,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
 
-public record AdvancementItem(Identifier questId, boolean showDescription, boolean showComplete, List<Action> actions) implements MenuItem {
+import java.util.ArrayList;
+import java.util.List;
+
+public record AdvancementItem(Identifier questId, boolean showDescription, boolean showComplete,
+                              List<Action> actions) implements MenuItem {
     public static final MapCodec<AdvancementItem> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Identifier.CODEC.fieldOf("id").forGetter(AdvancementItem::questId),
             Codec.BOOL.optionalFieldOf("show_description", true).forGetter(AdvancementItem::showDescription),
@@ -44,14 +46,14 @@ public record AdvancementItem(Identifier questId, boolean showDescription, boole
         ItemStack item = display.getIcon();
 
         List<Component> list = new ArrayList<>();
-        if (showDescription){
+        if (showDescription) {
             Component description = display.getDescription();
             if (description.getStyle().isEmpty()) description = description.copy()
                     .setStyle(Style.EMPTY.withItalic(false))
                     .withStyle(ChatFormatting.GRAY);
             list.add(description.copy());
         }
-        if (showComplete){
+        if (showComplete) {
             boolean isDone = player.getAdvancements().getOrStartProgress(advancementEntry).isDone();
             list.add(isDone ? Component.translatable("§aCompleted!") : Component.translatable("§cNot complete."));
         }

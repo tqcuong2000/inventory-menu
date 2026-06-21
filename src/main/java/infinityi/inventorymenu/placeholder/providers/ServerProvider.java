@@ -2,6 +2,7 @@ package infinityi.inventorymenu.placeholder.providers;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;

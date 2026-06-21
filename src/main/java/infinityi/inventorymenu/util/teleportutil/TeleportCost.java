@@ -5,11 +5,12 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import infinityi.inventorymenu.action.type.TeleportAction;
-import java.util.List;
-import java.util.Objects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ExtraCodecs;
+
+import java.util.List;
+import java.util.Objects;
 
 public record TeleportCost(List<Integer> amount, Integer saturation, Boolean isPoint) {
 

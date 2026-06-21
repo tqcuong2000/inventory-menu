@@ -1,14 +1,15 @@
 package infinityi.inventorymenu.placeholder.resolvers;
 
 import infinityi.inventorymenu.placeholder.providers.PlaceholderProvider;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 
 public interface PlaceholderResolver {
 

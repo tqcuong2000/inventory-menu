@@ -11,10 +11,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-public class UseItemEvent extends EventManager{
+public class UseItemEvent extends EventManager {
 
     public UseItemEvent(MinecraftServer server) {
         super(server);
+    }
+
+    public static void register(MinecraftServer server) {
+        UseItemEvent useItemEvent = new UseItemEvent(server);
+        UseItemCallback.EVENT.register(useItemEvent::interact);
     }
 
     private InteractionResult interact(Player playerEntity, Level world, InteractionHand hand) {
@@ -28,10 +33,5 @@ public class UseItemEvent extends EventManager{
             return InteractionResult.PASS;
         }
         return openMenu(menuId, player);
-    }
-
-    public static void register(MinecraftServer server){
-        UseItemEvent useItemEvent = new UseItemEvent(server);
-        UseItemCallback.EVENT.register(useItemEvent::interact);
     }
 }

@@ -8,10 +8,11 @@ import infinityi.inventorymenu.action.Action;
 import infinityi.inventorymenu.action.ActionType;
 import infinityi.inventorymenu.placeholder.providers.PlaceholderSets;
 import infinityi.inventorymenu.placeholder.resolvers.PlaceholderResolver;
-import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.server.level.ServerPlayer;
+
+import java.util.List;
 
 public record MessageAction(List<Component> content, boolean isGlobal) implements Action {
 
@@ -33,6 +34,7 @@ public record MessageAction(List<Component> content, boolean isGlobal) implement
             else player.sendSystemMessage(text);
         }
     }
+
     @Override
     public ActionType getType() {
         return ActionType.MESSAGE;

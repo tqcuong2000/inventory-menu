@@ -14,18 +14,19 @@ public record MenuElement(MenuItemMeta meta, MenuItem item) {
                     MenuElement::meta,
                     MenuElement::item
             );
-    public Integer slot(){
+
+    public Integer slot() {
         return meta.slot().resolveSlot();
     }
 
-    public void onClick(ServerPlayer player){
+    public void onClick(ServerPlayer player) {
         if (!meta.condition().test(player, "item")) {
             meta.resolveSound(player, false);
             return;
         }
         meta.resolveSound(player, true);
         if (item.actions().isEmpty()) return;
-        for (Action action : item.actions()){
+        for (Action action : item.actions()) {
             action.execute(player);
         }
     }

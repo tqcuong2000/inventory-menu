@@ -19,6 +19,7 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -59,7 +60,7 @@ public record MenuPredicate(Identifier predicate, Action whenTrue, Action whenFa
                 .map(Holder::value);
     }
 
-    private void defaultMessage(ServerPlayer player, boolean result, String context){
+    private void defaultMessage(ServerPlayer player, boolean result, String context) {
         if (!ConfigManager.getConfig().show_predicate_message) return;
         if (!(whenFalse instanceof NoAction) || result) return;
         if (context.equals("menu")) new MessageAction(List

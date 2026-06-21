@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+
 import java.util.UUID;
 
 public record PlayerTPLocation(String playerName) implements TPLocation {
@@ -18,7 +19,7 @@ public record PlayerTPLocation(String playerName) implements TPLocation {
     public static final Codec<PlayerTPLocation> OBJ_CODEC = RecordCodecBuilder.create(inst -> inst.group(
             Codec.STRING.fieldOf("name").forGetter(PlayerTPLocation::playerName)
     ).apply(inst, PlayerTPLocation::new));
-    public static final Codec<PlayerTPLocation> CODEC = Codec.xor(Codec.STRING,OBJ_CODEC).xmap(
+    public static final Codec<PlayerTPLocation> CODEC = Codec.xor(Codec.STRING, OBJ_CODEC).xmap(
             either -> either.map(PlayerTPLocation::new, r -> r),
             Either::right
     );

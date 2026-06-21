@@ -16,13 +16,19 @@ public class DataManager {
         this.playerData = new PlayerData();
     }
 
-    public MenuDataManager menus() {return menuDataManager;}
+    public MenuDataManager menus() {
+        return menuDataManager;
+    }
 
-    public ItemDataManager items() {return itemDataManager;}
+    public ItemDataManager items() {
+        return itemDataManager;
+    }
 
-    public PlayerData playerData() {return playerData;}
+    public PlayerData playerData() {
+        return playerData;
+    }
 
-    public void register(){
+    public void register() {
         ResourceLoader.get(PackType.SERVER_DATA).registerReloader(Identifier.fromNamespaceAndPath(InventoryMenu.MOD_ID, "menu_data_manager"), this.menus());
         ResourceLoader.get(PackType.SERVER_DATA).registerReloader(Identifier.fromNamespaceAndPath(InventoryMenu.MOD_ID, "item_menu_data_manager"), this.items());
     }

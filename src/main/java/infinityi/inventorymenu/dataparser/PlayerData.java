@@ -1,8 +1,9 @@
 package infinityi.inventorymenu.dataparser;
 
 import infinityi.inventorymenu.menu.MenuLayout;
-import java.util.HashMap;
 import net.minecraft.server.level.ServerPlayer;
+
+import java.util.HashMap;
 
 public class PlayerData {
     public final HashMap<ServerPlayer, MenuLayout> currentMenu = new HashMap<>();

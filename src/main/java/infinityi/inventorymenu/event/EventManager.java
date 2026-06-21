@@ -16,22 +16,22 @@ public abstract class EventManager {
         this.server = server;
     }
 
-    protected ServerPlayer getServerPlayer(@NotNull Player player) {
-        return server.getPlayerList().getPlayer(player.getUUID());
-    }
-
-    protected InteractionResult openMenu(Identifier menuId, ServerPlayer player){
-        var loadedMenus = InventoryMenu.dataManager.menus();
-        if (!loadedMenus.hasMenu(menuId)) return InteractionResult.PASS;
-        loadedMenus.getMenu(menuId).ifPresent(menuLayout -> menuLayout.open(player));
-        return InteractionResult.FAIL;
-    }
-
-    public static void register(){
+    public static void register() {
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             UseItemEvent.register(server);
             InteractEntityEvent.register(server);
         });
 
+    }
+
+    protected ServerPlayer getServerPlayer(@NotNull Player player) {
+        return server.getPlayerList().getPlayer(player.getUUID());
+    }
+
+    protected InteractionResult openMenu(Identifier menuId, ServerPlayer player) {
+        var loadedMenus = InventoryMenu.dataManager.menus();
+        if (!loadedMenus.hasMenu(menuId)) return InteractionResult.PASS;
+        loadedMenus.getMenu(menuId).ifPresent(menuLayout -> menuLayout.open(player));
+        return InteractionResult.FAIL;
     }
 }

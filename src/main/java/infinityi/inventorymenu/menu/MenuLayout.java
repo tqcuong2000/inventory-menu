@@ -4,10 +4,11 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import infinityi.inventorymenu.menu.layout.MenuElement;
-import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.server.level.ServerPlayer;
+
+import java.util.List;
 
 public record MenuLayout(Component name, Pair<String, Integer> menu_group, Integer rows, List<MenuElement> items,
                          MenuPredicate predicate) {
@@ -19,7 +20,7 @@ public record MenuLayout(Component name, Pair<String, Integer> menu_group, Integ
             MenuPredicate.CODEC.optionalFieldOf("predicate", MenuPredicate.EMPTY).forGetter(MenuLayout::predicate)
     ).apply(inst, MenuLayout::new));
 
-    public void open(ServerPlayer player){
+    public void open(ServerPlayer player) {
         if (!predicate().test(player, "menu")) return;
         player.openMenu(Menu.createMenu(this, player));
     }

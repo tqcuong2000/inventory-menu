@@ -5,6 +5,11 @@ import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 import infinityi.inventorymenu.InventoryMenu;
 import infinityi.inventorymenu.menu.layout.MenuItem;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.HashMap;
@@ -12,10 +17,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.server.packs.resources.Resource;
-import net.minecraft.server.packs.resources.ResourceManager;
 
 public class ItemDataManager implements PreparableReloadListener {
     private static final String MENU_ITEMS_DIR = "menu-item";
@@ -36,7 +37,7 @@ public class ItemDataManager implements PreparableReloadListener {
     }
 
 
-    protected Map<Identifier,MenuItem> prepare(ResourceManager manager) {
+    protected Map<Identifier, MenuItem> prepare(ResourceManager manager) {
         Map<Identifier, MenuItem> preparedData = new HashMap<>();
         Map<Identifier, Resource> foundResources = manager.listResources(
                 MENU_ITEMS_DIR,
@@ -64,7 +65,7 @@ public class ItemDataManager implements PreparableReloadListener {
         InventoryMenu.LOGGER.info("Successfully loaded {} menu item.", loadItems.size());
     }
 
-    public Optional<MenuItem> getItem(Identifier identifier){
+    public Optional<MenuItem> getItem(Identifier identifier) {
         return Optional.ofNullable(loadItems.get(identifier));
     }
 }

@@ -8,9 +8,6 @@ import infinityi.inventorymenu.action.ActionType;
 import infinityi.inventorymenu.placeholder.providers.PlaceholderProvider;
 import infinityi.inventorymenu.util.teleportutil.TeleportCost;
 import infinityi.inventorymenu.util.teleportutil.tplocation.TPLocation;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Supplier;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -18,6 +15,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 
 public record TeleportAction(TPLocation target, TeleportCost cost,
@@ -34,9 +35,9 @@ public record TeleportAction(TPLocation target, TeleportCost cost,
                 "xp_cost", () -> action.cost.calcCost(player, action.target.getPos(player.level().getServer())),
                 "xp_cost_type", () -> action.cost.isPoint().toString(),
                 "target_pos", () -> {
-                        BlockPos pos = action.target.getPos(player.level().getServer());
-                        return String.format("X: %s Y: %s Z: %s", pos.getX(), pos.getY(), pos.getZ());
-                        },
+                    BlockPos pos = action.target.getPos(player.level().getServer());
+                    return String.format("X: %s Y: %s Z: %s", pos.getX(), pos.getY(), pos.getZ());
+                },
                 "target_name", () -> Optional.ofNullable(action.target.getPlayer(player.level().getServer())).map(s -> s.getName().getString()).orElse("?"),
                 "distance", () -> action.target.getDistance(player)
         );
@@ -64,6 +65,14 @@ public record TeleportAction(TPLocation target, TeleportCost cost,
         return state.is(Blocks.LAVA) || state.is(Blocks.FIRE) || state.is(Blocks.CACTUS) || state.is(Blocks.SWEET_BERRY_BUSH) || state.is(Blocks.POWDER_SNOW);
     }
 
+    @Deprecated
+    private static int chebyshevDistance(BlockPos a, BlockPos b) {
+        int dx = Math.abs(a.getX() - b.getX());
+        int dy = Math.abs(a.getY() - b.getY());
+        int dz = Math.abs(a.getZ() - b.getZ());
+        return Math.max(dx, Math.max(dy, dz));
+    }
+
     @Override
     public void execute(ServerPlayer player) {
         BlockPos pos = target.getPos(player.level().getServer());
@@ -85,14 +94,6 @@ public record TeleportAction(TPLocation target, TeleportCost cost,
         return Optional.ofNullable(keySuppliers.get(key))
                 .map(Supplier::get)
                 .map(String::valueOf);
-    }
-
-    @Deprecated
-    private static int chebyshevDistance(BlockPos a, BlockPos b) {
-        int dx = Math.abs(a.getX() - b.getX());
-        int dy = Math.abs(a.getY() - b.getY());
-        int dz = Math.abs(a.getZ() - b.getZ());
-        return Math.max(dx, Math.max(dy, dz));
     }
 
 }

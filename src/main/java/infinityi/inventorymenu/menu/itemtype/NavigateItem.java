@@ -8,8 +8,6 @@ import infinityi.inventorymenu.action.Action;
 import infinityi.inventorymenu.action.type.MenuNavigationAction;
 import infinityi.inventorymenu.menu.layout.MenuItem;
 import infinityi.inventorymenu.menu.layout.MenuItemType;
-import java.util.List;
-import java.util.Optional;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -21,6 +19,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
+
+import java.util.List;
+import java.util.Optional;
 
 public record NavigateItem(MenuNavigationAction navigate, Identifier model, Component custom_name,
                            List<Component> custom_lore) implements MenuItem {
@@ -74,7 +75,8 @@ public record NavigateItem(MenuNavigationAction navigate, Identifier model, Comp
         }
         if (!custom_name.getString().isEmpty()) item.set(DataComponents.CUSTOM_NAME, custom_name);
         if (!custom_lore.isEmpty()) item.set(DataComponents.LORE, new ItemLore(custom_lore));
-        if (!model.equals(BuiltInRegistries.ITEM.getKey(Items.ARROW))) item = BuiltInRegistries.ITEM.getValue(model).getDefaultInstance();
+        if (!model.equals(BuiltInRegistries.ITEM.getKey(Items.ARROW)))
+            item = BuiltInRegistries.ITEM.getValue(model).getDefaultInstance();
         return item;
     }
 

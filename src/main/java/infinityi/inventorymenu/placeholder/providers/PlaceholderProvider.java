@@ -1,7 +1,8 @@
 package infinityi.inventorymenu.placeholder.providers;
 
-import java.util.Optional;
 import net.minecraft.server.level.ServerPlayer;
+
+import java.util.Optional;
 
 public interface PlaceholderProvider {
 

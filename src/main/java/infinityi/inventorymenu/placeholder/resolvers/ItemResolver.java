@@ -11,6 +11,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemLore;
+
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -24,6 +25,7 @@ public record ItemResolver(MenuItem item, ServerPlayer player) {
         for (Action action : item().actions()) if (action instanceof TeleportAction tp) providers.add(tp);
         return providers;
     }
+
     public ItemStack resolve() {
         ItemStack itemStack = item.resolveItemStack(player);
         Set<PlaceholderProvider> providers = constructProviders();

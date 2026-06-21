@@ -7,11 +7,12 @@ import infinityi.inventorymenu.InventoryMenu;
 import infinityi.inventorymenu.action.Action;
 import infinityi.inventorymenu.action.ActionType;
 import infinityi.inventorymenu.menu.MenuLayout;
-import java.util.Map;
-import java.util.NavigableMap;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+
+import java.util.Map;
+import java.util.NavigableMap;
 
 public record MenuNavigationAction(String navigate, Identifier destination) implements Action {
     public static final MapCodec<MenuNavigationAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

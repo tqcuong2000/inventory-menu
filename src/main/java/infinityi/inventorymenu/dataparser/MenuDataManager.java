@@ -6,19 +6,20 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import infinityi.inventorymenu.InventoryMenu;
 import infinityi.inventorymenu.menu.MenuLayout;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 
-public class MenuDataManager implements PreparableReloadListener  {
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+
+public class MenuDataManager implements PreparableReloadListener {
 
     private static final String MENUS_DIRECTORY = "menu";
     private final Map<Identifier, MenuLayout> loadedMenus = new HashMap<>();
@@ -42,7 +43,7 @@ public class MenuDataManager implements PreparableReloadListener  {
         return loadedMenus.keySet();
     }
 
-    public boolean hasMenu(Identifier menuId){
+    public boolean hasMenu(Identifier menuId) {
         return this.loadedMenus.containsKey(menuId);
     }
 

@@ -3,6 +3,7 @@ package infinityi.inventorymenu.action;
 import com.mojang.serialization.MapCodec;
 import infinityi.inventorymenu.action.type.*;
 import net.minecraft.util.StringRepresentable;
+import org.jspecify.annotations.NonNull;
 
 public enum ActionType implements StringRepresentable {
     NONE("none", NoAction.CODEC),
@@ -20,7 +21,7 @@ public enum ActionType implements StringRepresentable {
     }
 
     @Override
-    public String getSerializedName() {
+    public @NonNull String getSerializedName() {
         return this.name;
     }
 
