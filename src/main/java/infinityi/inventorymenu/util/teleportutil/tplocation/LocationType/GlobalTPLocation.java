@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.phys.Vec3;
 
 
 public record GlobalTPLocation(GlobalPos location) implements TPLocation {
@@ -33,7 +34,7 @@ public record GlobalTPLocation(GlobalPos location) implements TPLocation {
         }
         cost.applyCost(player, location.pos());
         player.closeContainer();
-        TeleportUtils.teleport(player, location.pos().getCenter(), destinationWorld);
+        TeleportUtils.teleport(player, Vec3.atCenterOf(location.pos()), destinationWorld);
     }
 
     @Override

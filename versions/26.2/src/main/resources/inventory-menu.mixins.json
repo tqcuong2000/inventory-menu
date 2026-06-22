@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "infinityi.inventorymenu.mixin",
+  "compatibilityLevel": "JAVA_22",
+  "mixins": [
+    "CommandsMixin",
+    "ReloadableServerResourcesMixin",
+    "ServerPlayNetworkHandlerMixin",
+    "ServerPlayerGameModeMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

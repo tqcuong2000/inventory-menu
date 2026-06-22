@@ -34,7 +34,7 @@ plugins {
     id("maven-publish")
 }
 
-val isUnobfuscatedBranch = sc.current.version.startsWith("26.1")
+val isUnobfuscatedBranch = sc.current.version.startsWith("26.")
 apply(plugin = if (isUnobfuscatedBranch) "net.fabricmc.fabric-loom" else "net.fabricmc.fabric-loom-remap")
 
 val modVersion = property("mod.version") as String
@@ -47,7 +47,7 @@ val loaderVersion = property("deps.fabric_loader") as String
 val fabricApiVersion = property("deps.fabric_api") as String
 val loomExtension = extensions.getByType<LoomGradleExtensionAPI>()
 val devRemapClasspathFile = layout.projectDirectory.file(".gradle/loom-cache/remapClasspath.txt")
-val usesFabricApi = sc.current.version != "26.1"
+val usesFabricApi = !isUnobfuscatedBranch
 
 version = modVersion
 group = modGroup

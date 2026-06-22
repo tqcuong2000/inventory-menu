@@ -20,7 +20,7 @@ public record ScoreActionCost(String objective, int amount) implements ActionCos
 
     @Override
     public CostType<?> getType() {
-        return CostType.register("score", new CostType<>(CODEC));
+        return CostType.SCORE;
     }
 
     @Override
@@ -48,5 +48,10 @@ public record ScoreActionCost(String objective, int amount) implements ActionCos
         ScoreHolder holder = ScoreHolder.forNameOnly(player.getScoreboardName());
         ScoreAccess score = scoreboard.getOrCreatePlayerScore(holder, obj);
         score.set(score.get() - amount);
+    }
+
+    @Override
+    public String placeholderText() {
+        return amount + " " + objective;
     }
 }

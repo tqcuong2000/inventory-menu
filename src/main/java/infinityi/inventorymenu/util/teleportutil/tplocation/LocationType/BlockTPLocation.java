@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.phys.Vec3;
 
 public record BlockTPLocation(BlockPos location) implements TPLocation {
 
@@ -26,7 +27,7 @@ public record BlockTPLocation(BlockPos location) implements TPLocation {
         }
         cost.applyCost(player, location);
         player.closeContainer();
-        TeleportUtils.teleport(player, location.getCenter(), destinationWorld);
+        TeleportUtils.teleport(player, Vec3.atCenterOf(location), destinationWorld);
 
     }
 

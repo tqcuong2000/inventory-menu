@@ -18,7 +18,7 @@ public record XPActionCost(int amount, boolean isLevel) implements ActionCost {
 
     @Override
     public CostType<?> getType() {
-        return CostType.register("xp", new CostType<>(CODEC));
+        return CostType.XP;
     }
 
     @Override
@@ -30,7 +30,13 @@ public record XPActionCost(int amount, boolean isLevel) implements ActionCost {
     public void apply(ServerPlayer player, MinecraftServer server) {
         if (isLevel) {
             player.giveExperienceLevels(-amount);
+        } else {
+            player.giveExperiencePoints(-amount);
         }
-        player.giveExperiencePoints(amount);
+    }
+
+    @Override
+    public String placeholderText() {
+        return amount + " " + (isLevel ? "levels" : "xp points");
     }
 }

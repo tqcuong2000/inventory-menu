@@ -3,6 +3,7 @@ package infinityi.inventorymenu.placeholder.resolvers;
 import infinityi.inventorymenu.action.Action;
 import infinityi.inventorymenu.action.type.TeleportAction;
 import infinityi.inventorymenu.menu.layout.MenuItem;
+import infinityi.inventorymenu.placeholder.providers.ActionCostProvider;
 import infinityi.inventorymenu.placeholder.providers.PlaceholderProvider;
 import infinityi.inventorymenu.placeholder.providers.PlayerProvider;
 import infinityi.inventorymenu.placeholder.providers.ServerProvider;
@@ -21,8 +22,9 @@ public record ItemResolver(MenuItem item, ServerPlayer player) {
     public Set<PlaceholderProvider> constructProviders() {
         Set<PlaceholderProvider> providers = new HashSet<>();
         providers.add(new PlayerProvider(player));
+        providers.add(new ActionCostProvider(item.actions()));
         if (player.level().getServer() instanceof MinecraftServer server) providers.add(new ServerProvider(server));
-        for (Action action : item().actions()) if (action instanceof TeleportAction tp) providers.add(tp);
+        for (Action action : item().actions()) if (action.unwrapped() instanceof TeleportAction tp) providers.add(tp);
         return providers;
     }
 

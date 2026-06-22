@@ -19,6 +19,7 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +39,7 @@ public record MenuPredicate(Identifier predicate, Action whenTrue, Action whenFa
         MinecraftServer server = serverWorld.getServer();
         LootParams worldContext = new LootParams.Builder(serverWorld)
                 .withParameter(LootContextParams.THIS_ENTITY, player)
-                .withParameter(LootContextParams.ORIGIN, player.blockPosition().getCenter())
+                .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(player.blockPosition()))
                 .withParameter(LootContextParams.DAMAGE_SOURCE, player.damageSources().playerAttack(player))
                 .create(LootContextParamSets.ENTITY);
 
@@ -47,8 +48,8 @@ public record MenuPredicate(Identifier predicate, Action whenTrue, Action whenFa
                 .create(Optional.empty());
         boolean result = read(server).map(condition -> condition.test(lootContext)).orElse(true);
         defaultMessage(player, result, context);
-        if (!(whenTrue instanceof NoAction) && result) whenTrue.execute(player);
-        if (!(whenFalse instanceof NoAction) && !result) whenFalse.execute(player);
+        if (result) executeAction(whenTrue, player);
+        if (!result) executeAction(whenFalse, player);
         return result;
     }
 
@@ -62,7 +63,7 @@ public record MenuPredicate(Identifier predicate, Action whenTrue, Action whenFa
 
     private void defaultMessage(ServerPlayer player, boolean result, String context) {
         if (!ConfigManager.getConfig().show_predicate_message) return;
-        if (!(whenFalse instanceof NoAction) || result) return;
+        if (!(whenFalse.unwrapped() instanceof NoAction) || result) return;
         if (context.equals("menu")) new MessageAction(List
                 .of(Component.translatable("§cYou can't open this menu")), false)
                 .execute(player);
@@ -70,5 +71,9 @@ public record MenuPredicate(Identifier predicate, Action whenTrue, Action whenFa
                 .of(Component.translatable("§cYou can't run this action")), false)
                 .execute(player);
         player.closeContainer();
+    }
+
+    private void executeAction(Action action, ServerPlayer player) {
+        if (!(action.unwrapped() instanceof NoAction)) action.executeWithCost(player);
     }
 }

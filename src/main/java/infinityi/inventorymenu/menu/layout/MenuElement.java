@@ -26,8 +26,6 @@ public record MenuElement(MenuItemMeta meta, MenuItem item) {
         }
         meta.resolveSound(player, true);
         if (item.actions().isEmpty()) return;
-        for (Action action : item.actions()) {
-            action.execute(player);
-        }
+        Action.executeAll(player, item.actions());
     }
 }
