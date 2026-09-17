@@ -17,6 +17,7 @@ If one menu item has more than one action, all `action_cost` checks must pass fi
 - Added support for more than one cost on the same action.
 - Added `fail_message` for action costs.
 - Added `%action_cost%` item placeholder.
+- Added one-jar support for Minecraft 26.1, 26.1.1, and 26.1.2.
 - Added support for Minecraft 26.2.
 
 ### XP Cost Example

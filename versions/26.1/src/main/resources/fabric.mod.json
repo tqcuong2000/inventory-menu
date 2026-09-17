@@ -15,6 +15,10 @@
   "mixins": ["inventory-menu.mixins.json"],
   "depends": {
     "fabricloader": ">=${loader}",
-    "minecraft": "${minecraft}"
+    "minecraft": [
+      "26.1",
+      "26.1.1",
+      "26.1.2"
+    ]
   }
 }
