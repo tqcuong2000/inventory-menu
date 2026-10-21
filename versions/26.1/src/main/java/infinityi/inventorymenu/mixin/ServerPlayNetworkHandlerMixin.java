@@ -26,7 +26,14 @@ public class ServerPlayNetworkHandlerMixin {
     @Shadow
     public ServerPlayer player;
 
-    @Inject(method = "handleContainerClick", at = @At("HEAD"), cancellable = true)
+    @Inject(
+            method = "handleContainerClick",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/server/level/ServerPlayer;resetLastActionTime()V"
+            ),
+            cancellable = true
+    )
     private void interceptOnClickSlot(ServerboundContainerClickPacket packet, CallbackInfo ci) {
         AbstractContainerMenu currentScreenHandler = this.player.containerMenu;
 
@@ -43,6 +50,7 @@ public class ServerPlayNetworkHandlerMixin {
                             .ifPresent(element -> element.onClick(player));
 
                 }
+                this.player.resetLastActionTime();
                 ci.cancel();
                 this.player.containerMenu.sendAllDataToRemote();
             }
