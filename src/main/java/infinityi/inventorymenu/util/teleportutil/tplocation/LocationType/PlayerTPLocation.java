@@ -31,6 +31,14 @@ public record PlayerTPLocation(String playerName) implements TPLocation {
             player.sendSystemMessage(Component.translatable("§cPlayer is not online."));
             return;
         }
+        if (safeCheck) {
+            if (TeleportAction.isDangerLocation(targetPlayer.level(), targetPlayer.blockPosition())) {
+                player.sendSystemMessage(Component.translatable("§cYou cannot teleport to a dangerous location!"));
+                return;
+            }
+        }
+        cost.applyCost(player, targetPlayer.blockPosition());
+        player.closeContainer();
         TeleportUtils.teleport(player, targetPlayer.position(), targetPlayer.level());
     }
 

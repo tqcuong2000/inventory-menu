@@ -64,13 +64,17 @@ public record MenuPredicate(Identifier predicate, Action whenTrue, Action whenFa
     private void defaultMessage(ServerPlayer player, boolean result, String context) {
         if (!ConfigManager.getConfig().show_predicate_message) return;
         if (!(whenFalse.unwrapped() instanceof NoAction) || result) return;
-        if (context.equals("menu")) new MessageAction(List
-                .of(Component.translatable("§cYou can't open this menu")), false)
-                .execute(player);
-        if (context.equals("item")) new MessageAction(List
-                .of(Component.translatable("§cYou can't run this action")), false)
-                .execute(player);
-        player.closeContainer();
+        if (context.equals("menu")) {
+            new MessageAction(List
+                    .of(Component.translatable("§cYou can't open this menu")), false)
+                    .execute(player);
+            player.closeContainer();
+        }
+        if (context.equals("item")) {
+            new MessageAction(List
+                    .of(Component.translatable("§cYou can't run this action")), false)
+                    .execute(player);
+        }
     }
 
     private void executeAction(Action action, ServerPlayer player) {

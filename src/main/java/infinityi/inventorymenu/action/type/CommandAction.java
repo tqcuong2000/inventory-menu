@@ -46,6 +46,6 @@ public record CommandAction(List<String> commands, boolean asPlayer, boolean sil
 
     @Override
     public ActionType getType() {
-        return null;
+        return ActionType.COMMAND;
     }
 }

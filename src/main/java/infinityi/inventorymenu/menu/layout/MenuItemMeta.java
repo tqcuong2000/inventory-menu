@@ -12,8 +12,13 @@ import oshi.util.tuples.Pair;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-public record MenuItemMeta(SlotPair slot, MenuPredicate condition, List<String> sounds) {
+public record MenuItemMeta(SlotPair slot, MenuPredicate condition, List<String> sounds, ClosePolicy closePolicy) {
+    public MenuItemMeta(SlotPair slot, MenuPredicate condition, List<String> sounds) {
+        this(slot, condition, sounds, ClosePolicy.DEFAULT);
+    }
+
     public static final Codec<MenuItemMeta> CODEC = RecordCodecBuilder.create(inst -> inst.group(
             SlotPair.LIST_CODEC
                     .xmap(l -> new SlotPair(l.getFirst(), l.getLast()), sp -> List.of(sp.row(), sp.column()))
@@ -23,8 +28,17 @@ public record MenuItemMeta(SlotPair slot, MenuPredicate condition, List<String> 
             Codec.xor(Codec.STRING, Codec.list(Codec.STRING)).xmap(either -> either.map(List::of, r -> r), list -> {
                 if (list.size() <= 1) return Either.left(list.getFirst());
                 return Either.right(list);
-            }).optionalFieldOf("sound", new ArrayList<>()).forGetter(MenuItemMeta::sounds)
-    ).apply(inst, MenuItemMeta::new));
+            }).optionalFieldOf("sound", new ArrayList<>()).forGetter(MenuItemMeta::sounds),
+            ClosePolicy.CODEC.optionalFieldOf("close_policy")
+                    .forGetter(meta -> meta.closePolicy() == ClosePolicy.DEFAULT ? Optional.empty() : Optional.of(meta.closePolicy())),
+            ClosePolicy.CODEC.optionalFieldOf("close_container")
+                    .forGetter(meta -> Optional.empty())
+    ).apply(inst, (slot, condition, sounds, p1, p2) -> new MenuItemMeta(
+            slot,
+            condition,
+            sounds,
+            p1.or(() -> p2).orElse(ClosePolicy.DEFAULT)
+    )));
 
     private static final Map<String, Pair<SoundEvent, Float>> soundMap = Map.of(
             "click", createPair(SoundEvents.UI_BUTTON_CLICK.value(), 1.0f),

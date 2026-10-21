@@ -79,9 +79,9 @@ public interface Action {
         unwrapped().execute(player);
     }
 
-    static void executeAll(ServerPlayer player, List<Action> actions) {
+    static boolean executeAll(ServerPlayer player, List<Action> actions) {
         MinecraftServer server = player.level().getServer();
-        if (server == null) return;
+        if (server == null) return false;
         List<ActionCost> costs = new ArrayList<>();
         for (Action action : actions) {
             costs.addAll(action.actionCosts());
@@ -92,12 +92,13 @@ public interface Action {
         }
         if (!canPay) {
             for (ActionCost cost : costs) cost.sendFailMessage(player);
-            return;
+            return false;
         }
         for (Action action : actions) {
             action.applyCost(player, server);
             action.unwrapped().execute(player);
         }
+        return true;
     }
 
     private static Action withCost(Action action, ActionCostData data) {
