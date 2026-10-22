@@ -44,6 +44,7 @@ public record PlayerTPLocation(String playerName) implements TPLocation {
 
     @Override
     public BlockPos getPos(MinecraftServer server) {
+        if (server == null) return null;
         ServerPlayer player = getPlayer(server);
         if (player == null) return null;
         return player.blockPosition();
@@ -51,15 +52,25 @@ public record PlayerTPLocation(String playerName) implements TPLocation {
 
     @Override //@Nullable
     public ServerPlayer getPlayer(MinecraftServer server) {
-        return playerName.length() > 16 ? server.getPlayerList().getPlayer(UUID.fromString(playerName)) : server.getPlayerList().getPlayerByName(playerName);
+        if (server == null) return null;
+        UUID uuid = tryParseUUID(playerName);
+        return uuid != null ? server.getPlayerList().getPlayer(uuid) : server.getPlayerList().getPlayerByName(playerName);
+    }
+
+    private static UUID tryParseUUID(String input) {
+        if (input == null || input.length() != 36) return null;
+        try {
+            return UUID.fromString(input);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 
     @Override
     public Integer getDistance(ServerPlayer player) {
+        if (player == null || player.level() == null || player.level().getServer() == null) return 0;
         BlockPos blockPos = getPos(player.level().getServer());
         if (blockPos == null) return 0;
         return TeleportAction.distanceBetween(player.blockPosition(), blockPos);
     }
-
-
 }

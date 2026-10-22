@@ -34,6 +34,7 @@ public record AdvancementItem(Identifier questId, boolean showDescription, boole
     @Override
     public ItemStack resolveItemStack(ServerPlayer player) {
         ItemStack itemStack = new ItemStack(Items.BOOK);
+        if (player.level() == null || player.level().getServer() == null) return itemStack;
         AdvancementHolder advancementEntry = player.level().getServer().getAdvancements().get(questId);
         if (advancementEntry == null) return itemStack;
         Advancement advancement = advancementEntry.value();
@@ -43,7 +44,7 @@ public record AdvancementItem(Identifier questId, boolean showDescription, boole
         if (name.getStyle().isEmpty()) name = name.copy()
                 .setStyle(Style.EMPTY.withItalic(false))
                 .withStyle(ChatFormatting.GREEN);
-        ItemStack item = display.getIcon();
+        ItemStack item = display.getIcon().copy();
 
         List<Component> list = new ArrayList<>();
         if (showDescription) {

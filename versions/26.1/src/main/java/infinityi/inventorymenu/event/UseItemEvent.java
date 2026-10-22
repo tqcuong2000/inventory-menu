@@ -17,7 +17,9 @@ public final class UseItemEvent extends EventManager {
         ItemStack itemStack = player.getItemInHand(hand);
         var customData = itemStack.get(DataComponents.CUSTOM_DATA);
         if (customData == null || !customData.copyTag().contains("menu")) return InteractionResult.PASS;
-        Identifier menuId = Identifier.parse(customData.copyTag().getStringOr("menu", ""));
+        String menuTag = customData.copyTag().getStringOr("menu", "");
+        Identifier menuId = Identifier.tryParse(menuTag);
+        if (menuId == null) return InteractionResult.PASS;
         return openMenu(menuId, player);
     }
 

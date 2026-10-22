@@ -11,6 +11,7 @@ import infinityi.inventorymenu.util.teleportutil.tplocation.TPLocation;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Blocks;
@@ -31,14 +32,22 @@ public record TeleportAction(TPLocation target, TeleportCost cost,
             ).apply(instance, TeleportAction::new));
 
     public static Map<String, Supplier<Object>> createKeySuppliers(ServerPlayer player, TeleportAction action) {
+        MinecraftServer server = player != null && player.level() != null ? player.level().getServer() : null;
         return Map.of(
-                "xp_cost", () -> action.cost.calcCost(player, action.target.getPos(player.level().getServer())),
+                "xp_cost", () -> {
+                    BlockPos pos = server != null ? action.target.getPos(server) : null;
+                    return action.cost.calcCost(player, pos);
+                },
                 "xp_cost_type", () -> action.cost.isPoint().toString(),
                 "target_pos", () -> {
-                    BlockPos pos = action.target.getPos(player.level().getServer());
+                    BlockPos pos = server != null ? action.target.getPos(server) : null;
+                    if (pos == null) return "Offline";
                     return String.format("X: %s Y: %s Z: %s", pos.getX(), pos.getY(), pos.getZ());
                 },
-                "target_name", () -> Optional.ofNullable(action.target.getPlayer(player.level().getServer())).map(s -> s.getName().getString()).orElse("?"),
+                "target_name", () -> {
+                    if (server == null) return "?";
+                    return Optional.ofNullable(action.target.getPlayer(server)).map(s -> s.getName().getString()).orElse("?");
+                },
                 "distance", () -> action.target.getDistance(player)
         );
     }
@@ -49,8 +58,11 @@ public record TeleportAction(TPLocation target, TeleportCost cost,
         }
         BlockPos floorPos = pos.below();
         BlockPos headPos = pos.above();
-        world.getChunk(floorPos);
-        if (!world.getBlockState(floorPos).isRedstoneConductor(world, headPos)) return true;
+        if (!world.hasChunk(floorPos.getX() >> 4, floorPos.getZ() >> 4)) {
+            return false;
+        }
+        BlockState floorState = world.getBlockState(floorPos);
+        if (!floorState.isFaceSturdy(world, floorPos, net.minecraft.core.Direction.UP)) return true;
         BlockState feetState = world.getBlockState(pos);
         BlockState headState = world.getBlockState(headPos);
         if (feetState.isSuffocating(world, pos) || headState.isSuffocating(world, headPos)) return true;
@@ -75,7 +87,13 @@ public record TeleportAction(TPLocation target, TeleportCost cost,
 
     @Override
     public void execute(ServerPlayer player) {
-        BlockPos pos = target.getPos(player.level().getServer());
+        MinecraftServer server = player.level().getServer();
+        if (server == null) return;
+        BlockPos pos = target.getPos(server);
+        if (pos == null) {
+            player.sendSystemMessage(Component.literal("§cTarget location/player is unavailable."));
+            return;
+        }
         if (cost.hasCost(player, pos)) {
             target.teleport(player, safe_check, cost);
         } else {

@@ -26,7 +26,7 @@ import java.util.Optional;
 
 public record MenuPredicate(Identifier predicate, Action whenTrue, Action whenFalse) {
 
-    public static final MenuPredicate EMPTY = new MenuPredicate(Identifier.parse(""), new NoAction(), new NoAction());
+    public static final MenuPredicate EMPTY = new MenuPredicate(Identifier.fromNamespaceAndPath("inventory-menu", "empty"), new NoAction(), new NoAction());
     public static final Codec<MenuPredicate> CODEC = RecordCodecBuilder.create(inst -> inst.group(
             Identifier.CODEC.fieldOf("id").forGetter(MenuPredicate::predicate),
             Action.CODEC.optionalFieldOf("on_true", new NoAction()).forGetter(MenuPredicate::whenTrue),
@@ -35,7 +35,6 @@ public record MenuPredicate(Identifier predicate, Action whenTrue, Action whenFa
 
     public boolean test(ServerPlayer player, String context) {
         ServerLevel serverWorld = player.level();
-        if (serverWorld == null) return false;
         MinecraftServer server = serverWorld.getServer();
         LootParams worldContext = new LootParams.Builder(serverWorld)
                 .withParameter(LootContextParams.THIS_ENTITY, player)

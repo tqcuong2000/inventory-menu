@@ -5,9 +5,10 @@ import infinityi.inventorymenu.event.InteractEntityEvent;
 import infinityi.inventorymenu.menu.MenuLayout;
 import infinityi.inventorymenu.menu.layout.CustomMenuInventory;
 import net.minecraft.network.protocol.game.ServerboundContainerClickPacket;
+import net.minecraft.network.protocol.game.ServerboundContainerClosePacket;
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
@@ -15,6 +16,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.ContainerInput;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -36,24 +38,47 @@ public class ServerPlayNetworkHandlerMixin {
     )
     private void interceptOnClickSlot(ServerboundContainerClickPacket packet, CallbackInfo ci) {
         AbstractContainerMenu currentScreenHandler = this.player.containerMenu;
+        if (packet.containerId() != currentScreenHandler.containerId) {
+            return;
+        }
 
         if (currentScreenHandler instanceof ChestMenu genericHandler) {
             Container inventory = genericHandler.getContainer();
             if (inventory instanceof CustomMenuInventory customMenuInventory) {
                 int slotIndex = packet.slotNum();
                 if (slotIndex >= 0 && slotIndex < inventory.getContainerSize()) {
-                    MenuLayout layout = customMenuInventory.getLayout();
-                    InventoryMenu.dataManager.playerData().set(player, layout);
-                    layout.items().stream()
-                            .filter(item -> item.slot() == slotIndex)
-                            .findFirst()
-                            .ifPresent(element -> element.onClick(player));
+                    this.player.resetLastActionTime();
+                    ci.cancel();
 
+                    if (InventoryMenu.dataManager.playerData().canClick(this.player, 100)) {
+                        MenuLayout layout = customMenuInventory.getLayout();
+                        InventoryMenu.dataManager.playerData().set(player, layout);
+                        layout.items().stream()
+                                .filter(item -> item.slot() == slotIndex)
+                                .findFirst()
+                                .ifPresent(element -> element.onClick(player));
+                    }
+                    this.player.containerMenu.sendAllDataToRemote();
+                } else if (packet.containerInput() == ContainerInput.QUICK_MOVE) {
+                    this.player.resetLastActionTime();
+                    ci.cancel();
+                    this.player.containerMenu.sendAllDataToRemote();
                 }
-                this.player.resetLastActionTime();
-                ci.cancel();
-                this.player.containerMenu.sendAllDataToRemote();
             }
+        }
+    }
+
+    @Inject(method = "handleContainerClose", at = @At("HEAD"))
+    private void inventorymenu$onCloseMenu(ServerboundContainerClosePacket packet, CallbackInfo ci) {
+        if (InventoryMenu.dataManager != null && InventoryMenu.dataManager.playerData() != null) {
+            InventoryMenu.dataManager.playerData().remove(this.player);
+        }
+    }
+
+    @Inject(method = "onDisconnect", at = @At("HEAD"))
+    private void inventorymenu$onDisconnect(CallbackInfo ci) {
+        if (InventoryMenu.dataManager != null && InventoryMenu.dataManager.playerData() != null) {
+            InventoryMenu.dataManager.playerData().remove(this.player);
         }
     }
 

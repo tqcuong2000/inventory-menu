@@ -1,7 +1,8 @@
 package infinityi.inventorymenu.dataparser;
 
-import java.util.List;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
+
+import java.util.List;
 
 public class DataManager {
 

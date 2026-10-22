@@ -34,6 +34,7 @@ public record AdvancementItem(Identifier questId, boolean showDescription, boole
     @Override
     public ItemStack resolveItemStack(ServerPlayer player) {
         ItemStack itemStack = new ItemStack(Items.BOOK);
+        if (player.level() == null || player.level().getServer() == null) return itemStack;
         AdvancementHolder advancementEntry = player.level().getServer().getAdvancements().get(questId);
         if (advancementEntry == null) return itemStack;
         Advancement advancement = advancementEntry.value();

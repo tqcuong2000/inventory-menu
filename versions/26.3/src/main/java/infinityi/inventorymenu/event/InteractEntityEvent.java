@@ -33,9 +33,9 @@ public final class InteractEntityEvent extends EventManager {
                 .filter(tag -> tag.startsWith("menu-"))
                 .findFirst();
         if (found.isEmpty()) return InteractionResult.PASS;
-        Identifier menuId = Identifier.parse(
-                found.get().substring(5).toLowerCase(Locale.ROOT)
-        );
+        String tagValue = found.get().substring(5).toLowerCase(Locale.ROOT);
+        Identifier menuId = Identifier.tryParse(tagValue);
+        if (menuId == null) return InteractionResult.PASS;
         return openMenu(menuId, player);
     }
 

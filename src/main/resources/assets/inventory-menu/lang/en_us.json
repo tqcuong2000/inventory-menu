@@ -14,5 +14,6 @@
   "§cYou can't perform this action": "§cYou can't perform this action",
   "Open %s": "Open %s",
   "§aCompleted!": "§aCompleted!",
-  "§cNot complete.": "§cNot complete."
+  "§cNot complete.": "§cNot complete.",
+  "§cYou can't run this action": "§cYou can't run this action"
 }

@@ -6,8 +6,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import infinityi.inventorymenu.action.Action;
 import infinityi.inventorymenu.menu.layout.MenuItem;
 import infinityi.inventorymenu.menu.layout.MenuItemType;
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
@@ -21,6 +19,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public record AdvancementItem(Identifier questId, boolean showDescription, boolean showComplete, List<Action> actions) implements MenuItem {
     public static final MapCodec<AdvancementItem> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Identifier.CODEC.fieldOf("id").forGetter(AdvancementItem::questId),
@@ -32,6 +33,7 @@ public record AdvancementItem(Identifier questId, boolean showDescription, boole
     @Override
     public ItemStack resolveItemStack(ServerPlayer player) {
         ItemStack itemStack = new ItemStack(Items.BOOK);
+        if (player.level() == null || player.level().getServer() == null) return itemStack;
         AdvancementHolder advancementEntry = player.level().getServer().getAdvancements().get(questId);
         if (advancementEntry == null) return itemStack;
         Advancement advancement = advancementEntry.value();

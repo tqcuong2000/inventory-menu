@@ -17,12 +17,12 @@ import java.util.NavigableMap;
 public record MenuNavigationAction(String navigate, Identifier destination) implements Action {
     public static final MapCodec<MenuNavigationAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.STRING.fieldOf("action").forGetter(MenuNavigationAction::navigate),
-            Identifier.CODEC.optionalFieldOf("menu", Identifier.parse("")).forGetter(MenuNavigationAction::destination)
+            Identifier.CODEC.optionalFieldOf("menu", Identifier.fromNamespaceAndPath("inventory-menu", "empty")).forGetter(MenuNavigationAction::destination)
     ).apply(instance, MenuNavigationAction::new));
 
     @Override
     public void execute(ServerPlayer player) {
-        MenuLayout layout = InventoryMenu.dataManager.playerData().currentMenu.get(player);
+        MenuLayout layout = InventoryMenu.dataManager.playerData().get(player);
         switch (navigate) {
             case "close":
                 player.closeContainer();

@@ -4,8 +4,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import infinityi.inventorymenu.InventoryMenu;
 import infinityi.inventorymenu.dataparser.ConfigManager;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -14,6 +12,9 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permission;
 import net.minecraft.server.permissions.PermissionLevel;
+
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class MenuCommand {
     public static void register() {

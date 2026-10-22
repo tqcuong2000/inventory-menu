@@ -11,6 +11,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import org.jspecify.annotations.NonNull;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -49,11 +50,11 @@ public class MenuDataManager implements PreparableReloadListener {
 
 
     @Override
-    public CompletableFuture<Void> reload(
+    public @NonNull CompletableFuture<Void> reload(
             PreparableReloadListener.SharedState store,
-            Executor prepareExecutor,
+            @NonNull Executor prepareExecutor,
             PreparableReloadListener.PreparationBarrier reloadSynchronizer,
-            Executor applyExecutor
+            @NonNull Executor applyExecutor
     ) {
         ResourceManager manager = store.resourceManager();
 

@@ -9,7 +9,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerScoreboard;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraft.world.scores.*;
+import net.minecraft.world.scores.Objective;
+import net.minecraft.world.scores.ReadOnlyScoreInfo;
+import net.minecraft.world.scores.ScoreAccess;
+import net.minecraft.world.scores.ScoreHolder;
 
 public record ScoreActionCost(String objective, int amount) implements ActionCost {
 
@@ -47,7 +50,7 @@ public record ScoreActionCost(String objective, int amount) implements ActionCos
         }
         ScoreHolder holder = ScoreHolder.forNameOnly(player.getScoreboardName());
         ScoreAccess score = scoreboard.getOrCreatePlayerScore(holder, obj);
-        score.set(score.get() - amount);
+        score.set(Math.max(0, score.get() - amount));
     }
 
     @Override

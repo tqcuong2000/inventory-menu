@@ -15,22 +15,45 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public record DefinedItem(Identifier id) implements MenuItem {
+    private static final ThreadLocal<Set<Identifier>> RESOLVING_ITEMS = ThreadLocal.withInitial(HashSet::new);
+    private static final ThreadLocal<Set<Identifier>> RESOLVING_ACTIONS = ThreadLocal.withInitial(HashSet::new);
+
     public static final MapCodec<DefinedItem> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
             Identifier.CODEC.fieldOf("item_id").forGetter(DefinedItem::id)
     ).apply(inst, DefinedItem::new));
 
     @Override
     public List<Action> actions() {
-        return getItem().map(MenuItem::actions).orElse(List.of());
+        Set<Identifier> resolving = RESOLVING_ACTIONS.get();
+        if (!resolving.add(id)) {
+            InventoryMenu.LOGGER.error("Circular reference detected in DefinedItem actions: {}", id);
+            return List.of();
+        }
+        try {
+            return getItem().map(MenuItem::actions).orElse(List.of());
+        } finally {
+            resolving.remove(id);
+        }
     }
 
     @Override
     public @NotNull ItemStack resolveItemStack(ServerPlayer player) {
-        return getItem().map(item -> item.resolveItemStack(player)).orElse(getErrorItem());
+        Set<Identifier> resolving = RESOLVING_ITEMS.get();
+        if (!resolving.add(id)) {
+            InventoryMenu.LOGGER.error("Circular reference detected in DefinedItem resolveItemStack: {}", id);
+            return getErrorItem();
+        }
+        try {
+            return getItem().map(item -> item.resolveItemStack(player)).orElse(getErrorItem());
+        } finally {
+            resolving.remove(id);
+        }
     }
 
     @Override

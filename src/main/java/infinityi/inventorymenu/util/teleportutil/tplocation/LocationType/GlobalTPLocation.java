@@ -21,6 +21,7 @@ public record GlobalTPLocation(GlobalPos location) implements TPLocation {
 
     @Override
     public void teleport(ServerPlayer player, boolean safeCheck, TeleportCost cost) {
+        if (player == null || player.level() == null || player.level().getServer() == null) return;
         ServerLevel destinationWorld = player.level().getServer().getLevel(location.dimension());
         if (destinationWorld == null) {
             player.sendSystemMessage(Component.translatable("§cThat world does not exist! %s", location.dimension().identifier().toString()));
@@ -49,6 +50,7 @@ public record GlobalTPLocation(GlobalPos location) implements TPLocation {
 
     @Override
     public Integer getDistance(ServerPlayer player) {
+        if (player == null || player.level() == null) return 0;
         if (player.level().dimension().equals(location.dimension())) {
             return TeleportAction.distanceBetween(player.blockPosition(), location.pos());
         }

@@ -6,6 +6,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import infinityi.inventorymenu.InventoryMenu;
 import infinityi.inventorymenu.action.cost.ActionCost;
 import infinityi.inventorymenu.action.cost.CostType;
 import infinityi.inventorymenu.util.CodecUtils;
@@ -16,6 +17,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -70,10 +72,14 @@ public record ItemActionCost(ItemCostData itemData) implements ActionCost {
                 json.addProperty("count", 1);
                 json.add("components", components.get().deepCopy());
                 return ItemStack.CODEC.parse(JsonOps.INSTANCE, json)
-                        .getOrThrow(IllegalStateException::new);
+                        .resultOrPartial(err -> InventoryMenu.LOGGER.error("Failed to parse ItemStack for item cost {}: {}", id, err))
+                        .orElseGet(() -> {
+                            Item item = BuiltInRegistries.ITEM.getValue(id);
+                            return item != null ? new ItemStack(item, 1) : Items.AIR.getDefaultInstance();
+                        });
             }
             Item item = BuiltInRegistries.ITEM.getValue(id);
-            return new ItemStack(item, 1);
+            return item != null ? new ItemStack(item, 1) : Items.AIR.getDefaultInstance();
         }
     }
 }

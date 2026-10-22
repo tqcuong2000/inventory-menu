@@ -18,7 +18,9 @@ public record BlockTPLocation(BlockPos location) implements TPLocation {
 
     @Override
     public void teleport(ServerPlayer player, boolean safeCheck, TeleportCost cost) {
+        if (player == null || player.level() == null || player.level().getServer() == null) return;
         ServerLevel destinationWorld = player.level().getServer().overworld();
+        if (destinationWorld == null) return;
         if (safeCheck) {
             if (TeleportAction.isDangerLocation(destinationWorld, location)) {
                 player.sendSystemMessage(Component.translatable("§cYou cannot teleport to a dangerous location!"));
@@ -28,7 +30,6 @@ public record BlockTPLocation(BlockPos location) implements TPLocation {
         cost.applyCost(player, location);
         player.closeContainer();
         TeleportUtils.teleport(player, Vec3.atCenterOf(location), destinationWorld);
-
     }
 
     @Override
@@ -43,6 +44,7 @@ public record BlockTPLocation(BlockPos location) implements TPLocation {
 
     @Override
     public Integer getDistance(ServerPlayer player) {
+        if (player == null) return 0;
         return TeleportAction.distanceBetween(player.blockPosition(), location);
     }
 

@@ -6,8 +6,8 @@
   "mixins": [
     "CommandsMixin",
     "ReloadableServerResourcesMixin",
-    "ServerPlayNetworkHandlerMixin",
-    "ServerPlayerGameModeMixin"
+    "ServerPlayerGameModeMixin",
+    "ServerPlayNetworkHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

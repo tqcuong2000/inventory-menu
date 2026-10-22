@@ -1,7 +1,5 @@
 package infinityi.inventorymenu.event;
 
-import java.util.Locale;
-import java.util.Optional;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -10,6 +8,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Locale;
+import java.util.Optional;
 
 public final class InteractEntityEvent extends EventManager {
 
@@ -31,9 +32,9 @@ public final class InteractEntityEvent extends EventManager {
             .filter(tag -> tag.startsWith("menu-"))
             .findFirst();
         if (found.isEmpty()) return InteractionResult.PASS;
-        Identifier menuId = Identifier.parse(
-            found.get().substring(5).toLowerCase(Locale.ROOT)
-        );
+        String tagValue = found.get().substring(5).toLowerCase(Locale.ROOT);
+        Identifier menuId = Identifier.tryParse(tagValue);
+        if (menuId == null) return InteractionResult.PASS;
         return openMenu(menuId, player);
     }
 

@@ -14,12 +14,12 @@ import java.util.stream.Collectors;
 
 public interface PlaceholderResolver {
 
+    Pattern PLACEHOLDER_PATTERN = Pattern.compile("%([^%]+)%");
+
     static Component resolve(Component input, Set<PlaceholderProvider> providers, ServerPlayer player) {
         String template = input.getString();
         if (!template.contains("%")) return input;
-        String regexString = "%([^%]+)%";
-        Pattern pattern = Pattern.compile(regexString);
-        Matcher matcher = pattern.matcher(template);
+        Matcher matcher = PLACEHOLDER_PATTERN.matcher(template);
         return Component.literal(matcher.replaceAll(match -> {
             String key = match.group(1);
             String value = providers.stream()

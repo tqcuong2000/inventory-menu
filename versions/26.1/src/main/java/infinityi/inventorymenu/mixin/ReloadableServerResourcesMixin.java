@@ -1,14 +1,15 @@
 package infinityi.inventorymenu.mixin;
 
 import infinityi.inventorymenu.InventoryMenu;
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Mixin(ReloadableServerResources.class)
 public class ReloadableServerResourcesMixin {

@@ -1,8 +1,5 @@
 package infinityi.inventorymenu.placeholder.providers;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Supplier;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -12,6 +9,10 @@ import net.minecraft.stats.ServerStatsCounter;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.StatType;
 import net.minecraft.stats.Stats;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 public class PlayerProvider implements PlaceholderProvider {
 
@@ -74,14 +75,16 @@ public class PlayerProvider implements PlaceholderProvider {
         StatType<?> statType = statTypeOpt.get();
         Optional<Stat<?>> finalStatOpt;
         String stringId = objectId.contains(":") ? objectId : "minecraft:" + objectId;
+        Identifier parsedId = Identifier.tryParse(stringId);
+        if (parsedId == null) {
+            return 0;
+        }
         if (statType == Stats.CUSTOM) {
-            Identifier customStatId = Identifier.parse(stringId);
-            finalStatOpt = BuiltInRegistries.CUSTOM_STAT.getOptional(customStatId)
+            finalStatOpt = BuiltInRegistries.CUSTOM_STAT.getOptional(parsedId)
                     .map(Stats.CUSTOM::get);
         } else {
-            Identifier objectIdentifier = Identifier.parse(stringId);
             Registry<?> objectRegistry = statType.getRegistry();
-            finalStatOpt = Optional.ofNullable(objectRegistry.getValue(objectIdentifier))
+            finalStatOpt = Optional.ofNullable(objectRegistry.getValue(parsedId))
                     .map(statObject -> createStat(statType, statObject));
         }
         return finalStatOpt.map(statHandler::getValue).orElse(0);

@@ -9,7 +9,7 @@ import java.util.Collections;
 public class TeleportUtils {
 
     public static void teleport(ServerPlayer player, Vec3 target, ServerLevel world) {
-        if (player.level() == null) return;
+        if (player == null || player.level() == null || player.level().getServer() == null || world == null || target == null) return;
         player.level().getServer().execute(() -> player.teleportTo(world, target.x, target.y, target.z, Collections.emptySet(), player.yHeadRot, player.getXRot(), true));
     }
 

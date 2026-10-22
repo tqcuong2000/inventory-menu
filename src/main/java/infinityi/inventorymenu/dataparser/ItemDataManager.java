@@ -9,6 +9,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import org.jspecify.annotations.NonNull;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -23,11 +24,11 @@ public class ItemDataManager implements PreparableReloadListener {
     private static final Map<Identifier, MenuItem> loadItems = new HashMap<>();
 
     @Override
-    public CompletableFuture<Void> reload(
+    public @NonNull CompletableFuture<Void> reload(
             PreparableReloadListener.SharedState store,
-            Executor prepareExecutor,
+            @NonNull Executor prepareExecutor,
             PreparableReloadListener.PreparationBarrier reloadSynchronizer,
-            Executor applyExecutor
+            @NonNull Executor applyExecutor
     ) {
         ResourceManager manager = store.resourceManager();
 
@@ -48,9 +49,11 @@ public class ItemDataManager implements PreparableReloadListener {
                 JsonElement jsonElement = JsonParser.parseReader(reader);
                 MenuItem element = MenuItem.CODEC.parse(JsonOps.INSTANCE, jsonElement)
                         .getOrThrow(IllegalStateException::new);
-                String path = entry.getKey().toString();
-                path = path.substring(0, path.lastIndexOf(".")).replaceFirst("menu-item/", "");
-                preparedData.put(Identifier.parse(path), element);
+                Identifier originalId = entry.getKey();
+                String path = originalId.getPath();
+                path = path.substring(0, path.lastIndexOf(".")).replaceFirst("^menu-item/", "");
+                Identifier itemId = Identifier.fromNamespaceAndPath(originalId.getNamespace(), path);
+                preparedData.put(itemId, element);
             } catch (Exception e) {
                 InventoryMenu.LOGGER.error("Error while reading file resource: {}", entry.getKey(), e);
             }
